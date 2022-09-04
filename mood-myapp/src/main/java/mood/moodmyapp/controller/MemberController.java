@@ -26,33 +26,42 @@ public class MemberController {
     }
 
     @GetMapping("/join.do")
-    public String memberJoinForm(){
+    public String memberJoinForm() {
         return "member/joinForm";
     }
 
 
     @PostMapping("/join.do")
-    public String memberJoin(Member member){
+    public String memberJoin(Member member) {
 
         memberService.join(member);
-        return "redirect:/";
+        String path = "/login/login.do";
+        return "redirect:" + path;
     }
 
     @ResponseBody
-    @PostMapping(value="/checkId", produces = "text/plain;charset=utf-8")
+    @PostMapping(value = "/checkId.do", produces = "text/plain;charset=utf-8")
     public String checkId(@RequestParam(value = "userId") String userId) {
         System.out.println("아이디 : " + userId);
 
-        if(memberService.existByMemberId(userId)){
-
+        if (memberService.existByMemberId(userId)) {
             return "중복";
-        }else{
+        } else {
             return "사용가능";
         }
 
     }
 
+    @ResponseBody
+    @PostMapping(value = "/checkNick.do", produces = "text/plain;charset=utf-8")
+    public String checkNickName(@RequestParam(value = "nickName") String nickName) {
+        System.out.println("아이디 : " + nickName);
 
+        if (memberService.existByMemberNickName(nickName)) {
+            return "중복";
+        } else {
+            return "사용가능";
+        }
 
-
+    }
 }

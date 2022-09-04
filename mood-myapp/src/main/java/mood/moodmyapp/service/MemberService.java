@@ -32,14 +32,18 @@ public class MemberService {
         memberRepository.save(member);  //리포지토리에 맴버만 save하면 됨
         return "Success";
     }
-
+    /**
+     * 아이디 중복체크
+     */
     private void validateDuplicateMember(Member member) {
         memberRepository.findById(member.getUserId())
                 .ifPresent(m -> {
                     throw  new IllegalStateException("이미 존재하는 회원입니다.");
                 });
     }
-
+    /**
+     * 아이디 중복체크
+     */
     public boolean existByMemberId(String userId) {
 
         Optional<String> valId = memberRepository.existByMemberId(userId);
@@ -49,7 +53,20 @@ public class MemberService {
             return true;
         }
         return false;
+    }
 
+    /**
+     * 닉네임 중복체크
+     */
+    public boolean existByMemberNickName(String nickName) {
+
+        Optional<String> valNickName = memberRepository.existByMemberNickName(nickName);
+
+        if(valNickName
+                .isPresent()) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -68,12 +85,5 @@ public class MemberService {
         return memberRepository.findById(userId);
     }
 
-    /**
-     * 아이디 중복 체크
-     */
-
-/*    public Optional<Member> existByMemberId(String userId){
-        return memberRepository.existByMemberId(userId);
-    }*/
 
 }
