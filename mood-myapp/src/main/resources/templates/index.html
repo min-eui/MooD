@@ -6,5 +6,9 @@
 </head>
 <body>
 welcome!
+<button><a th:href="@{/mypage/main.do}">마이페이지</a></button>
+<form th:action ="@{/logout.do}" method="post">
+<button type="submit">로그아웃하기</a></button>
+</form>
 </body>
 </html>
