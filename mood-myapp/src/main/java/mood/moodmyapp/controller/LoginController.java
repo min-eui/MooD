@@ -1,16 +1,14 @@
 package mood.moodmyapp.controller;
 
-import mood.moodmyapp.Session.SessionConstants;
 import mood.moodmyapp.domain.Member;
 import mood.moodmyapp.service.LoginService;
+import mood.moodmyapp.session.SessionConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.enterprise.inject.Model;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -33,11 +31,12 @@ public class LoginController {
     @PostMapping("/login/login.do")
     public String loginProc(@ModelAttribute Member member, HttpServletRequest request){
 
-       boolean loginMember = loginService.login(member);
-        //로그인 성공 처리
+
+        // 로그인 성공
         if(loginService.login(member)){
-            HttpSession session = request.getSession();// 세션이 있으면 있는 세션 반환, 없으면 신규 세션을 생성하여 반환
-            session.setAttribute(SessionConstants.LOGIN_MEMBER, loginMember);// 세션에 로그인 회원 정보 보관
+            boolean loginMember = loginService.login(member);
+            HttpSession session = request.getSession(); //세션이 있으면 세션 반환, 없으면 신규 세션을 생성하여 반환
+            session.setAttribute(SessionConstant.LOGIN_MEMBER,loginMember); //이름, 값을 인자로 세션값 바인딩
 
             return "redirect:/";
         }
@@ -51,8 +50,8 @@ public class LoginController {
         if(session != null){
             session.invalidate();   //세션 날림
         }
+        System.out.println("로그아웃 성공");
         return "redirect:/";
     }
-
 
 }

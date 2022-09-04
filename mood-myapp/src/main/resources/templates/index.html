@@ -5,12 +5,12 @@
     <title>Title</title>
 </head>
 <body>
-welcome home!
 
-<form th:action="@{/mypage/home.do}" method="get">
-    <button onclick="location.href='items.html'" type="submit">
-        마이페이지
-    </button>
+welcome!
+<button><a th:href="@{/mypage/main.do}">마이페이지</a></button>
+<form th:action ="@{/logout.do}" method="post">
+<button type="submit">로그아웃하기</a></button>
+
 </form>
 </body>
 </html>
