@@ -27,9 +27,8 @@ public class MemberDto {
 
     private String term2;      //  약관2동의여부
 
-
     /* DTO > Entity */
-    public Member toEntity(){
+/*    public Member toEntity(){
         Member member = Member.builder()
                 .userId(userId)
                 .userPw(userPw)
@@ -41,6 +40,6 @@ public class MemberDto {
                 .term2(term2)
                 .build();
         return member;
-    }
+    }*/
 
 }

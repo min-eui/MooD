@@ -5,12 +5,11 @@ import mood.moodmyapp.service.LoginService;
 import mood.moodmyapp.session.SessionConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Random;
 
 @Controller
 public class LoginController {
@@ -22,12 +21,19 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+    /**
+     *  로그인 페이지
+     */
+
     @GetMapping("/login/login.do")
     public String loginForm(){
         return "/login/login";
     }
 
-
+    /**
+     * 로그인 처리
+     * @param
+     */
     @PostMapping("/login/login.do")
     public String loginProc(@ModelAttribute Member member, HttpServletRequest request){
 
@@ -42,6 +48,10 @@ public class LoginController {
         return "/login/login";
     }
 
+    /**
+     * 로그아웃 처리
+     * @param
+     */
     @PostMapping("/logout.do")
     public String logout(HttpServletRequest request){
         HttpSession session = request.getSession(false);
@@ -52,5 +62,48 @@ public class LoginController {
         System.out.println("로그아웃 성공");
         return "redirect:/";
     }
+
+    /**
+     * 아이디/비밀번호찾기 페이지
+     * @param
+     */
+    @GetMapping(value = "/login/findIdPw.do")
+    public String findIdPw(){
+        return "/login/findIdPw";
+    }
+
+
+    /**
+     * (휴대폰번호로)아이디 찾기
+     * @param
+     */
+    @ResponseBody
+    @PostMapping(value="/login/findId.do", produces="text/plain;charset=utf-8")
+    public String findIdByPhoneNum(@RequestParam(value="phoneNum") String phoneNum, String numStr){
+        boolean isExistId = loginService.findIdByPhoneNum(phoneNum);
+
+        numStr = "";
+
+        if (isExistId){
+            Random rand  = new Random();
+            for(int i=0; i<4; i++) {
+                String ran = Integer.toString(rand.nextInt(10));
+                numStr+=ran;
+            }
+
+            System.out.println("수신자 번호 : " + phoneNum);
+            System.out.println("인증번호 : " + numStr);
+            loginService.certifiedPhoneNum(phoneNum,numStr);
+
+        }
+
+        return numStr;
+    }
+
+
+    /**
+     * 비밀번호 찾기
+     * @param
+     */
 
 }
