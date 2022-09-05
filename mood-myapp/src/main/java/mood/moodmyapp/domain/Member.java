@@ -18,7 +18,7 @@ public class Member extends BaseTimeEntity {
             @Column(name="userId", length = 50, nullable = false)
             private String userId;  // PK값
 
-            @Column(name="userPw", length = 50, nullable = false)
+            @Column(name="userPw", length = 500, nullable = false)
             private String userPw;      //  회원비밀번호
 
             @Column(name="userName", length = 20,nullable = false)

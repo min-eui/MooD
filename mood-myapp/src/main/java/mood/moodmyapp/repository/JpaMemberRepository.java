@@ -34,4 +34,8 @@ public interface JpaMemberRepository extends JpaRepository<Member, String>, Memb
     @Query("SELECT m FROM Member  m WHERE m.userId = :userId")
     @Override
     Optional<String> existByMemberId(String userId);
+
+    @Query("SELECT m FROM Member m WHERE m.nickName = :nickName")
+    @Override
+    Optional<String> existByMemberNickName(String nickName);
 }

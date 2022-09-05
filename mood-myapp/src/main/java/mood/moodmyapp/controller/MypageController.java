@@ -1,5 +1,6 @@
 package mood.moodmyapp.controller;
 
+
 import mood.moodmyapp.session.SessionConstant;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,7 @@ public class MypageController {
         //세션이 있다면 로그인으로 이동
         model.addAttribute("member", loginMember);
         return "/mypage/main";
+
     }
 
 }
