@@ -14,6 +14,10 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class MypageController {
 
+    /**
+     * 마이페이지 메인
+     * @param
+     */
     @GetMapping(value="/main.do")
     public String mypageMain(HttpServletRequest request, Model model){
 

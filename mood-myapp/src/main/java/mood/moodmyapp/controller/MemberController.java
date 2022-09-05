@@ -25,12 +25,18 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    /**
+     * 회원가입 페이지
+     */
     @GetMapping("/join.do")
     public String memberJoinForm() {
         return "member/joinForm";
     }
 
-
+    /**
+     * 회원가입 처리
+     * @param
+     */
     @PostMapping("/join.do")
     public String memberJoin(Member member) {
 
@@ -39,6 +45,10 @@ public class MemberController {
         return "redirect:" + path;
     }
 
+    /**
+     * 중복 아이디 체크
+     * @param
+     */
     @ResponseBody
     @PostMapping(value = "/checkId.do", produces = "text/plain;charset=utf-8")
     public String checkId(@RequestParam(value = "userId") String userId) {
@@ -52,6 +62,10 @@ public class MemberController {
 
     }
 
+    /**
+     * 중복 닉네임 체크
+     * @param
+     */
     @ResponseBody
     @PostMapping(value = "/checkNick.do", produces = "text/plain;charset=utf-8")
     public String checkNickName(@RequestParam(value = "nickName") String nickName) {
@@ -63,8 +77,5 @@ public class MemberController {
             return "사용가능";
         }
     }
-
-
-
 
 }

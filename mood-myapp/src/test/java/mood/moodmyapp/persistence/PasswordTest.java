@@ -2,7 +2,6 @@ package mood.moodmyapp.persistence;
 
 
 import mood.moodmyapp.common.EncryptionUtils;
-import mood.moodmyapp.domain.Member;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -28,8 +27,6 @@ public class PasswordTest {
                 // 암호된 비밀번호가 일치하는지
                 ()-> assertTrue(EncryptionUtils.encryptSHA256(pw).matches(encryptPw))
         );
-
-
     }
 
 
