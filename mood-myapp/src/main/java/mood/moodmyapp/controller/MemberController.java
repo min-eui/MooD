@@ -62,6 +62,9 @@ public class MemberController {
         } else {
             return "사용가능";
         }
-
     }
+
+
+
+
 }

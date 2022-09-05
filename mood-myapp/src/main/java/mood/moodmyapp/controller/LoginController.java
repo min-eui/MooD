@@ -31,7 +31,6 @@ public class LoginController {
     @PostMapping("/login/login.do")
     public String loginProc(@ModelAttribute Member member, HttpServletRequest request){
 
-
         // 로그인 성공
         if(loginService.login(member)){
             boolean loginMember = loginService.login(member);
