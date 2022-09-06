@@ -35,7 +35,7 @@ public class MypageController {
             return "redirect:/login/login.do";
         }
 
-        //세션이 있다면 로그인으로 이동
+        //세션이 있다면 마이페이지 메인으로 이동
         model.addAttribute("member", loginMember);
         return "/mypage/main";
 

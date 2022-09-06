@@ -41,5 +41,5 @@ public interface JpaMemberRepository extends JpaRepository<Member, String>, Memb
 
     @Query("SELECT m FROM Member  m WHERE m.phoneNum = :phoneNum")
     @Override
-    Optional<String> findByPhoneNum(String phoneNum);
+    Optional<Member> findByPhoneNum(String phoneNum);
 }

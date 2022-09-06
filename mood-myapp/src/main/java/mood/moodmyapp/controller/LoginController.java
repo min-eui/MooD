@@ -5,10 +5,13 @@ import mood.moodmyapp.service.LoginService;
 import mood.moodmyapp.session.SessionConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 @Controller
@@ -78,13 +81,15 @@ public class LoginController {
      * @param
      */
     @ResponseBody
-    @PostMapping(value="/login/findId.do", produces="text/plain;charset=utf-8")
-    public String findIdByPhoneNum(@RequestParam(value="phoneNum") String phoneNum, String numStr){
-        boolean isExistId = loginService.findIdByPhoneNum(phoneNum);
+    @PostMapping(value="/login/findId.do")
+    public Map findIdByPhoneNum(@RequestParam(value="phoneNum") String phoneNum, String numStr , Model model){
+        String isExistId = loginService.findIdByPhoneNum(phoneNum);
 
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("",""); // map 초기화
         numStr = "";
 
-        if (isExistId){
+        if (isExistId != ""){
             Random rand  = new Random();
             for(int i=0; i<4; i++) {
                 String ran = Integer.toString(rand.nextInt(10));
@@ -94,10 +99,13 @@ public class LoginController {
             System.out.println("수신자 번호 : " + phoneNum);
             System.out.println("인증번호 : " + numStr);
             loginService.certifiedPhoneNum(phoneNum,numStr);
-
+            //model.addAttribute("userId",isExistId);
+            map.put("numStr",numStr);
+            map.put("userId",isExistId);
+            return map;
         }
 
-        return numStr;
+        return map;
     }
 
 
