@@ -3,7 +3,23 @@
 <head>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+
+        function check_pw() {
+        var pwVal = document.getElementById('updatePw').value;
+        var checkInput = 0;
+
+        if(document.getElementById('updatePw').value!=''&&document.getElementById('checkPw').value!=''){
+            if(document.getElementById('updatePw').value == document.getElementById('checkPw').value){
+                document.getElementById('check').innerHTML = "비밀번호가 일치합니다."
+                document.getElementById('check').style.color='green';
+            }else{
+                document.getElementById('check').innerHTML = "비밀번호가 일치하지 않습니다."
+                document.getElementById('check').style.color='red';
+            }
+        }
+    }
+
+    $(document).ready(function() {
             var isAuthChecked = false;    //중복체크했을 땐 true로 변경
 
             $("input[name='phoneNum']").on("change", function(e){
@@ -23,9 +39,9 @@
                     async:false,    // 받아온 데이터 저장하기 위해 사용
                     data: {"phoneNum": $("input[name='phoneNum']").val()},
                     success: function (data) {
-                        gbl_data = data.numStr;
+                        strData = data.numStr;
                         userId = data.userId;
-                        console.log("gbl_data : " + gbl_data);
+                        console.log("gbl_data : " + strData);
                         console.log("userId : " + userId);
                         // 성공 시
                         //if (data == "1") {
@@ -46,8 +62,8 @@
                     .done(function (result) {
                     console.log("result : " + result.userId);
                         $('#authNumBtn').click(function() {
-                            console.log($.trim(gbl_data));
-                            if ($.trim(gbl_data) == $('#authNum').val()) {
+                            console.log($.trim(strData));
+                            if ($.trim(strData) == $('#authNum').val()) {
                                 alert("휴대폰 인증이 정상적으로 완료되었습니다.");
                                 $("#userId").replaceWith("<b>아이디 : " + result.userId);
                             } else {
@@ -57,6 +73,22 @@
                     })
                 })
             });
+
+
+            function check_pw(){
+                var pwVal = document.getElementById('updatePw').value;
+                var checkInput = 0;
+
+                if(document.getElementById('updatePw').value!=''&&document.getElementById('checkPw').value!=''){
+                    if(document.getElementById('updatePw').value == document.getElementById('checkPw').value){
+                        document.getElementById('check').innerHTML = "비밀번호가 일치합니다."
+                        document.getElementById('check').style.color='green';
+                    }else{
+                        document.getElementById('check').innerHTML = "비밀번호가 일치하지 않습니다."
+                        document.getElementById('check').style.color='red';
+                    }
+                }
+            }
         });
 
     </script>
@@ -81,8 +113,8 @@
             <div>
                 <h3 style="font-size:25px;">비밀번호 찾기</h3></div>
 
-                <input type="text" id="updatePw" name="updatePw"/><br>
-                <input type="text" id="checkPw" name="checkPw"/>
+                <input type="text" id="updatePw" name="updatePw" onKeyUp="check_pw()"/><br>
+            <input type="text" id="checkPw" name="checkPw" onKeyUp="check_pw()"/>&nbsp;<span id="check"></span>
 
                 <button type="button" id = "findPwBtn">비밀번호 변경하기</button>
             </div>
