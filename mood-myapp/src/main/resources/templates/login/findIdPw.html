@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var isAuthChecked = false;    //중복체크했을 땐 true로 변경
+
+            $("input[name='phoneNum']").on("change", function(e){
+                isAuthChecked = false;    //phoneNum 값이 변경될 때마다 중복체크버튼값 리셋
+            });
+        });
+
+        $(function() {   //1
+
+            $("#authBtn").on("click", function (e) { //2
+
+                e.preventDefault(); //form 태그안의 버튼이라 그냥 submit 되는거 방지
+
+                $.ajax({    //3
+                    url: '/login/findId.do',
+                    type: 'post',
+                    async:false,    // 받아온 데이터 저장하기 위해 사용
+                    data: {"phoneNum": $("input[name='phoneNum']").val()},
+                    success: function (data) {
+                        gbl_data = data.numStr;
+                        userId = data.userId;
+                        console.log("gbl_data : " + gbl_data);
+                        console.log("userId : " + userId);
+                        // 성공 시
+                        //if (data == "1") {
+                        if (data) {
+                            isAuthChecked = true;
+                            alert("인증번호 발송 완료!");
+                        }
+                        // 실패 시
+                        else {
+                            alert("해당 번호로 가입한 아이디가 없습니다.");
+                        }
+
+                    }, error: function (req, status, err) {
+                        console.log(req);
+
+                    }
+                })
+                    .done(function (result) {
+                    console.log("result : " + result.userId);
+                        $('#authNumBtn').click(function() {
+                            console.log($.trim(gbl_data));
+                            if ($.trim(gbl_data) == $('#authNum').val()) {
+                                alert("휴대폰 인증이 정상적으로 완료되었습니다.");
+                                $("#userId").replaceWith("<b>아이디 : " + result.userId);
+                            } else {
+                                alert("인증번호가 일치하지 않습니다.");
+                            }
+
+                    })
+                })
+            });
+        });
+
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="title"><h3 style="font-size:25px;">아이디/비밀번호 찾기</h3></div>
+        <div class="container">
+
+                <div class="form-group">
+                    <input type="text" id="phoneNum" name="phoneNum"/>
+                    <button type="button" id = "authBtn">본인인증하기</button><br>
+                    <input type="text" id = "authNum" name="authNum">
+                    <button type="button" id = "authNumBtn">인증번호 입력</button>
+                </div>
+
+                <div>
+                        <!--아이디 노출-->
+                        <div id="userId"/>
+                    </tr>
+                </div>
+            <div>
+                <h3 style="font-size:25px;">비밀번호 찾기</h3></div>
+
+                <input type="text" id="updatePw" name="updatePw"/><br>
+                <input type="text" id="checkPw" name="checkPw"/>
+
+                <button type="button" id = "findPwBtn">비밀번호 변경하기</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
