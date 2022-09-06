@@ -23,7 +23,10 @@
                     async:false,    // 받아온 데이터 저장하기 위해 사용
                     data: {"phoneNum": $("input[name='phoneNum']").val()},
                     success: function (data) {
-                        gbl_data = data;
+                        gbl_data = data.numStr;
+                        userId = data.userId;
+                        console.log("gbl_data : " + gbl_data);
+                        console.log("userId : " + userId);
                         // 성공 시
                         //if (data == "1") {
                         if (data) {
@@ -40,59 +43,20 @@
 
                     }
                 })
-            })
-        });
+                    .done(function (result) {
+                    console.log("result : " + result.userId);
+                        $('#authNumBtn').click(function() {
+                            console.log($.trim(gbl_data));
+                            if ($.trim(gbl_data) == $('#authNum').val()) {
+                                alert("휴대폰 인증이 정상적으로 완료되었습니다.");
+                                $("#userId").replaceWith("<b>아이디 : " + result.userId);
+                            } else {
+                                alert("인증번호가 일치하지 않습니다.");
+                            }
 
-        $(function(){
-            $('#authNumBtn').click(function() {
-                console.log($.trim(gbl_data));
-                if ($.trim(gbl_data) == $('#authNum').val()) {
-                    alert("휴대폰 인증이 정상적으로 완료되었습니다.");
-                } else {
-                    alert("인증번호가 올바르지 않습니다.");
-                }
-            });
-
-        /*$('#authBtn').click(function(){
-            let phoneNum = $('#phoneNum').val();
-            Swal.fire('인증번호 발송 완료!')
-
-            $.ajax({
-                type: "post",
-                url: "/api/sendsms.do",
-                data: {
-                    "phoneNum" : phoneNum
-                },
-                success: function(res){
-                    $('#authNumBtn').click(function(){
-                        if($.trim(res) ==$('#authNum').val()){
-                            Swal.fire(
-                                '인증성공!',
-                                '휴대폰 인증이 정상적으로 완료되었습니다.',
-                                'success'
-                            )
-
-                            /!*$.ajax({
-                                type: "GET",
-                                url: "/update/phone",
-                                data: {
-                                    "phoneNum" : $('#phoneNum').val()
-                                }
-                            })*!/
-                            //document.location.href="/home";
-                        }else{
-                            Swal.fire({
-                                icon: 'error',
-                                title: '인증오류',
-                                text: '인증번호가 올바르지 않습니다!',
-
-                            })
-                        }
                     })
-
-
-                }
-   */
+                })
+            });
         });
 
     </script>
@@ -104,20 +68,25 @@
 
                 <div class="form-group">
                     <input type="text" id="phoneNum" name="phoneNum"/>
-                    <button type="button" id = "authBtn">본인인증하기</button>
+                    <button type="button" id = "authBtn">본인인증하기</button><br>
                     <input type="text" id = "authNum" name="authNum">
                     <button type="button" id = "authNumBtn">인증번호 입력</button>
                 </div>
 
+                <div>
+                        <!--아이디 노출-->
+                        <div id="userId"/>
+                    </tr>
+                </div>
+            <div>
+                <h3 style="font-size:25px;">비밀번호 찾기</h3></div>
 
+                <input type="text" id="updatePw" name="updatePw"/><br>
+                <input type="text" id="checkPw" name="checkPw"/>
 
+                <button type="button" id = "findPwBtn">비밀번호 변경하기</button>
+            </div>
 
-아이디 보이게
-비밀번호 찾기 버튼
-
-변경할 비밀번호
-비밀번호 확인
-변경완료 버튼
         </div>
     </div>
 </div>

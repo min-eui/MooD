@@ -35,16 +35,19 @@ public class LoginService {
         return false;
     }
 
-    public boolean findIdByPhoneNum(String phoneNum) {
+    public String findIdByPhoneNum(String phoneNum) {
 
-        Optional<String> findPhoneNum = memberRepository.findByPhoneNum(phoneNum);
+        Optional<Member> findPhoneNum = memberRepository.findByPhoneNum(phoneNum);
 
         if(findPhoneNum.isPresent()){
             System.out.println("해당 번호로 가입된 아이디가 있습니다.");
-            return true;
+            Member userId = findPhoneNum.get(); //해당번호로 가입된 아이디 리턴
+            String userIdStr =  userId.getUserId(); //Member타입에서 값 가져와서 .get으로 값 가져오고 String으로 넣어줌
+            System.out.println(userIdStr);
+            return userIdStr;
         }
         System.out.println("해당 번호로 가입된 아이디가 없습니다.");
-        return false;
+        return "";
     }
 
     public void certifiedPhoneNum(String phoneNum, String numStr) {
@@ -57,7 +60,7 @@ public class LoginService {
         params.put("to", phoneNum);    // 수신전화번호
         params.put("from", "01041422557");    // 발신전화번호. 테스트시에는 발신,수신 둘다 본인 번호로 하면 됨
         params.put("type", "SMS");
-        params.put("text", "휴대폰인증 테스트 메시지 : 인증번호는" + "["+numStr+"]" + "입니다.");
+        params.put("text", "[MooD] 휴대폰인증 메시지 : 인증번호는" + "["+numStr+"]" + "입니다.");
         params.put("app_version", "test app 1.2"); // application name and version
 
         try {
