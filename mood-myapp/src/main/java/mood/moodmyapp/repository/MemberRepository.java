@@ -21,7 +21,9 @@ public interface MemberRepository {
 
     Optional<String> existByMemberNickName(String nickName); // 닉네임 중복 검사
 
-  //  Optional<String> findByPhoneNum(String phoneNum); // 휴대폰번호로 아이디 찾기
     Optional<Member> findByPhoneNum(String phoneNum); // 휴대폰번호로 아이디 찾기
+
+    Optional<Integer> updatePw(String updatePw, String userId);   //  비밀번호 변경하기
+
 
 }

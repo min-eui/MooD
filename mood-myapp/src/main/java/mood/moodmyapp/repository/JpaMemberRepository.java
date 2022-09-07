@@ -2,6 +2,7 @@ package mood.moodmyapp.repository;
 
 import mood.moodmyapp.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -42,4 +43,9 @@ public interface JpaMemberRepository extends JpaRepository<Member, String>, Memb
     @Query("SELECT m FROM Member  m WHERE m.phoneNum = :phoneNum")
     @Override
     Optional<Member> findByPhoneNum(String phoneNum);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Member m SET  m.userPw = :updatePw WHERE m.userId = :userId")
+    @Override
+    Optional<Integer> updatePw(String updatePw, String userId);
 }

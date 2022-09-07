@@ -15,22 +15,22 @@ import java.util.Date;
 public class Member extends BaseTimeEntity {
 
             @Id
-            @Column(name="userId", length = 50, nullable = false)
+            @Column(name="userId", length = 50, nullable = false, unique = true)
             private String userId;  // PK값
 
             @Column(name="userPw", length = 500, nullable = false)
             private String userPw;      //  회원비밀번호
 
-            @Column(name="userName", length = 20,nullable = false)
+            @Column(name="userName", length = 20, nullable = false)
             private String userName;      //  회원이름
 
-            @Column(name="nickName", length = 20,nullable = false)
+            @Column(name="nickName", length = 20, nullable = false, unique = true)
             private String nickName;      //  회원닉네임
 
-            @Column(name="phoneNum", length = 20,nullable = false)
+            @Column(name="phoneNum", length = 20, nullable = false, unique = true)
             private String phoneNum;      //  회원휴대폰번호
 
-            @Column(name="kakaoYn", length = 1,nullable = true)
+            @Column(name="kakaoYn", length = 1, nullable = true)
             private String kakaoYn = "N";      //  카카오로그인여부
 
             @Column(name="term1", length = 1, nullable = false)
