@@ -3,8 +3,25 @@
 <head>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript">
+        // function findPw() {
+        //
+        //
+        //     if (document.getElementById('updatePw').value != '' && document.getElementById('checkPw').value != '') {
+        //         if (document.getElementById('updatePw').value == document.getElementById('checkPw').value) {
+        //
+        //             var form = document.forms['form'];
+        //             var inputUserId = document.createElement('input');
+        //             inputUserId.type = 'hidden';
+        //             inputUserId.name = 'userId';
+        //             inputUserId.value = userId;
+        //             form.appendChild(inputUserId);
+        //             document.getElementById('form').submit();
+        //         }
+        //     }
+        // }
 
-        function check_pw() {
+
+    function check_pw() {
         var pwVal = document.getElementById('updatePw').value;
         var checkInput = 0;
 
@@ -12,6 +29,7 @@
             if(document.getElementById('updatePw').value == document.getElementById('checkPw').value){
                 document.getElementById('check').innerHTML = "비밀번호가 일치합니다."
                 document.getElementById('check').style.color='green';
+
             }else{
                 document.getElementById('check').innerHTML = "비밀번호가 일치하지 않습니다."
                 document.getElementById('check').style.color='red';
@@ -31,12 +49,12 @@
 
             $("#authBtn").on("click", function (e) { //2
 
-                e.preventDefault(); //form 태그안의 버튼이라 그냥 submit 되는거 방지
+                //e.preventDefault(); //form 태그안의 버튼이라 그냥 submit 되는거 방지
 
                 $.ajax({    //3
                     url: '/login/findId.do',
                     type: 'post',
-                    async:false,    // 받아온 데이터 저장하기 위해 사용
+                    async: false,    // 받아온 데이터 저장하기 위해 사용
                     data: {"phoneNum": $("input[name='phoneNum']").val()},
                     success: function (data) {
                         strData = data.numStr;
@@ -60,32 +78,67 @@
                     }
                 })
                     .done(function (result) {
-                    console.log("result : " + result.userId);
-                        $('#authNumBtn').click(function() {
+                        console.log("result : " + result.userId);
+                        $('#authNumBtn').click(function () {
                             console.log($.trim(strData));
                             if ($.trim(strData) == $('#authNum').val()) {
                                 alert("휴대폰 인증이 정상적으로 완료되었습니다.");
                                 $("#userId").replaceWith("<b>아이디 : " + result.userId);
+                                //$("#userId").replaceWith(userId);
                             } else {
                                 alert("인증번호가 일치하지 않습니다.");
                             }
 
+                        })
                     })
-                })
             });
 
+            $(function() {   //1
 
-            function check_pw(){
+                $("#updatePwBtn").on("click", function (e) { //2
+
+                    //e.preventDefault(); //form 태그안의 버튼이라 그냥 submit 되는거 방지
+
+                    $.ajax({    //3
+                        url: '/login/findPw.do',
+                        type: 'post',
+                        //async: false,    // 받아온 데이터 저장하기 위해 사용
+                        data: {
+                            "updatePw": $("input[name='updatePw']").val(),
+                            "userId" : userId
+                        },
+                        success: function (data) {
+
+                            // 성공 시
+                            if (data) {
+                                alert("비밀번호가 변경되었습니다.");
+                            }
+                            // 실패 시
+                            else {
+                                alert("비밀번호 변경에 실패했습니다.");
+                            }
+
+                        }, error: function (req, status, err) {
+                            console.log(req);
+
+                        }
+                    })
+
+                    })
+                });
+
+
+            function check_pw() {
                 var pwVal = document.getElementById('updatePw').value;
                 var checkInput = 0;
 
-                if(document.getElementById('updatePw').value!=''&&document.getElementById('checkPw').value!=''){
-                    if(document.getElementById('updatePw').value == document.getElementById('checkPw').value){
+                if (document.getElementById('updatePw').value != '' && document.getElementById('checkPw').value != '') {
+                    if (document.getElementById('updatePw').value == document.getElementById('checkPw').value) {
                         document.getElementById('check').innerHTML = "비밀번호가 일치합니다."
-                        document.getElementById('check').style.color='green';
-                    }else{
+                        document.getElementById('check').style.color = 'green';
+                    } else {
                         document.getElementById('check').innerHTML = "비밀번호가 일치하지 않습니다."
-                        document.getElementById('check').style.color='red';
+                        document.getElementById('check').style.color = 'red';
                     }
                 }
             }
@@ -107,16 +160,14 @@
 
                 <div>
                         <!--아이디 노출-->
-                        <div id="userId"/>
+                        <div id="userId" name="userId"/>
                     </tr>
                 </div>
             <div>
                 <h3 style="font-size:25px;">비밀번호 찾기</h3></div>
-
-                <input type="text" id="updatePw" name="updatePw" onKeyUp="check_pw()"/><br>
-            <input type="text" id="checkPw" name="checkPw" onKeyUp="check_pw()"/>&nbsp;<span id="check"></span>
-
-                <button type="button" id = "findPwBtn">비밀번호 변경하기</button>
+                    <input type="password" id="updatePw" name="updatePw" onKeyUp="check_pw()"/><br>
+                    <input type="password" id="checkPw" name="checkPw" onKeyUp="check_pw()"/>&nbsp;<span id="check"></span>
+                    <button type="submit" id = "updatePwBtn" >비밀번호 변경하기</button>
             </div>
 
         </div>

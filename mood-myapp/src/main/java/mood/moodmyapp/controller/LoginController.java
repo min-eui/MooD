@@ -1,5 +1,6 @@
 package mood.moodmyapp.controller;
 
+import mood.moodmyapp.common.EncryptionUtils;
 import mood.moodmyapp.domain.Member;
 import mood.moodmyapp.service.LoginService;
 import mood.moodmyapp.session.SessionConstant;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Controller
@@ -39,6 +41,11 @@ public class LoginController {
      */
     @PostMapping("/login/login.do")
     public String loginProc(@ModelAttribute Member member, HttpServletRequest request){
+
+        // 전달받은 pw를 암호화하여 비교
+        member= Member.builder()
+                .userId(member.getUserId())
+                .userPw(EncryptionUtils.encryptSHA256(member.getUserPw())).build();
 
         // 로그인 성공
         if(loginService.login(member)){
@@ -99,7 +106,7 @@ public class LoginController {
             System.out.println("수신자 번호 : " + phoneNum);
             System.out.println("인증번호 : " + numStr);
             loginService.certifiedPhoneNum(phoneNum,numStr);
-            //model.addAttribute("userId",isExistId);
+
             map.put("numStr",numStr);
             map.put("userId",isExistId);
             return map;
@@ -113,5 +120,21 @@ public class LoginController {
      * 비밀번호 찾기
      * @param
      */
+
+    @ResponseBody
+    @PostMapping(value="/login/findPw.do", produces = "text/plain;charset=utf-8")
+    public String findPw(String updatePw, String userId){
+
+        boolean isUpdatePw = loginService.updatePw(updatePw, userId);
+
+        System.out.println("updatePw : " + updatePw);
+        System.out.println("userId : " + userId);
+        if(isUpdatePw){
+            return "redirect:/";
+        }else{
+            return "/login/findIdPw";
+        }
+
+    }
 
 }

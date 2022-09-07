@@ -55,6 +55,21 @@
 
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript">
+
+        function check_pw(){
+            //var pwVal = document.getElementById('userPw').value;
+           // var checkInput = 0;
+
+            if(document.getElementById('userPw').value!=''&&document.getElementById('checkPw').value!=''){
+                if(document.getElementById('userPw').value == document.getElementById('checkPw').value){
+                    document.getElementById('check').innerHTML = "비밀번호가 일치합니다."
+                    document.getElementById('check').style.color='green';
+                }else{
+                    document.getElementById('check').innerHTML = "비밀번호가 일치하지 않습니다."
+                    document.getElementById('check').style.color='red';
+                }
+            }
+        }
     $(document).ready(function() {
             $('input[type="checkbox"]').click(function (){
                 if($("#kakaoYn").is(":checked")){
@@ -170,6 +185,7 @@
                 <div class="password">
                     <label for="userPw">비밀번호</label>
                     <input type="password" id="userPw" name="userPw" placeholder="비밀번호를 입력하세요">
+                    <input type="password" id="checkPw" name="checkPw" onKeyUp="check_pw()"/>&nbsp;<span id="check"></span>
                 </div>
                 <div class="username">
                     <label for="userName">이름</label>
