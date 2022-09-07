@@ -1,5 +1,6 @@
 package mood.moodmyapp.service;
 
+import mood.moodmyapp.common.EncryptionUtils;
 import mood.moodmyapp.domain.Member;
 import mood.moodmyapp.repository.MemberRepository;
 import net.nurigo.java_sdk.api.Message;
@@ -71,4 +72,18 @@ public class LoginService {
             System.out.println(e.getCode());
         }
     }
+
+
+    public boolean updatePw(String updatePw, String userId){
+        //memberRepository.updatePw(updatePw,userId);
+        // 새로운 비밀번호 암호화
+        String encryptPw = EncryptionUtils.encryptSHA256(updatePw);
+        Optional<Integer> isUpdatePw = memberRepository.updatePw(encryptPw,userId);
+
+        if(isUpdatePw.isPresent()){
+            return true;
+        }
+        return false;
+    }
+
 }
