@@ -3,23 +3,6 @@
 <head>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript">
-        // function findPw() {
-        //
-        //
-        //     if (document.getElementById('updatePw').value != '' && document.getElementById('checkPw').value != '') {
-        //         if (document.getElementById('updatePw').value == document.getElementById('checkPw').value) {
-        //
-        //             var form = document.forms['form'];
-        //             var inputUserId = document.createElement('input');
-        //             inputUserId.type = 'hidden';
-        //             inputUserId.name = 'userId';
-        //             inputUserId.value = userId;
-        //             form.appendChild(inputUserId);
-        //             document.getElementById('form').submit();
-        //         }
-        //     }
-        // }
-
 
     function check_pw() {
         var pwVal = document.getElementById('updatePw').value;
@@ -53,7 +36,7 @@
 
                 $.ajax({    //3
                     url: '/login/findId.do',
-                    type: 'post',
+                    type: 'get',
                     async: false,    // 받아온 데이터 저장하기 위해 사용
                     data: {"phoneNum": $("input[name='phoneNum']").val()},
                     success: function (data) {
