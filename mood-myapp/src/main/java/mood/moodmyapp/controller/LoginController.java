@@ -1,6 +1,7 @@
 package mood.moodmyapp.controller;
 
 import mood.moodmyapp.common.EncryptionUtils;
+import mood.moodmyapp.common.KakaoOauthService;
 import mood.moodmyapp.domain.Member;
 import mood.moodmyapp.service.LoginService;
 import mood.moodmyapp.session.SessionConstant;
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 
 @Controller
@@ -22,8 +22,12 @@ public class LoginController {
     @Autowired
     private final LoginService loginService;
 
-    public LoginController(LoginService loginService) {
+    @Autowired
+    private final KakaoOauthService kakaoOauthService;
+
+    public LoginController(LoginService loginService, KakaoOauthService kakaoOauthService) {
         this.loginService = loginService;
+        this.kakaoOauthService = kakaoOauthService;
     }
 
     /**
@@ -88,7 +92,7 @@ public class LoginController {
      * @param
      */
     @ResponseBody
-    @PostMapping(value="/login/findId.do")
+    @GetMapping(value="/login/findId.do")
     public Map findIdByPhoneNum(@RequestParam(value="phoneNum") String phoneNum, String numStr , Model model){
         String isExistId = loginService.findIdByPhoneNum(phoneNum);
 
@@ -117,7 +121,7 @@ public class LoginController {
 
 
     /**
-     * 비밀번호 찾기
+     * 비밀번호 변경
      * @param
      */
 
@@ -135,6 +139,20 @@ public class LoginController {
             return "/login/findIdPw";
         }
 
+    }
+
+
+    /**
+     * 카카오톡으로 로그인 callback
+     * [GET] /login/kakaoOauth.do"
+     */
+    @GetMapping(value="/login/kakaoOauth.do")
+    public String kakaoLogin(@RequestParam String code){
+        System.out.println(code);   // 카카오 인가코드
+       String access_Token = kakaoOauthService.getKakaoAccessToken(code);
+        kakaoOauthService.createKakaoUser(access_Token);
+
+        return "/login/kakaoOauth";
     }
 
 }
