@@ -1,8 +1,19 @@
 package mood.moodmyapp.common;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import mood.moodmyapp.domain.Member;
+import mood.moodmyapp.dto.KakaoAccessDto;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -12,8 +23,11 @@ import java.net.URL;
 public class KakaoOauthService {
 
 
+    RestTemplate restTemplate = new RestTemplate();
+    ObjectMapper objectMapper = new ObjectMapper();
+
     public String getKakaoAccessToken(String code){
-        String access_Token = "";
+       /* String access_token = "";
         String refresh_Token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
 
@@ -54,10 +68,10 @@ public class KakaoOauthService {
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
-            access_Token = element.getAsJsonObject().get("access_token").getAsString();
+            access_token = element.getAsJsonObject().get("access_token").getAsString();
             refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
 
-            System.out.println("access_token : " + access_Token);
+            System.out.println("access_token : " + access_token);
             System.out.println("refresh_token : " + refresh_Token);
             br.close();
             bw.close();
@@ -65,12 +79,35 @@ public class KakaoOauthService {
             e.printStackTrace();
         }
 
-        return access_Token;
+        return access_token;*/
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", "f112f3d300b244fa2959703d397ea0c2");
+        params.add("redirect_uri", "http://localhost:8080/login/kakaoOauth.do");
+        params.add("code", code);
+        params.add("client_secret", "");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+        String url = "https://kauth.kakao.com/oauth/token";
+
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+        try {
+            return objectMapper.readValue(response.getBody(), KakaoAccessDto.class).getAccess_token();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
 
     }
 
-    public void createKakaoUser(String token) {
-        String reqURL = "https://kapi.kakao.com/v2/user/me";
+    public String getKakaoUserInfo(String access_token) {
+   /*     String reqURL = "https://kapi.kakao.com/v2/user/me";
 
         //access_token을 이용하여 사용자 정보 조회
 
@@ -105,15 +142,34 @@ public class KakaoOauthService {
             String email = "";
             if(hasEmail){
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
+
             }
 
             System.out.println("id : " + id);
             System.out.println("email : " + email);
             br.close();
 
+            return email;
+
         }catch(IOException e){
             e.printStackTrace();
         }
+        String msg = "카카오 회원정보 조회에 실패했습니다.";
+        return msg;
+    }*/
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + access_token);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+        String url = "https://kapi.kakao.com/v2/user/me";
+
+        return restTemplate.postForObject(url, request, String.class);
+
     }
 
 }

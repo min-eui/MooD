@@ -48,4 +48,8 @@ public interface JpaMemberRepository extends JpaRepository<Member, String>, Memb
     @Query("UPDATE Member m SET  m.userPw = :updatePw WHERE m.userId = :userId")
     @Override
     Optional<Integer> updatePw(String updatePw, String userId);
+
+    @Query("SELECT m FROM Member  m WHERE m.userId = :userId")
+    @Override
+    Optional<Boolean> findByKakaoId(String userId);
 }
