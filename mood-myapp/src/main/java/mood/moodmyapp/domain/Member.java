@@ -2,8 +2,10 @@ package mood.moodmyapp.domain;
 
 import lombok.*;
 import mood.moodmyapp.jpaEntity.BaseTimeEntity;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 @AllArgsConstructor // 생성자 추가
 @NoArgsConstructor  //  기본생성자 자동 추가
@@ -38,5 +40,9 @@ public class Member extends BaseTimeEntity {
 
             @Column(name="term2", length = 1, nullable = false)
             private String term2 = "N";      //  약관1동의여부
+
+            @CreatedDate
+            @Column(name="reg_date", length = 50, nullable = false)
+            private LocalDateTime reg_date;
 
 }
