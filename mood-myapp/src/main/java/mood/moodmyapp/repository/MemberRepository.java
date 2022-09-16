@@ -25,5 +25,5 @@ public interface MemberRepository {
 
     Optional<Integer> updatePw(String updatePw, String userId);   //  비밀번호 변경하기
 
-
+    Optional<Boolean> findByKakaoId(String userId);   // 카카오로 로그인하기
 }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)  // 클래서에 Auditing 기능 포함
+@EntityListeners(AuditingEntityListener.class)  // 클래스에 Auditing 기능 포함
    public abstract class BaseTimeEntity {
 
     @CreatedDate    //Entity생성되어 저장될 때 시간이 자동저장됨.

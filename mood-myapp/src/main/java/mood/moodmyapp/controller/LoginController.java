@@ -1,10 +1,14 @@
 package mood.moodmyapp.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import mood.moodmyapp.Session.SessionConstant;
 import mood.moodmyapp.common.EncryptionUtils;
 import mood.moodmyapp.common.KakaoOauthService;
 import mood.moodmyapp.domain.Member;
 import mood.moodmyapp.service.LoginService;
-import mood.moodmyapp.session.SessionConstant;
+import mood.moodmyapp.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Controller
@@ -23,11 +28,18 @@ public class LoginController {
     private final LoginService loginService;
 
     @Autowired
+    private final MemberService memberService;
+
+    @Autowired
     private final KakaoOauthService kakaoOauthService;
 
-    public LoginController(LoginService loginService, KakaoOauthService kakaoOauthService) {
+    private final ObjectMapper objectMapper;
+
+    public LoginController(LoginService loginService, MemberService memberService, KakaoOauthService kakaoOauthService, ObjectMapper objectMapper) {
         this.loginService = loginService;
+        this.memberService = memberService;
         this.kakaoOauthService = kakaoOauthService;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -53,7 +65,7 @@ public class LoginController {
 
         // 로그인 성공
         if(loginService.login(member)){
-            boolean loginMember = loginService.login(member);
+            String loginMember = member.getUserId();
             HttpSession session = request.getSession(); //세션이 있으면 세션 반환, 없으면 신규 세션을 생성하여 반환
             session.setAttribute(SessionConstant.LOGIN_MEMBER,loginMember); //이름, 값을 인자로 세션값 바인딩
 
@@ -147,12 +159,35 @@ public class LoginController {
      * [GET] /login/kakaoOauth.do"
      */
     @GetMapping(value="/login/kakaoOauth.do")
-    public String kakaoLogin(@RequestParam String code){
+    public String kakaoLogin(@RequestParam String code, HttpServletRequest request) throws JsonProcessingException {
         System.out.println(code);   // 카카오 인가코드
-       String access_Token = kakaoOauthService.getKakaoAccessToken(code);
-        kakaoOauthService.createKakaoUser(access_Token);
+        String access_token = kakaoOauthService.getKakaoAccessToken(code);
+        String userInfo = kakaoOauthService.getKakaoUserInfo(access_token);
+        JsonNode jsonNode = objectMapper.readTree(userInfo);
+        String userId = String.valueOf(jsonNode.get("kakao_account").get("email"));
+        userId = userId.replace("\"", "");
 
-        return "/login/kakaoOauth";
+        // 중복회원 체크 로직
+        Optional<Boolean> isMember = memberService.findByKakaoId(userId);
+
+        // 회원가입이 안되어있는 상태라면
+        if(! isMember.isPresent()) {
+            // String access_token2 = kakaoOauthService.getKakaoAccessToken(code);
+            //String userInfo = kakaoOauthService.getKakaoAccessToken(access_token);
+            String userInfoJoin = kakaoOauthService.getKakaoUserInfo(access_token);
+            memberService.kakaoJoin(userInfoJoin);
+            return "redirect:/login/login.do";
+        }else{
+            // 회원가입이 되어있다면
+            Optional<Boolean> loginMemberOpt = memberService.findByKakaoId(userId);
+            String loginMember = userId;
+
+            System.out.println("loginMember : " + loginMember);
+            HttpSession session = request.getSession(); //세션이 있으면 세션 반환, 없으면 신규 세션을 생성하여 반환
+            session.setAttribute(SessionConstant.LOGIN_MEMBER,loginMember); //이름, 값을 인자로 세션값 바인딩
+            return "redirect:/";
+        }
+
     }
 
 }
