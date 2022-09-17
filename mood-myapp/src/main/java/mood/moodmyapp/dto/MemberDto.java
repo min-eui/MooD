@@ -22,19 +22,4 @@ public class MemberDto {
     private String term1;      //  약관1동의여부
     private String term2;      //  약관2동의여부
 
-    /* DTO > Entity */
-/*    public Member toEntity(){
-        Member member = Member.builder()
-                .userId(userId)
-                .userPw(userPw)
-                .userName(userName)
-                .nickName(nickName)
-                .phoneNum(phoneNum)
-                .kakaoYn(kakaoYn)
-                .term1(term1)
-                .term2(term2)
-                .build();
-        return member;
-    }*/
-
 }
