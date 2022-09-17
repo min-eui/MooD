@@ -1,7 +1,7 @@
 package mood.moodmyapp;
 
 import mood.moodmyapp.domain.Member;
-import mood.moodmyapp.repository.JpaMemberRepository;
+import mood.moodmyapp.repository.MemberJpaRepository;
 import mood.moodmyapp.service.MemberService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class JpaMemberTest {
     @Autowired
     MemberService memberService;
     @Autowired
-    JpaMemberRepository memberRepository;
+    MemberJpaRepository memberRepository;
 
     @Test
     //회원가입

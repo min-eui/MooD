@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript">
+
+
+        function output(resp){
+            //var result = '<table border="1"> <tr> <th>아이디</th>  </tr>'
+            var result = '<br>'
+            $.each(resp,function(index,item){
+
+                result +="<tr><td>"+item["userId"]
+                result += "<button type='button' id='addFriend_btn' name='addFriend_btn'>"+"친구추가하기"+"</button>"+"</td>"
+                result += "</tr>"
+            })
+           // result += "</table>"
+            result += "<br>"
+            //result += "<button type='button' id='addFriend_btn' name='addFriend_btn'>"+"친구추가하기"+"</button>"
+            $("#tab1").html(result)
+        }
+
+
+        $(function() {   //1
+
+            $("#findFriend_Btn").on("click", function (e) { //2
+
+                e.preventDefault(); //form 태그안의 버튼이라 그냥 submit 되는거 방지
+
+                var userId = $("input[name='userId']").val();
+
+                $.ajax({    //3
+                    url: '/mypage/searchFriend.do',
+                    type:'get',
+                    data: {"userId" : $("input[name='userId']").val()},
+                    success: function (data) {
+                        // 성공 시 실패 메시지 hide, 성공 메시지 show
+                        if(data.userId==userId) {
+                            alert("친구 조회를 완료했습니다.");
+                            //alert(data);
+
+                        }
+                        // 실패 시 실패 메시지 show, 성공 메시지 hide
+                        else{
+                            alert("해당 아이디를 가진 친구가 없습니다.");
+                            console.log(data.userId)
+                        }
+
+                    }, error: function (req,status,err) {
+                        console.log(req);
+                        alert("친구 조회에 실패했습니다.");
+
+                    }
+                }).done(function(result){
+                        console.log("결과확인");
+                    output(result)
+                    var html = jQuery('<div>').html(result);
+                    var contents = html.find("div#indexListAjax").html();
+
+                    $("#tab1").html(contents);
+                }).fail(function (jqXHR, textStatus, errorThrown){
+                    console.log("에러");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            })
+
+
+            // $(function() {   //1
+            //
+            //     $("#nickCheckBtn").on("click", function (e) { //2
+            //
+            //         e.preventDefault(); //form 태그안의 버튼이라 그냥 submit 되는거 방지
+            //
+            //         $.ajax({    //3
+            //             url: '/member/checkNick.do',
+            //             type: 'post',
+            //             data: {"nickName": $("input[name='nickName']").val()},
+            //             success: function (data) {
+            //                 // 성공 시 실패 메시지 hide, 성공 메시지 show
+            //                 if (data == "사용가능") {
+            //                     isNickChecked = true;
+            //                     $('#nickNotAvailable').hide();
+            //                     $('#nickAvailable').show().text(data).append($('<br />'));
+            //                 }
+            //                 // 실패 시 실패 메시지 show, 성공 메시지 hide
+            //                 else {
+            //                     $('#nickAvailable').hide();
+            //                     $('#nickNotAvailable').show().text('이미 사용중인 닉네임 입니다.').append($('<br />'));
+            //                 }
+            //
+            //             }, error: function (req, status, err) {
+            //                 console.log(req);
+            //
+            //             }
+            //         })
+            //     })
+            // })
+        });
+
+
+
+    </script>
+
+
+    <meta charset="UTF-8">
+    <title>friendList</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="title"><h3 style="font-size:25px;">내 친구 목록</h3></div>
+
+    <input type="text" id="userId" name="userId" placeholder="친구 아이디를 입력하세요"/>
+    <button type="button" id="findFriend_Btn" name="findFriend_Btn">친구 찾기</button>
+
+
+    <tbody>
+    <tr th:each="item : ${friendList}">
+        <td th:text="${item.userId}">아이디 : </td>
+    </tr>
+    </tbody>
+
+<div id="tab1"></div>
+    <div id="indexListAjax">
+        <tr th:each ="item : ${friendList}">
+        <div>${item.friendId}</div>
+
+        </tr>
+
+    </div>
+
+</div>
+
+
+
+추가되면 리다이렉트되면서 친구 목록에 추가한 친구가 뜬다
+
+
+
+</body>
+</html>

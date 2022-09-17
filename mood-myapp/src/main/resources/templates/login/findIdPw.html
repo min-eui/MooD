@@ -37,7 +37,6 @@
                 $.ajax({    //3
                     url: '/login/findId.do',
                     type: 'get',
-                    async: false,    // 받아온 데이터 저장하기 위해 사용
                     data: {"phoneNum": $("input[name='phoneNum']").val()},
                     success: function (data) {
                         strData = data.numStr;
@@ -85,7 +84,6 @@
                     $.ajax({    //3
                         url: '/login/findPw.do',
                         type: 'post',
-                        //async: false,    // 받아온 데이터 저장하기 위해 사용
                         data: {
                             "updatePw": $("input[name='updatePw']").val(),
                             "userId" : userId
