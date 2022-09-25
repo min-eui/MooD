@@ -5,6 +5,19 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript">
 
+        //친구 추가 성공시 메소드
+        function showFriend(result){
+            var newFriend
+            //$.each(result,function(index,item){
+
+                //newFriend +="<tr><td>"+result['friendIdRaw']
+                newFriend +="<tr><td>"+searchFriend
+                newFriend += "</td></tr>"
+           // })
+            $("#friendList").append(newFriend)
+            //$("#friendList").html(newFriend)
+        }
+
 
         function output(resp){
             //var result = '<table border="1"> <tr> <th>아이디</th>  </tr>'
@@ -45,9 +58,10 @@
                         alert("친구 추가에 실패했습니다")
                     }
                 }).done(function (result){
-                    var html = jQuery('<div>').html(result);
-                    var contents = html.find("div#friendList").html();
-                    $("#tab2").html(contents);
+                    showFriend(result)
+                    // var html = jQuery('<div>').html(result);
+                    // var contents = html.find("div#friendList").html();
+                    // $("#tab2").html(contents);
 
                 }).fail(function (jqXHR, textStatus, errorThrown){
                     console.log("에러");
@@ -169,8 +183,8 @@
 </div>
 
     <div id="tab2">
+        <h2>내 친구 목록</h2><br>
         <div id="friendList">
-           <h2>내 친구 목록</h2><br>
             <tr th:each="friend : ${friendList}">
                 <td th:text="${friend.friendId}"></td><br>
             </tr>
