@@ -27,12 +27,11 @@ public class Friend extends BaseTimeEntity {
     @Column(name="friendId", length = 50, nullable = false, unique = false)
     private String friendId;    // 친구 아이디
 
-    @Column(name="isEqualMem", length = 1, nullable = false, unique = false)
+    @Column(name="isEqualMem", length = 1, nullable = true, unique = false)
     private String isEqualMem;  // 서비스회원 구분값
 
     @CreatedDate
     @Column(name="reg_date", length = 50, nullable = false)
     private LocalDateTime reg_date;
-
 
 }

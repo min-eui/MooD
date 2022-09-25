@@ -30,9 +30,10 @@ public class MypageService {
      * @param userId
      * @return
      */
-    public List getMyFriendList(String userId) {
 
-        List friendList = memberRepository.findFriendByUserId(userId);
+    public List<Friend> findAllByUserId(String userId) {
+
+        List<Friend> friendList = mypageRepository.findAllByUserId(userId);
 
         return friendList;
     }
@@ -43,10 +44,11 @@ public class MypageService {
      * @return
      */
 
-    public List<Member> searchFriend(String userId){
+    public String searchFriend(String userId){
 
         System.out.println("mypageService userId : " + userId);
-        List<Member> foundFriend = memberRepository.findFriendByUserId(userId);
+        Member friend = memberRepository.findFriendByUserId(userId);
+        String foundFriend = friend.getUserId();
         return foundFriend;
     }
 
@@ -57,10 +59,16 @@ public class MypageService {
      * @return
      */
 
-    public Friend makeFriend(Friend friend){
+    public void makeFriend(String userId, String friendId){
 
-        Friend addFriend = mypageRepository.save(friend);
-        return addFriend;
+        Friend friend = new Friend();
+        friend = Friend.builder()
+                        .userId(userId)
+                                .friendId(friendId)
+                                        .build();
+
+        mypageRepository.save(friend);
+
     }
 
 
