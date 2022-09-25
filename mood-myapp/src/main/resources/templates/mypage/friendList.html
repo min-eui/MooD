@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript">
+
+
+        function output(resp){
+            //var result = '<table border="1"> <tr> <th>아이디</th>  </tr>'
+            var result = '<br>'
+            $.each(resp,function(index,item){
+
+                result +="<tr><td>"+searchFriend
+                result += "<button type='button' id='addFriend_btn' name='addFriend_btn'>"+"친구추가하기"+"</button>"+"</td>"
+                result += "</tr>"
+            })
+           // result += "</table>"
+            result += "<br>"
+            //result += "<button type='button' id='addFriend_btn' name='addFriend_btn'>"+"친구추가하기"+"</button>"
+            $("#tab1").html(result)
+            friendId = userId   //전역변수로 검색결과 아이디를 firendId값으로 초기화
+        }
+
+        $(function addFriend(){
+
+            $(document).on("click", "#addFriend_btn", function(e){
+            //$("#addFriend_btn").on("click", function(e){
+
+                console.log("addAjax : searchFriend" + searchFriend )
+                e.preventDefault();
+                var param = {"friendIdRaw" : searchFriend};
+                console.log("addAjax : param",param )
+                $.ajax({
+                    url: '/mypage/addFriend.do',
+                    type:'post',
+                    contentType:'application/json',
+                    dataType:"json",
+                    data: JSON.stringify(param),
+                    success: function (data){
+                        // 성공 시
+                        alert("친구 추가 성공!")
+                    },error(req,status,err){
+                        // 실패 시
+                        alert("친구 추가에 실패했습니다")
+                    }
+                }).done(function (result){
+                    var html = jQuery('<div>').html(result);
+                    var contents = html.find("div#friendList").html();
+                    $("#tab2").html(contents);
+
+                }).fail(function (jqXHR, textStatus, errorThrown){
+                    console.log("에러");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            })
+        });
+
+
+        $(function() {
+
+            $("#findFriend_Btn").on("click", function (e) {
+
+                e.preventDefault();
+
+                var userId = $("input[name='userId']").val();
+
+                $.ajax({
+                    url: '/mypage/searchFriend.do',
+                    type:'get',
+                    data: {"userId" : $("input[name='userId']").val()},
+                    success: function (data) {
+                        // 성공 시 실패 메시지 hide, 성공 메시지 show
+                        //var userIdChk = JSON.stringify(data.friend)
+                        var userIdChk = data['friend']
+                        searchFriend = userIdChk    //output 함수에서 조회한 id값 넣기
+                        console.log("data : " , data)
+                        console.log("userIdChk : " , userIdChk)
+                       // console.log("friend : " , friend)
+
+
+
+                        if(userIdChk==userId) {
+                            alert("친구 조회를 완료했습니다.");
+
+
+                            console.log("data : " + data)
+                            console.log("userId : " + userId)
+                        }
+                        // 실패 시 실패 메시지 show, 성공 메시지 hide
+                        else{
+                            alert("해당 아이디를 가진 친구가 없습니다.");
+                            console.log(data.userId)
+                        }
+
+                    }, error: function (req,status,err) {
+                        console.log(req);
+                        alert("친구 조회에 실패했습니다.");
+
+                    }
+                }).done(function(result){
+                        console.log("결과확인");
+                    output(result)
+                    var html = jQuery('<div>').html(result);
+                    var contents = html.find("div#indexListAjax").html();
+
+                    $("#tab1").html(contents);
+                }).fail(function (jqXHR, textStatus, errorThrown){
+                    console.log("에러");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            })
+
+
+            // $(function() {   //1
+            //
+            //     $("#nickCheckBtn").on("click", function (e) { //2
+            //
+            //         e.preventDefault(); //form 태그안의 버튼이라 그냥 submit 되는거 방지
+            //
+            //         $.ajax({    //3
+            //             url: '/member/checkNick.do',
+            //             type: 'post',
+            //             data: {"nickName": $("input[name='nickName']").val()},
+            //             success: function (data) {
+            //                 // 성공 시 실패 메시지 hide, 성공 메시지 show
+            //                 if (data == "사용가능") {
+            //                     isNickChecked = true;
+            //                     $('#nickNotAvailable').hide();
+            //                     $('#nickAvailable').show().text(data).append($('<br />'));
+            //                 }
+            //                 // 실패 시 실패 메시지 show, 성공 메시지 hide
+            //                 else {
+            //                     $('#nickAvailable').hide();
+            //                     $('#nickNotAvailable').show().text('이미 사용중인 닉네임 입니다.').append($('<br />'));
+            //                 }
+            //
+            //             }, error: function (req, status, err) {
+            //                 console.log(req);
+            //
+            //             }
+            //         })
+            //     })
+            // })
+        });
+
+
+
+    </script>
+
+
+    <meta charset="UTF-8">
+    <title>friendList</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="title"><h3 style="font-size:25px;">내 친구 찾기</h3></div>
+
+    <input type="text" id="userId" name="userId" placeholder="친구 아이디를 입력하세요"/>
+    <button type="button" id="findFriend_Btn" name="findFriend_Btn">친구 찾기</button>
+
+
+<div id="tab1">
+    <div id="indexListAjax"></div>
+</div>
+
+    <div id="tab2">
+        <div id="friendList">
+           <h2>내 친구 목록</h2><br>
+            <tr th:each="friend : ${friendList}">
+                <td th:text="${friend.friendId}"></td><br>
+            </tr>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

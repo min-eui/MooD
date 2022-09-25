@@ -6,8 +6,7 @@ import mood.moodmyapp.common.EncryptionUtils;
 import mood.moodmyapp.common.KakaoOauthService;
 import mood.moodmyapp.common.UUIDGeneraterUtils;
 import mood.moodmyapp.domain.Member;
-import mood.moodmyapp.repository.JpaMemberRepository;
-import net.bytebuddy.utility.RandomString;
+import mood.moodmyapp.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +19,14 @@ import java.util.*;
 public class MemberService {
 
     //회원 서비스가 있으려면 회원 리포지토리가 있어야함
-    private  final JpaMemberRepository memberRepository;
+    private  final MemberRepository memberRepository;
     private final KakaoOauthService kakaoOauthService;
     private final ObjectMapper objectMapper;
 
 
     //내부에서 직접 new해서 바꿔주는게 아니라 외부에서 넣어주게끔 생성자를 만들어줌
     @Autowired
-    public MemberService(JpaMemberRepository memberRepository, KakaoOauthService kakaoOauthService, ObjectMapper objectMapper) {
+    public MemberService(MemberRepository memberRepository, KakaoOauthService kakaoOauthService, ObjectMapper objectMapper) {
 
         this.memberRepository = memberRepository;
         this.kakaoOauthService = kakaoOauthService;
