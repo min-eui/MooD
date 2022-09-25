@@ -6,6 +6,8 @@ import mood.moodmyapp.common.KakaoOauthService;
 import mood.moodmyapp.domain.Friend;
 import mood.moodmyapp.domain.Member;
 import mood.moodmyapp.service.MypageService;
+import nonapi.io.github.classgraph.json.JSONUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +15,14 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping(value="/mypage")
 @Controller
@@ -63,10 +70,11 @@ public class MypageController {
      */
 
     @GetMapping(value = "/friendList.do")
-    public String friendList (String userId, Model model){
+    public String friendList (HttpServletRequest request, Model model){
 
-
-        List friendList = mypageService.getMyFriendList(userId);
+        HttpSession session = request.getSession(true);
+        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+        List<Friend> friendList = mypageService.findAllByUserId(userId);
         model.addAttribute("friendList",friendList);
 
         return "/mypage/friendList";
@@ -77,17 +85,19 @@ public class MypageController {
      */
     @ResponseBody
     @GetMapping(value = "/searchFriend.do")
-    public List<Member> searchFriend(String userId, HttpServletRequest request){
+    public Map<String,String> searchFriend(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         userId = request.getParameter("userId");
         System.out.println("11111111userId : " + userId);
-        List<Member> foundFriend = mypageService.searchFriend(userId);
-//        List<String>list = new ArrayList<String>();
-//        for(int i=0;i<foundFriend.size();i++){
-//            list.add(foundFriend.get(i));
-//        }
-//        String listStr = list.toString();
-//        System.out.println("222222List : " + listStr);
+        HashMap<String,String> foundFriend =  new HashMap<String,String>();
+        String friend = mypageService.searchFriend(userId);
+        foundFriend.put("friend",friend);
+
+        //response.setCharacterEncoding("utf-8");
+        //PrintWriter out = response.getWriter();
+        JSONObject json = new JSONObject(foundFriend);
+       // out.write(String.valueOf(json));
+        System.out.println(String.valueOf(json));
         return foundFriend;
     }
 
@@ -97,12 +107,20 @@ public class MypageController {
      * 친구 추가하기
      */
 
+    @ResponseBody
+    @PostMapping(value="/addFriend.do")
+    public Map<String,String> makeFriend(String friendIdRaw,HttpServletRequest request, @RequestBody HashMap<String, String>friendMap){
+         String friendId = friendMap.get("friendIdRaw");
+        //String friendId = request.getParameter(friendId);
+        System.out.println("this is controller!!!!!!friendId : " + friendId);
 
-    @PostMapping(value="/makeFriend.do")
-    public String makeFriend(Friend friend){
-        Friend myfriend = mypageService.makeFriend(friend);
+        HttpSession session = request.getSession(true);
+        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+        System.out.println("this is controller!!!!!!userId : " + userId);
+        mypageService.makeFriend(userId, friendId);
 
-        return "redirect:/mypage/friendList.do";
+        friendMap.put("friendId",friendId);
+        return friendMap;
 
     }
 

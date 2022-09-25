@@ -17,7 +17,8 @@ public interface MypageRepository extends MypageJpaRepository {
     @Query("SELECT f FROM Friend  f WHERE f.userId = :userId")
     List<Friend> findFriendByUserId(@Param("userId") String userId);  //내친구 리스트 불러오기
 
-    List findMyFriendByUserId(String userId);
+    @Query("SELECT f FROM Friend  f WHERE f.userId = :userId")
+    List<Friend> findAllByUserId(String userId);
 
 
 }

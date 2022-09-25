@@ -1,5 +1,6 @@
 package mood.moodmyapp.repository;
 
+import mood.moodmyapp.domain.Friend;
 import mood.moodmyapp.domain.Member;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -45,7 +46,8 @@ public interface MemberRepository extends MemberJpaRepository {
     //Mypage 친구 아이디 찾기
 
     //List<Member> findFriendByFriendId(String userId); //친구아이디를 맴버테이블에서 검색하기
-    List<Member> findFriendByUserId(String userId); //친구아이디를 맴버테이블에서 검색하기
+    @Query("SELECT m FROM Member  m WHERE m.userId = :userId")
+    Member findFriendByUserId(String userId); //친구아이디를 맴버테이블에서 검색하기
 
-    List<Member> findMyFriendByUserId(String userId);
+
 }

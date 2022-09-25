@@ -11,7 +11,7 @@
             var result = '<br>'
             $.each(resp,function(index,item){
 
-                result +="<tr><td>"+item["userId"]
+                result +="<tr><td>"+searchFriend
                 result += "<button type='button' id='addFriend_btn' name='addFriend_btn'>"+"친구추가하기"+"</button>"+"</td>"
                 result += "</tr>"
             })
@@ -19,27 +19,75 @@
             result += "<br>"
             //result += "<button type='button' id='addFriend_btn' name='addFriend_btn'>"+"친구추가하기"+"</button>"
             $("#tab1").html(result)
+            friendId = userId   //전역변수로 검색결과 아이디를 firendId값으로 초기화
         }
 
+        $(function addFriend(){
 
-        $(function() {   //1
+            $(document).on("click", "#addFriend_btn", function(e){
+            //$("#addFriend_btn").on("click", function(e){
 
-            $("#findFriend_Btn").on("click", function (e) { //2
+                console.log("addAjax : searchFriend" + searchFriend )
+                e.preventDefault();
+                var param = {"friendIdRaw" : searchFriend};
+                console.log("addAjax : param",param )
+                $.ajax({
+                    url: '/mypage/addFriend.do',
+                    type:'post',
+                    contentType:'application/json',
+                    dataType:"json",
+                    data: JSON.stringify(param),
+                    success: function (data){
+                        // 성공 시
+                        alert("친구 추가 성공!")
+                    },error(req,status,err){
+                        // 실패 시
+                        alert("친구 추가에 실패했습니다")
+                    }
+                }).done(function (result){
+                    var html = jQuery('<div>').html(result);
+                    var contents = html.find("div#friendList").html();
+                    $("#tab2").html(contents);
 
-                e.preventDefault(); //form 태그안의 버튼이라 그냥 submit 되는거 방지
+                }).fail(function (jqXHR, textStatus, errorThrown){
+                    console.log("에러");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            })
+        });
+
+
+        $(function() {
+
+            $("#findFriend_Btn").on("click", function (e) {
+
+                e.preventDefault();
 
                 var userId = $("input[name='userId']").val();
 
-                $.ajax({    //3
+                $.ajax({
                     url: '/mypage/searchFriend.do',
                     type:'get',
                     data: {"userId" : $("input[name='userId']").val()},
                     success: function (data) {
                         // 성공 시 실패 메시지 hide, 성공 메시지 show
-                        if(data.userId==userId) {
-                            alert("친구 조회를 완료했습니다.");
-                            //alert(data);
+                        //var userIdChk = JSON.stringify(data.friend)
+                        var userIdChk = data['friend']
+                        searchFriend = userIdChk    //output 함수에서 조회한 id값 넣기
+                        console.log("data : " , data)
+                        console.log("userIdChk : " , userIdChk)
+                       // console.log("friend : " , friend)
 
+
+
+                        if(userIdChk==userId) {
+                            alert("친구 조회를 완료했습니다.");
+
+
+                            console.log("data : " + data)
+                            console.log("userId : " + userId)
                         }
                         // 실패 시 실패 메시지 show, 성공 메시지 hide
                         else{
@@ -110,33 +158,25 @@
 </head>
 <body>
 <div class="wrapper">
-    <div class="title"><h3 style="font-size:25px;">내 친구 목록</h3></div>
+    <div class="title"><h3 style="font-size:25px;">내 친구 찾기</h3></div>
 
     <input type="text" id="userId" name="userId" placeholder="친구 아이디를 입력하세요"/>
     <button type="button" id="findFriend_Btn" name="findFriend_Btn">친구 찾기</button>
 
 
-    <tbody>
-    <tr th:each="item : ${friendList}">
-        <td th:text="${item.userId}">아이디 : </td>
-    </tr>
-    </tbody>
-
-<div id="tab1"></div>
-    <div id="indexListAjax">
-        <tr th:each ="item : ${friendList}">
-        <div>${item.friendId}</div>
-
-        </tr>
-
-    </div>
-
+<div id="tab1">
+    <div id="indexListAjax"></div>
 </div>
 
-
-
-추가되면 리다이렉트되면서 친구 목록에 추가한 친구가 뜬다
-
+    <div id="tab2">
+        <div id="friendList">
+           <h2>내 친구 목록</h2><br>
+            <tr th:each="friend : ${friendList}">
+                <td th:text="${friend.friendId}"></td><br>
+            </tr>
+        </div>
+    </div>
+</div>
 
 
 </body>

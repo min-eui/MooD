@@ -10,5 +10,6 @@ public interface MypageJpaRepository extends org.springframework.data.jpa.reposi
 
     //List<Friend> findMyFriendByUserId(String userId); //내 친구 목록 불러오기
     Friend save(Friend friend);
+    List<Friend> findAllByUserId(String userId);
 
 }
