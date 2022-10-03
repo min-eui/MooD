@@ -88,17 +88,33 @@ public class MypageController {
     public Map<String,String> searchFriend(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         userId = request.getParameter("userId");
-        System.out.println("11111111userId : " + userId);
-        HashMap<String,String> foundFriend =  new HashMap<String,String>();
-        String friend = mypageService.searchFriend(userId);
-        foundFriend.put("friend",friend);
 
-        //response.setCharacterEncoding("utf-8");
-        //PrintWriter out = response.getWriter();
-        JSONObject json = new JSONObject(foundFriend);
-       // out.write(String.valueOf(json));
-        System.out.println(String.valueOf(json));
-        return foundFriend;
+        HttpSession session = request.getSession(true);
+        String myId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+
+        System.out.println("Controller 친구찾기 userId : " + userId);
+        System.out.println("Controller 내아이디 myId : " + myId);
+
+        // 자기자신을 친구로 조회할 경우
+        if(userId.equals(myId)){
+
+            HashMap<String,String> errorCode =  new HashMap<String,String>();
+            String code = "자기자신은 친구 추가할 수 없습니다";
+            errorCode.put("code",code);
+            return errorCode;
+
+        }else{
+            HashMap<String,String> foundFriend =  new HashMap<String,String>();
+            String friend = mypageService.searchFriend(userId);
+            foundFriend.put("friend",friend);
+
+
+            JSONObject json = new JSONObject(foundFriend);
+            System.out.println(String.valueOf(json));
+
+            return foundFriend;
+        }
+
     }
 
 
