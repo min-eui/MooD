@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MypageRepository extends MypageJpaRepository {
@@ -21,4 +22,6 @@ public interface MypageRepository extends MypageJpaRepository {
     List<Friend> findAllByUserId(String userId);
 
 
+    @Query("SELECT f FROM Friend  f WHERE f.userId= :myId AND f.friendId = :userId")
+    Optional<String> findByFriendId(@Param("userId") String userId, @Param("myId")String myId);
 }
