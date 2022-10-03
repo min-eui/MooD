@@ -4,6 +4,7 @@ import mood.moodmyapp.domain.Friend;
 import mood.moodmyapp.domain.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MypageJpaRepository extends org.springframework.data.jpa.repository.JpaRepository<Friend, Long>{
 
@@ -12,4 +13,5 @@ public interface MypageJpaRepository extends org.springframework.data.jpa.reposi
     Friend save(Friend friend);
     List<Friend> findAllByUserId(String userId);
 
+    //Optional<String> findByFriendId(String userId, String myId);
 }

@@ -19,10 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RequestMapping(value="/mypage")
 @Controller
@@ -95,6 +92,8 @@ public class MypageController {
         System.out.println("Controller 친구찾기 userId : " + userId);
         System.out.println("Controller 내아이디 myId : " + myId);
 
+        Optional isFriend = mypageService.existFriend(userId,myId);
+
         // 자기자신을 친구로 조회할 경우
         if(userId.equals(myId)){
 
@@ -103,6 +102,11 @@ public class MypageController {
             errorCode.put("code",code);
             return errorCode;
 
+        }else if(isFriend.isPresent()){
+            HashMap<String,String> errorCode =  new HashMap<String,String>();
+            String code = "이미 추가된 친구입니다.";
+            errorCode.put("code",code);
+            return errorCode;
         }else{
             HashMap<String,String> foundFriend =  new HashMap<String,String>();
             String friend = mypageService.searchFriend(userId);
