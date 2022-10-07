@@ -13,5 +13,6 @@ public interface MypageJpaRepository extends org.springframework.data.jpa.reposi
     Friend save(Friend friend);
     List<Friend> findAllByUserId(String userId);
 
-    //Optional<String> findByFriendId(String userId, String myId);
+    //Optional<String> findByFriendIdIs(String userId, String friendId);
+    int deleteByUserIdAndFriendId(String userId, String friendId);
 }
