@@ -5,7 +5,7 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript">
 
-        //친구 추가 성공시 메소드
+    //친구 추가 성공시 메소드
         function showFriend(result){
             var newFriend
                 newFriend +="<tr><td>"+searchFriend
@@ -136,8 +136,127 @@
 
         });
 
+        // $(function editFriend(){
+        //     $(document).on("click", "#editFriend_btn")
+        //     {
+        //         //friendList의 td값들을 담은 버튼을 만들어서 뿌린다.
+        //         //var ele = document.getElementById('friendList');
+        //         //var eleCount = ele.childElementCount;
+        //         var button = ''
+        //        // console.log("eleCount : ",eleCount)
+        //        $("#friendList td").each(function(index, element){
+        //            console.log($(this).text());
+        //
+        //            document.querySelectorAll('#friendList td').id = index;
+        //        });
+        //     }
+        // });
+
+        //$("#editFriend_btn").on("click",function(){
+
+            //const btn = document.getElementById("delFriend_btn");
+            //alert("버튼클릭");
+            //btn.style.display = 'block';
+
+       //});
 
 
+    // 문서가 처음 로드됐을때 성정
+    document.addEventListener("DOMContentLoaded", function (){
+        var input_btn = $("#friendList input[type=button]");
+        // object 타입 key:value 구조
+        $.each(input_btn,function (index,value){
+            input_btn.hide();
+        });
+    });
+        //편집하기 버튼 클릭시
+        $(document).on('click','#editFriend_btn',function(){
+
+            //edit_btn = $("#editFriend_btn").val();
+            if($("#editFriend_btn").val()=="off"){
+                $("#editFriend_btn").val("on");
+            }else if ($("#editFriend_btn").val()=="on"){
+                $("#editFriend_btn").val("off");
+            }
+            //edit_btn = $("#editFriend_btn").val("on");
+            //alert("edit_btn : " + edit_btn);
+            //$("delFriend_btn").prop("type", "button");
+
+            //div friendList 안에 모든 input 버튼으로 제어
+            var input_btn = $("#friendList input[type=button]");
+
+
+            // // object 타입 key:value 구조
+            // $.each(input_btn,function (index,value){
+            //     input_btn.hide();
+            // });
+            // if(edit_btn =="off"){
+            //     $.each(input_btn,function (index,value){
+            //         input_btn.hide();
+            //     });
+            // }else
+             if($("#editFriend_btn").val() =="on"){
+                $.each(input_btn,function (index,value){
+                    input_btn.show();
+                });
+            }else if($("#editFriend_btn").val() =="off"){
+                 $.each(input_btn,function (index,value){
+                     input_btn.hide();
+                 });
+             }
+
+              // var btn = document.getElementById("delFriend_btn");
+                //btn.type = "button";
+               //$("delFriend_btn").prop("type", "button");
+               // alert("버튼있음");
+               // $(":hidden").type = "button";
+                //var tr = btn.parent().parent();
+                //var td = tr.children();
+                //console.log("Row데이터 : ",tr.data);
+
+
+        });
+
+        // 친구 삭제 버튼 클릭시
+        function delFriend(clicked_id) {
+            alert("clicked_id : " + clicked_id);
+            var lastIndex = clicked_id.length;
+            var splited_id = clicked_id.substring(clicked_id.indexOf('_') + 1, lastIndex);
+            alert("splited_id : " + splited_id);
+
+            delId = splited_id;
+            var delParam = {"delId" : splited_id};
+            $.ajax({
+                url: '/mypage/deleteFriend.do',
+                type: 'post',
+                contentType:'application/json',
+                dataType:"json",
+                data: JSON.stringify(delParam),
+                success: function (data) {
+                    //친구 삭제 실패시
+                    if (data['code']) {
+                        var errorCode = data['code']
+                        alert(errorCode);
+                    } else {
+                        // 친구삭제 성공
+                       alert("친구 삭제 성공");
+                       // tr을 지우기
+                        $('#'+delId).remove();
+                    }
+
+                }, error: function (req, status, err) {
+                        console.log(req);
+                        alert("친구 삭제에 실패했습니다.");
+                }
+
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log("에러");
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+
+            });
+        }
     </script>
 
 
@@ -158,10 +277,28 @@
 
     <div id="tab2">
         <h2>내 친구 목록</h2><br>
-        <div id="friendList">
-            <tr th:each="friend : ${friendList}">
-                <td th:text="${friend.friendId}"></td><br>
-            </tr>
+        <div>
+            <button type="button" th:id="editFriend_btn" th:value="off">편집하기</button>
+        </div>
+
+        <div>
+            <!-- 리스트가 비어 있는 경우 -->
+            <div th:if="${#lists.isEmpty(friendList)}">
+                <p>친구가 없습니다.. </p>
+            </div>
+            <!-- 리스트가 있는 경우 -->
+            <div id="friendList">
+                <table>
+                    <tbody>
+                        <tr th:unless="${#lists.isEmpty(friendList)}" th:id="${friend.friendId}" th:each="friend:${friendList}">
+                            <td th:text="${friend.friendId}" ></td>
+                            <td><input type="button" th:id="${friendStat.count+'_'+friend.friendId}" th:value="삭제" onclick="delFriend(this.id)"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         </div>
     </div>
 </div>

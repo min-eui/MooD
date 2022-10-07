@@ -1,9 +1,11 @@
 package mood.moodmyapp.repository;
 
 import mood.moodmyapp.domain.Friend;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,12 @@ public interface MypageRepository extends MypageJpaRepository {
     List<Friend> findAllByUserId(String userId);
 
 
-    @Query("SELECT f FROM Friend  f WHERE f.userId= :myId AND f.friendId = :userId")
-    Optional<String> findByFriendId(@Param("userId") String userId, @Param("myId")String myId);
+
+    @Query("SELECT f FROM Friend  f WHERE f.userId= :userId AND f.friendId = :friendId")
+    Optional<String> findByFriendIdIs(@Param("userId") String userId, @Param("friendId")String friendId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Friend  f WHERE f.userId= :userId AND f.friendId = :friendId")
+    int deleteByUserIdAndFriendId(@Param("userId")String userId, @Param("friendId")String friendId);
 }

@@ -82,23 +82,23 @@ public class MypageController {
      */
     @ResponseBody
     @GetMapping(value = "/searchFriend.do")
-    public Map<String,String> searchFriend(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public Map<String,String> searchFriend(String friendId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        userId = request.getParameter("userId");
+        friendId = request.getParameter("userId");
 
         HttpSession session = request.getSession(true);
-        String myId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
 
-        System.out.println("Controller 친구찾기 userId : " + userId);
-        System.out.println("Controller 내아이디 myId : " + myId);
+        System.out.println("Controller 친구찾기 friendId : " + friendId);
+        System.out.println("Controller 내아이디 userId : " + userId);
 
-        Optional isFriend = mypageService.existFriend(userId,myId);
+        Optional isFriend = mypageService.existFriend(userId,friendId);
 
         // 자기자신을 친구로 조회할 경우
-        if(userId.equals(myId)){
+        if(friendId.equals(userId)){
 
             HashMap<String,String> errorCode =  new HashMap<String,String>();
-            String code = "자기자신은 친구 추가할 수 없습니다";
+            String code = "자기 자신은 친구 추가할 수 없습니다";
             errorCode.put("code",code);
             return errorCode;
 
@@ -109,7 +109,7 @@ public class MypageController {
             return errorCode;
         }else{
             HashMap<String,String> foundFriend =  new HashMap<String,String>();
-            String friend = mypageService.searchFriend(userId);
+            String friend = mypageService.searchFriend(friendId);
             foundFriend.put("friend",friend);
 
 
@@ -130,7 +130,7 @@ public class MypageController {
     @ResponseBody
     @PostMapping(value="/addFriend.do")
     public Map<String,String> makeFriend(String friendIdRaw,HttpServletRequest request, @RequestBody HashMap<String, String>friendMap){
-         String friendId = friendMap.get("friendIdRaw");
+        String friendId = friendMap.get("friendIdRaw");
         //String friendId = request.getParameter(friendId);
         System.out.println("this is controller!!!!!!friendId : " + friendId);
 
@@ -142,6 +142,29 @@ public class MypageController {
         friendMap.put("friendId",friendId);
         return friendMap;
 
+    }
+
+
+    /**
+     * 친구 삭제하기
+     */
+    @ResponseBody
+    @PostMapping(value="/deleteFriend.do")
+    public Map<String,String> deleteFriend(HttpServletRequest request, @RequestBody HashMap<String, String>delFriendMap){
+        String delId = delFriendMap.get("delId");
+        HttpSession session = request.getSession(true);
+        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+        int delRes = mypageService.deleteFriend(userId,delId);
+        HashMap<String,String> stateCode =  new HashMap<String,String>();
+
+            if(delRes>0){
+                stateCode.put("delId",delId);
+            }else{
+                String code = "친구삭제에 실패했습니다.";
+                stateCode.put("code",code);
+            }
+
+        return stateCode;
     }
 
 }

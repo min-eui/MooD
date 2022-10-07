@@ -7,6 +7,7 @@ import mood.moodmyapp.repository.MypageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +24,6 @@ public class MypageService {
         this.mypageRepository = mypageRepository;
         this.memberRepository = memberRepository;
     }
-
-
 
     /**
      * 내친구 리스트 조회
@@ -56,7 +55,7 @@ public class MypageService {
 
     /**
      * 친구 추가하기
-     * @param friend
+     * @param userId,friendId
      * @return
      */
 
@@ -73,8 +72,17 @@ public class MypageService {
     }
 
 
-    public Optional existFriend(String userId, String myId) {
-        Optional isFriend = mypageRepository.findByFriendId(userId,myId);
+    public Optional existFriend(String userId,String friendId) {
+        Optional isFriend = mypageRepository.findByFriendIdIs(userId,friendId);
+        System.out.println("service friendId : "+friendId );
+        System.out.println("service userId : "+userId );
         return isFriend;
+    }
+
+    public int deleteFriend(String userId, String delId) {
+
+        int delRes = mypageRepository.deleteByUserIdAndFriendId(userId, delId);
+
+        return  delRes;
     }
 }
