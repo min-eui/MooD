@@ -8,18 +8,25 @@
     //친구 추가 성공시 메소드
         function showFriend(result){
             var newFriend
-                newFriend +="<tr><td>"+searchFriend
-                newFriend += "</td></tr>"
+                newFriend += "<tr id='newFriend'><td>"+searchFriend+"</td>"
+                newFriend += "<td><input type='button' value='삭제' onclick=\"delFriend(this.id)\"/></td>"
+                newFriend += "</tr>"
 
-            $("#friendList").prepend(newFriend)
-            $("#tab1").hide()
+
+            $("#friendList tbody").prepend(newFriend);
+            $("#newFriend").attr('id',searchFriend);
+            var friendNum = $("#friendList tr").length;
+            alert("friendNum : " + friendNum);
+            $("input[value='삭제']").attr('id',friendNum+'_'+searchFriend);
+            friendNum = friendNum++;
+            $("input[value='삭제']").hide();
+            $("#tab1").hide();
 
         }
 
-
         function output(userIdChk){
-
-            var result = '<br>'
+            $("#tab1").show();
+            var result = '<br>';
             //$.each(userId,function(index,item){
 
                 result +="<tr><td>"+userIdChk
@@ -136,32 +143,8 @@
 
         });
 
-        // $(function editFriend(){
-        //     $(document).on("click", "#editFriend_btn")
-        //     {
-        //         //friendList의 td값들을 담은 버튼을 만들어서 뿌린다.
-        //         //var ele = document.getElementById('friendList');
-        //         //var eleCount = ele.childElementCount;
-        //         var button = ''
-        //        // console.log("eleCount : ",eleCount)
-        //        $("#friendList td").each(function(index, element){
-        //            console.log($(this).text());
-        //
-        //            document.querySelectorAll('#friendList td').id = index;
-        //        });
-        //     }
-        // });
 
-        //$("#editFriend_btn").on("click",function(){
-
-            //const btn = document.getElementById("delFriend_btn");
-            //alert("버튼클릭");
-            //btn.style.display = 'block';
-
-       //});
-
-
-    // 문서가 처음 로드됐을때 성정
+    // 문서가 처음 로드됐을때 설정
     document.addEventListener("DOMContentLoaded", function (){
         var input_btn = $("#friendList input[type=button]");
         // object 타입 key:value 구조
@@ -178,23 +161,10 @@
             }else if ($("#editFriend_btn").val()=="on"){
                 $("#editFriend_btn").val("off");
             }
-            //edit_btn = $("#editFriend_btn").val("on");
-            //alert("edit_btn : " + edit_btn);
-            //$("delFriend_btn").prop("type", "button");
 
             //div friendList 안에 모든 input 버튼으로 제어
             var input_btn = $("#friendList input[type=button]");
 
-
-            // // object 타입 key:value 구조
-            // $.each(input_btn,function (index,value){
-            //     input_btn.hide();
-            // });
-            // if(edit_btn =="off"){
-            //     $.each(input_btn,function (index,value){
-            //         input_btn.hide();
-            //     });
-            // }else
              if($("#editFriend_btn").val() =="on"){
                 $.each(input_btn,function (index,value){
                     input_btn.show();
@@ -204,16 +174,6 @@
                      input_btn.hide();
                  });
              }
-
-              // var btn = document.getElementById("delFriend_btn");
-                //btn.type = "button";
-               //$("delFriend_btn").prop("type", "button");
-               // alert("버튼있음");
-               // $(":hidden").type = "button";
-                //var tr = btn.parent().parent();
-                //var td = tr.children();
-                //console.log("Row데이터 : ",tr.data);
-
 
         });
 
