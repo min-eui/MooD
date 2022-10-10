@@ -2,9 +2,12 @@ package mood.moodmyapp.controller;
 
 
 import mood.moodmyapp.Session.SessionConstant;
+import mood.moodmyapp.common.EncryptionUtils;
 import mood.moodmyapp.common.KakaoOauthService;
 import mood.moodmyapp.domain.Friend;
 import mood.moodmyapp.domain.Member;
+import mood.moodmyapp.repository.MemberRepository;
+import mood.moodmyapp.service.MemberService;
 import mood.moodmyapp.service.MypageService;
 import nonapi.io.github.classgraph.json.JSONUtils;
 import org.json.simple.JSONObject;
@@ -19,6 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RequestMapping(value="/mypage")
@@ -27,12 +34,17 @@ public class MypageController {
 
 
 
-    @Autowired
-    MypageService mypageService;
 
-    public MypageController(MypageService mypageService) {
+    private final MypageService mypageService;
+    private final MemberService memberService;
+
+    @Autowired
+    public MypageController(MypageService mypageService, MemberService memberService) {
+        this.memberService = memberService;
         this.mypageService = mypageService;
     }
+
+
 
     /**
      * 마이페이지 메인
@@ -166,5 +178,83 @@ public class MypageController {
 
         return stateCode;
     }
+
+
+    /**
+     * 내정보 수정 페이지
+     */
+
+    @GetMapping(value="/updateInfo.do")
+    public String myInfoEdit(HttpServletRequest request,Model model) throws Exception {
+
+        HttpSession session = request.getSession(false);
+        //비로그인 상태면(세션이 없다면) 로그인페이지로 이동
+        if(session == null){
+            return "redirect:/login/login.do";
+        }
+        //로그인한 상태라면
+        // 세션에 저장된 회원 조회
+        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+
+        // 세션에 회원 데이터가 없으면 홈으로 이동
+        if(userId == null){
+            return "redirect:/login/login.do";
+        }
+
+        // 세션에 저장된 아이디로 회원조회/
+        Optional<Member> memberInfo = memberService.findById(userId);
+//         memberService.findById(userId).map(
+//                member -> {
+//                    //Member 객체 반환
+//                    return new Member(member.getUserId(), member.getUserPw(), member.getUserName(), member.getNickName(), member.getPhoneNum(), member.getTerm1(), member.getTerm2(), member.getKakaoYn(), member.getReg_date());
+//                });
+        Member member;
+        if(memberInfo.isPresent()){
+            member = memberInfo.get();
+           //LocalDateTime parseDateTime = member.getReg_date();
+            //final LocalDateTime parseReg_date = LocalDateTime.parse(parseDateTime,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            //member.setReg_date(parseDateTime);
+            //System.out.println("time : "+parseReg_date);
+        }else{
+            throw new Exception();
+        }
+        model.addAttribute("member",member);
+
+        return "/mypage/updateInfo";
+    }
+
+    @PostMapping(value="/updateInfo.do")
+    public String updateInfoProc(HttpServletRequest request, Member member){
+        HttpSession session = request.getSession(false);
+        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+        member.setUserId(userId);   //세션에서 아이디 세팅
+        String userPw = "";
+        if(!member.getUserPw().equals("")){
+            //수정할 값이 있을때 암호화 처리 해준다.
+            userPw = EncryptionUtils.encryptSHA256(member.getUserPw());
+
+        }else{
+            //변경값이 없을때 원래 비밀번호로 세팅
+            Optional<Member> exMemInfo = memberService.findById(userId);
+            userPw = exMemInfo.get().getUserPw();
+        }
+
+        member.setUserPw(userPw);
+
+
+        //String reg_date = String.valueOf(member.getReg_date());
+        //String reg_date = member.getReg_date().toString();
+        //reg_date = member.setReg_date();
+        //System.out.println("reg_date 타입 : " + reg_date.getClass().getSimpleName());
+
+//        String parseDateTime = member.getReg_date().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+//        LocalDateTime parseReg_date = LocalDateTime.parse(parseDateTime,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+//        member.setReg_date(parseReg_date);
+
+        Member isUpdate = mypageService.updateInfoProc(member);
+
+        return "redirect:/";
+    }
+
 
 }

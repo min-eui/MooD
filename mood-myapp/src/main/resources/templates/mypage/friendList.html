@@ -27,12 +27,10 @@
         function output(userIdChk){
             $("#tab1").show();
             var result = '<br>';
-            //$.each(userId,function(index,item){
 
                 result +="<tr><td>"+userIdChk
                 result += "<button type='button' id='addFriend_btn' name='addFriend_btn'>"+"친구추가하기"+"</button>"+"</td>"
                 result += "</tr>"
-            //})
 
             result += "<br>"
             $("#tab1").html(result)
@@ -42,7 +40,6 @@
         $(function addFriend(){
 
             $(document).on("click", "#addFriend_btn", function(e){
-
 
                 console.log("addAjax : searchFriend" + searchFriend )
                 e.preventDefault();
@@ -121,18 +118,6 @@
                         alert("친구 조회에 실패했습니다.");
 
                     }
-                // }).done(function(result){
-                //     console.log("결과확인");
-                //     console.log("result",result);
-                //    // console.log("result['friend']",result['friend']);
-                //     console.log("result['friend']",result['friend']);
-                //     if(result!==result['code']) {
-                //         output(result)
-                //         var html = jQuery('<div>').html(result);
-                //         var contents = html.find("div#indexListAjax").html();
-                //
-                //         $("#tab1").html(contents);
-                //     }
                 }).fail(function (jqXHR, textStatus, errorThrown){
                     console.log("에러");
                     console.log(jqXHR);
