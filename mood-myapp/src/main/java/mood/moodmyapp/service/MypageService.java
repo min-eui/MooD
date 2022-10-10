@@ -1,13 +1,17 @@
 package mood.moodmyapp.service;
 
+import mood.moodmyapp.common.EncryptionUtils;
 import mood.moodmyapp.domain.Friend;
 import mood.moodmyapp.domain.Member;
+import mood.moodmyapp.jpaEntity.BaseTimeEntity;
 import mood.moodmyapp.repository.MemberRepository;
 import mood.moodmyapp.repository.MypageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +23,9 @@ public class MypageService {
 
     @Autowired
     MemberRepository memberRepository;
+
+
+
 
     public MypageService(MypageRepository mypageRepository, MemberRepository memberRepository) {
         this.mypageRepository = mypageRepository;
@@ -84,5 +91,29 @@ public class MypageService {
         int delRes = mypageRepository.deleteByUserIdAndFriendId(userId, delId);
 
         return  delRes;
+    }
+
+    @Transactional
+    public Member updateInfoProc(Member member) {
+        LocalDateTime update_date = LocalDateTime.now();
+        LocalDateTime reg_date = member.getReg_date();
+        //System.out.println("reg_date 타입 : " + reg_date.getClass().getSimpleName());
+        System.out.println("userPw : " + member.getUserPw());
+
+        member = Member.builder()
+                .userId(member.getUserId())
+                .userPw(member.getUserPw())
+                .userName(member.getUserName())
+                .nickName(member.getNickName())
+                .phoneNum(member.getPhoneNum())
+                .term1(member.getTerm1())
+                .term2(member.getTerm2())
+                .kakaoYn(member.getKakaoYn())
+                .reg_date(member.getReg_date())
+                .update_date(update_date)
+                .build();
+        System.out.println("update_date" + update_date);
+        Member isupdate = memberRepository.save(member);
+     return isupdate;
     }
 }

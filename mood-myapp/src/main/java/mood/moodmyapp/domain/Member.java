@@ -1,22 +1,29 @@
 package mood.moodmyapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import mood.moodmyapp.jpaEntity.BaseTimeEntity;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
 import java.util.Date;
+@DynamicUpdate  //변경된 칼럼만 업데이트해준다
 @AllArgsConstructor // 생성자 추가
 @NoArgsConstructor  //  기본생성자 자동 추가
 @Builder
 @Getter
 @Setter
-@Entity(name="Member") // 회원가입에 관한 entity
+@Entity(name="Member")// 회원가입에 관한 entity
 @Table(name="tbl_member")   //class이름과 테이블이름이 다를 경우에 써주어야함.
 public class Member extends BaseTimeEntity {
 
             @Id
+            //@GeneratedValue //주키 자동생성 전략
             @Column(name="userId", length = 50, nullable = false, unique = true)
             private String userId;  // PK값
 
@@ -42,7 +49,12 @@ public class Member extends BaseTimeEntity {
             private String term2 = "N";      //  약관1동의여부
 
             @CreatedDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
             @Column(name="reg_date", length = 50, nullable = false)
             private LocalDateTime reg_date;
+
+            @Column(name="update_date", length = 50, nullable = true)
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            private LocalDateTime update_date;
 
 }
