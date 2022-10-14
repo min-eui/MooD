@@ -1,7 +1,8 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
     <script type="text/javascript">
 
     function check_pw() {
@@ -65,8 +66,7 @@
                             console.log($.trim(strData));
                             if ($.trim(strData) == $('#authNum').val()) {
                                 alert("휴대폰 인증이 정상적으로 완료되었습니다.");
-                                $("#userId").replaceWith("<b>아이디 : " + result.userId);
-                                //$("#userId").replaceWith(userId);
+                                $("#userId").replaceWith("<div class='css-div'><div class='css-labelArea'><label class='css-label'>아이디 : "+"</label></div>" + "<div class='css-inputArea'>"+result.userId+"</div></div>");
                             } else {
                                 alert("인증번호가 일치하지 않습니다.");
                             }
@@ -128,29 +128,63 @@
     </script>
 </head>
 <body>
-<div class="wrapper">
-    <div class="title"><h3 style="font-size:25px;">아이디/비밀번호 찾기</h3></div>
-        <div class="container">
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+            <div class="container">
+                        <div class="form-items">
+                            <div class="title-left"><h3>아이디/비밀번호 찾기</h3></div>
+                            <div class="css-div">
+                                <div class="css-labelArea">
+                                    <label for="phoneNum" class="css-label">휴대폰 번호</label>
+                                </div>
+                                <div class="css-inputArea">
+                                    <input type="text" id="phoneNum" name="phoneNum" class="css-input" placeholder="휴대폰 번호를 입력하세요"/>
+                                </div>
+                                <div class="css-long-btnArea">
+                                    <button type="button" id="authBtn" class="long-btn">본인인증하기</button><br>
+                                </div>
+                            </div>
 
-                <div class="form-group">
-                    <input type="text" id="phoneNum" name="phoneNum"/>
-                    <button type="button" id = "authBtn">본인인증하기</button><br>
-                    <input type="text" id = "authNum" name="authNum">
-                    <button type="button" id = "authNumBtn">인증번호 입력</button>
-                </div>
+                            <div class="css-div">
+                                <div class="css-labelArea">
+                                    <label for="authNum" class="css-label">인증번호</label>
+                                </div>
+                                <div class="css-inputArea">
+                                    <input type="text" id = "authNum" name="authNum" class="css-input" placeholder="인증번호를 입력하세요">
+                                </div>
+                                <div class="css-long-btnArea">
+                                    <button type="button" id = "authNumBtn" class="long-btn">인증번호 전송</button>
+                                </div>
+                            </div>
+                                <!--아이디 노출-->
+                                <div id="userId" name="userId" class="css-inputArea"/>
+                            </tr>
+                        </div>
+                    <div class="title-left"><h3>비밀번호 찾기</h3></div>
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="updatePw" class="css-label">새 비밀번호</label>
+                        </div>
+                        <div class="css-inputArea">
+                            <input type="password" id="updatePw" name="updatePw" onKeyUp="check_pw()" class="css-input" placeholder="새로운 비밀번호를 입력하세요"/>
+                        </div>
+                    </div>
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="checkPw" class="css-label">비밀번호 확인</label>
+                        </div>
+                        <div class="css-inputArea">
+                            <input type="password" id="checkPw" name="checkPw" onKeyUp="check_pw()" class="css-input" placeholder="비밀번호를 한번 더 입력하세요"/>&nbsp;<span id="check"></span>
+                        </div>
+                        <div class="css-btnArea">
+                            <button type="submit" id = "updatePwBtn" class="long-btn" >변경하기</button>
+                        </div>
+                    </div>
 
-                <div>
-                        <!--아이디 노출-->
-                        <div id="userId" name="userId"/>
-                    </tr>
                 </div>
-            <div>
-                <h3 style="font-size:25px;">비밀번호 찾기</h3></div>
-                    <input type="password" id="updatePw" name="updatePw" onKeyUp="check_pw()"/><br>
-                    <input type="password" id="checkPw" name="checkPw" onKeyUp="check_pw()"/>&nbsp;<span id="check"></span>
-                    <button type="submit" id = "updatePwBtn" >비밀번호 변경하기</button>
             </div>
-
+        <th:block th:replace="fragments/footer :: footer"></th:block>
         </div>
     </div>
 </div>

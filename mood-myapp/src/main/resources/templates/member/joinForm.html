@@ -1,16 +1,11 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
     <script type="text/javascript">
 
-        function check_pw(){
-            //var pwVal = document.getElementById('userPw').value;
-           // var checkInput = 0;
+    function check_pw(){
 
             if(document.getElementById('userPw').value!=''&&document.getElementById('checkPw').value!=''){
                 if(document.getElementById('userPw').value == document.getElementById('checkPw').value){
@@ -117,118 +112,150 @@
         })
     });
 
+    $(document).ready(function() {
+        //$("#term-popup1").css('display', 'flex').hide();
+        $("#term-popup1").hide();
+        $("#term-popup2").hide();
+    });
+    $(function() {
+        $("#confirm").click(function () {
+            modalClose(); //모달 닫기 함수 호출
 
+            //컨펌 이벤트 처리
+        });
+        $("#checkTerm1").click(function () {
+            $("#term-popup1").show();
+        });
+        $("#checkTerm2").click(function () {
+            $("#term-popup2").show();
+        });
+        $("#term1-close").click(function () {
+            modalCloseTerm1(); //모달 닫기 함수 호출
+        });
+        $("#term2-close").click(function () {
+            modalCloseTerm2(); //모달 닫기 함수 호출
+        });
+        function modalCloseTerm1(){
+
+            $("#term-popup1").hide();
+        }
+        function modalCloseTerm2(){
+
+            $("#term-popup2").hide();
+        }
+    });
     </script>
     <title>회원가입</title>
 </head>
 <body>
-<div class="wrapper">
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+        <div class="container">
+            <div class="title"><h3>회원가입</h3></div>
+            <form role = "form" th:action="@{/member/join.do}" th:object="${member}" method="post">
+                <!--회원가입시 카카오 로그인 여부는 N으로 설정-->
+                <input type="hidden" id="kakaoYn" name="kakaoYn" value="N"/>
+                <div class="form-items">
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="userId" class="css-label">아이디</label>
+                        </div>
+                        <div class="css-inputArea">
+                            <input type="text" id="userId" name="userId" class="css-input" placeholder="아이디를 입력하세요">
+                        </div>
+                        <div class="css-alert-div">
+                            <p id="idAvailable" class="css-alert-val" style="display: none;"></p>
+                            <p id="idNotAvailable" class="css-alert-inval" style="display: none;"></p>
+                        </div>
+                        <div class="css-btnArea">
+                            <button id="idCheckBtn">중복확인</button>
+                        </div>
+                    </div>
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="userPw" class="css-label">비밀번호</label>
+                        </div>
+                        <div class="css-inputArea">
+                            <input type="password" id="userPw" name="userPw" class="css-input" placeholder="비밀번호를 입력하세요">
+                        </div>
+                    </div>
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="checkPw" class="css-label">비밀번호 확인</label>
+                        </div>
+                        <div class="css-inputArea">
+                            <input type="password" id="checkPw" name="checkPw" class="css-input" placeholder="비밀번호를 한번 더 입력하세요" onKeyUp="check_pw()"/>&nbsp;<span id="check"></span>
+                        </div>
+                    </div>
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="userName" class="css-label">이름</label>
+                        </div>
+                        <div class="css-inputArea">
+                            <input type="text" id="userName" name="userName" class="css-input" placeholder="이름을 입력하세요">
+                        </div>
+                    </div>
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="nickName" class="css-label">닉네임</label>
+                        </div>
+                        <div class="css-inputArea">
+                            <input type="text" id="nickName" name="nickName" class="css-input" placeholder="닉네임을 입력하세요">
+                        </div>
+                        <div class="css-alert-div">
+                            <p id="nickAvailable" class="css-alert-val" style="display: none;"></p>
+                            <p id="nickNotAvailable" class="css-alert-inval" style="display: none;"></p>
+                        </div>
+                        <div class="css-btnArea">
+                            <button id="nickCheckBtn">중복확인</button>
+                        </div>
+                    </div>
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="phoneNum" class="css-label">휴대폰번호</label>
+                        </div>
+                        <div class="css-inputArea">
+                            <input type="text" id="phoneNum" name="phoneNum" class="css-input" placeholder="휴대폰번호를 입력하세요">
+                        </div>
+                    </div>
 
-    <div class="container">
-        <div class="title"><h3>회원가입</h3></div>
-        <form role = "form" th:action="@{/member/join.do}" th:object="${member}" method="post">
-            <!--회원가입시 카카오 로그인 여부는 N으로 설정-->
-            <input type="hidden" id="kakaoYn" name="kakaoYn" value="N"/>
-            <div class="form-items">
-                <div class="css-div">
-                    <div class="css-labelArea">
-                        <label for="userId" class="css-label">아이디</label>
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="term1" class="css-label">필수 동의1</label>
+                        </div>
+                        <div class="css-input-CheckboxArea">
+                            <input type="checkbox" id="term1" name="term1" value="N">
+                        </div>
+                        <div class="css-btnArea">
+                            <input type="button" id="checkTerm1" class="css-term-btn" value="약관보기"/>
+                        </div>
+                        <th:block th:replace="member/popup/term1 :: term1"></th:block>
                     </div>
-                    <div class="css-inputArea">
-                        <input type="text" id="userId" name="userId" class="css-input" placeholder="아이디를 입력하세요">
-                    </div>
-                    <div class="css-alert-div">
-                        <p id="idAvailable" class="css-alert-val" style="display: none;"></p>
-                        <p id="idNotAvailable" class="css-alert-inval" style="display: none;"></p>
-                    </div>
-                    <div class="css-btnArea">
-                        <button id="idCheckBtn">중복확인</button>
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="term2" class="css-label">필수 동의2</label>
+                        </div>
+                        <div class="css-input-CheckboxArea">
+                            <input type="checkbox" id="term2" name="term2" value="N">
+                        </div>
+                        <div class="css-btnArea">
+                            <input type="button" id="checkTerm2" class="css-term-btn" value="약관보기"/>
+                        </div>
+                            <th:block th:replace="member/popup/term2 :: term2"></th:block>
+                </div>
+
+                <div class="signup">
+                    <div>
+                        <button type="submit" class="signup-btn">회원가입하기</button>
                     </div>
                 </div>
-                <div class="css-div">
-                    <div class="css-labelArea">
-                        <label for="userPw" class="css-label">비밀번호</label>
-                    </div>
-                    <div class="css-inputArea">
-                        <input type="password" id="userPw" name="userPw" class="css-input" placeholder="비밀번호를 입력하세요">
-                    </div>
-                </div>
-                <div class="css-div">
-                    <div class="css-labelArea">
-                        <label for="userPw" class="css-label">비밀번호 확인</label>
-                    </div>
-                    <div class="css-inputArea">
-                        <input type="password" id="checkPw" name="checkPw" class="css-input" placeholder="비밀번호를 한번 더 입력하세요" onKeyUp="check_pw()"/>&nbsp;<span id="check"></span>
-                    </div>
-                </div>
-                <div class="css-div">
-                    <div class="css-labelArea">
-                        <label for="userName" class="css-label">이름</label>
-                    </div>
-                    <div class="css-inputArea">
-                        <input type="text" id="userName" name="userName" class="css-input" placeholder="이름을 입력하세요">
-                    </div>
-                </div>
-                <div class="css-div">
-                    <div class="css-labelArea">
-                        <label for="nickName" class="css-label">닉네임</label>
-                    </div>
-                    <div class="css-inputArea">
-                        <input type="text" id="nickName" name="nickName" class="css-input" placeholder="닉네임을 입력하세요">
-                    </div>
-                    <div class="css-alert-div">
-                        <p id="nickAvailable" class="css-alert-val" style="display: none;"></p>
-                        <p id="nickNotAvailable" class="css-alert-inval" style="display: none;"></p>
-                    </div>
-                    <div class="css-btnArea">
-                        <button id="nickCheckBtn">중복확인</button>
-                    </div>
-                </div>
-                <div class="css-div">
-                    <div class="css-labelArea">
-                        <label for="phoneNum" class="css-label">휴대폰번호</label>
-                    </div>
-                    <div class="css-inputArea">
-                        <input type="text" id="phoneNum" name="phoneNum" class="css-input" placeholder="휴대폰번호를 입력하세요">
-                    </div>
-                </div>
 
-                <div class="css-div">
-                    <div class="css-labelArea">
-                        <label for="term1" class="css-label">필수 동의1</label>
-                    </div>
-                    <div class="css-input-CheckboxArea">
-                        <input type="checkbox" id="term1" name="term1" value="N">
-                    </div>
-                    <div class="css-btnArea">
-                        <input type="button" id="checkTerm1" class="css-term-btn" value="약관보기"/>
-                    </div>
-                </div>
-
-                <div class="css-div">
-
-                    <div class="css-labelArea">
-                        <label for="term2" class="css-label">필수 동의2</label>
-                    </div>
-                    <div class="css-input-CheckboxArea">
-                        <input type="checkbox" id="term2" name="term2" value="N">
-                    </div>
-                    <div class="css-btnArea">
-                        <input type="button" id="checkTerm2" class="css-term-btn" value="약관보기"/>
-                    </div>
-
-            </div>
-
-            <div class="signup">
-                <div>
-                    <button type="submit" class="signup-btn">가입하기</button>
-                </div>
-            </div>
-
-        </form>
-</div> <!-- /container-form -->
-</div><!-- /wrapper -->
-
-
+            </form>
+        </div>
+    </div><!-- /container -->
+    <th:block th:replace="fragments/footer :: footer"></th:block>
+    </div><!-- /wrapper -->
+</div><!-- /page -->
 </body>
 </html>

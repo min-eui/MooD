@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
+    <!-- 카카오 api -->
     <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-
-
 
     <script>
 
@@ -42,27 +42,55 @@
     </script>
 </head>
 <body>
-<div class="container">
-    <form th:action="@{/login/login.do}" method="post">
-        <div class="form-group">
-            <label for="userId">아이디</label>
-            <input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요">
-            <label for="userPw">비밀번호</label>
-            <input type="password" id="userPw" name="userPw" placeholder="비밀번호를 입력하세요">
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+        <div class="container">
+            <form th:action="@{/login/login.do}" method="post">
+                <div class="form-items">
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="userId" class="css-label">아이디</label>
+                        </div>
+                        <div class="css-inputArea">
+                            <input type="text" id="userId" name="userId" class="css-input" placeholder="아이디를 입력하세요">
+                        </div>
+                    </div>
+                    <div class="css-div">
+                        <div class="css-labelArea">
+                            <label for="userPw" class="css-label">비밀번호</label>
+                        </div>
+                        <div class="css-inputArea">
+                            <input type="password" id="userPw" name="userPw" class="css-input" placeholder="비밀번호를 입력하세요">
+                        </div>
+                    </div>
 
-        </div>
-        <button type="submit">로그인하기</button>
-    </form>
-    <button th:onclick="|location.href='@{/login/findIdPw.do}'|">아이디/비밀번호찾기</button>
-    <a id="custom-login-btn" href="javascript:loginWithKakao()">
-        <img
-                src="//k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
-                width="222"
-                alt="카카오 로그인 버튼"
-        />
-    </a>
-    <p id="token-result"></p>
+                </div>
+                <div class="signup">
+                    <div>
+                        <button type="submit" class="signup-btn">로그인하기</button>
+                    </div>
+                </div>
+            </form>
+            <div class="btn-items">
+                <div class="css-long-btnArea">
+                    <button th:onclick="|location.href='@{/login/findIdPw.do}'|" class="signup-btn-black">아이디/비밀번호찾기</button>
+                </div>
+                <div class="css-sns-btnArea">
+                    <a id="custom-login-btn" href="javascript:loginWithKakao()">
+                        <img
+                                src="//k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
+                                width="200"
+                                alt="카카오 로그인 버튼"
+                        />
+                    </a>
+                    <p id="token-result"></p>
 
-</div> <!-- /container -->
+                </div>
+            </div>
+    </div> <!-- /container -->
+        <th:block th:replace="fragments/footer :: footer"></th:block>
+    </div> <!-- /wrapper -->
+</div> <!-- /page -->
 </body>
 </html>
