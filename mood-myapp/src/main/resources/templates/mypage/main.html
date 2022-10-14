@@ -1,12 +1,20 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>마이페이지</title>
 </head>
 <body>
-
-mypage
-
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+        <div class="container">
+            <div class="title"><h3>마이페이지</h3></div>
+        </div>
+        <th:block th:replace="fragments/footer :: footer"></th:block>
+    </div>
+</div>
 </body>
 </html>

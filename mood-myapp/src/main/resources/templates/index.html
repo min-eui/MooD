@@ -1,16 +1,28 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>메인페이지</title>
 </head>
 <body>
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+        <div class="container">
+            <div class="title"><h3>메인페이지</h3></div>
+                <form role="form" th:action ="@{/logout.do}" method="post">
+                    <div class="css-div">
+                        <div class="css-btnArea">
+                            <button type="submit">로그아웃하기</a></button>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
 
-welcome!
 <button><a th:href="@{/mypage/main.do}">마이페이지</a></button>
-<form th:action ="@{/logout.do}" method="post">
-<button type="submit">로그아웃하기</a></button>
-
-</form>
 </body>
 </html>
