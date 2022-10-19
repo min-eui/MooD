@@ -12,17 +12,48 @@
     <div class="wrapper">
         <div class="container">
             <div class="title"><h3>메인페이지</h3></div>
-                <form role="form" th:action ="@{/logout.do}" method="post">
-                    <div class="css-div">
-                        <div class="css-btnArea">
-                            <button type="submit">로그아웃하기</a></button>
+
+            <form role = "form" id="moodForm" name="moodForm" th:action="@{/mood/write.do}" th:object="${mood}" method="post">
+                <div class="emotionArea">
+                    <input type="button" id="emo-1" class="css-emotion" value="happy"/>
+                    <input type="button" id="emo-2" class="css-emotion" value="alright"/>
+                    <input type="button" id="emo-3" class="css-emotion" value="notBad"/>
+                    <input type="button" id="emo-4" class="css-emotion" value="angry"/>
+                    <input type="button" id="emo-5" class="css-emotion" value="annoyed"/>
+                    <input type="button" id="emo-6" class="css-emotion" value="depressed"/>
+                    <input type="button" id="emo-7" class="css-emotion" value="sad"/>
+                </div>
+                <!-- 리스트가 없는 경우 -->
+                <div class="css-div">
+                    <!-- 리스트가 비어 있는 경우 -->
+                    <div th:if="${#lists.isEmpty(moodList)}">
+                        <p>작성한 글이 없습니다. </p>
+                    </div>
+                </div>
+
+                <!-- 리스트가 있는 경우 -->
+                <div class="text-section-main">
+                    <div class="contents-section" th:unless="${#lists.isEmpty(moodList)}" th:id="${mood.moodNum}" th:each="mood:${moodList}">
+                        <div class="text-main-date">
+                            <p th:text="${mood.reg_date}"></p>
+                        </div>
+                        <textarea th:text="${mood.contents}" id="contents" name="contents" ></textarea>
+
+                        <div class="text-btnArea-main">
+                            <div class="default-smallBtnArea">
+                                <img class="default-smallBtn"  th:src="@{/img/replyBtn.jpg}" alt="reply-btn" />
+                                <img class="default-smallBtn"  th:src="@{/img/viewerBtn.jpg}" alt="viewer-btn" />
+                                <img class="default-smallBtn"  th:src="@{/img/likerBtn.jpg}" alt="liker-btn" />
+                            </div>
+
                         </div>
                     </div>
-                </form>
+                </div>
+
+            </form>
         </div>
+        <th:block th:replace="fragments/footer :: footer"></th:block>
     </div>
 </div>
-
-<button><a th:href="@{/mypage/main.do}">마이페이지</a></button>
 </body>
 </html>

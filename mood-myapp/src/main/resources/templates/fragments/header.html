@@ -2,6 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <th:block th:fragment="header">
         <head>
+            <script type="text/javascript">
+
+                // var userSession = document.querySelector('#userSession').value;
+                // var userSession = $('#userSession').val().ty
+                // console.log(userSession);
+            </script>
             <meta charset="UTF-8">
             <title>header</title>
         </head>
@@ -20,12 +26,22 @@
                     </div>
                 </div>
 
-                <div class="header-loginArea">
-                    <input type="button" id="login_btn" class="header-login-btn" value="로그인" th:onclick="|location.href='@{/login/login.do}'|" />
+                <div class="header-loginArea" th:if="${#strings.isEmpty(session.loginMember)}">
+                    <input type="submit" id="login_btn" class="header-login-btn" value="로그인" th:onclick="|location.href='@{/login/login.do}'|" />
                 </div>
 
-                <span th:if="${isMember != null}" th:text="${isMember}"></span>
+                <div class="header-loginArea" th:if="${not #strings.isEmpty(session.loginMember)}">
+                    <form role="form" th:action ="@{/logout.do}" method="post">
+                        <input type="submit" id="logout_btn" class="header-login-btn" value="로그아웃" />
+                    </form>
+                </div>
+
+                <div class="header-loginArea" th:if="${not #strings.isEmpty(session.loginMember)}">
+                    <input type="button" id="mypage_btn" class="header-login-btn" value="마이페이지" th:onclick="|location.href='@{/mypage/main.do}'|" />
+                </div>
             </div>
+
+            <span th:if="${not #strings.isEmpty(session.loginMember)}" th:text="${session.loginMember}"></span>
         </div>
 
     </th:block>

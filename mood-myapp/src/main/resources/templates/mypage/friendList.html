@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
     <script type="text/javascript">
 
     //친구 추가 성공시 메소드
@@ -209,45 +210,53 @@
     <title>friendList</title>
 </head>
 <body>
-<div class="wrapper">
-    <div class="title"><h3 style="font-size:25px;">내 친구 찾기</h3></div>
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+        <div class="container">
+                <div class="title-left"><h3>내 친구 찾기</h3></div>
+                <div class="css-div">
+                    <div class="css-labelArea">
+                        <label for="userId" class="css-label">친구 아이디</label>
+                    </div>
+                    <div class="css-inputArea">
+                        <input type="text" id="userId" name="userId" class="css-input" placeholder="친구 아이디를 입력하세요"/>
+                    </div>
+                    <div class="css-btnArea">
+                        <button type="button" id="findFriend_Btn" name="findFriend_Btn">친구 찾기</button>
+                    </div>
+                </div>
 
-    <input type="text" id="userId" name="userId" placeholder="친구 아이디를 입력하세요"/>
-    <button type="button" id="findFriend_Btn" name="findFriend_Btn">친구 찾기</button>
-
-
-<div id="tab1">
-    <div id="indexListAjax"></div>
-</div>
-
-    <div id="tab2">
-        <h2>내 친구 목록</h2><br>
-        <div>
-            <button type="button" th:id="editFriend_btn" th:value="off">편집하기</button>
-        </div>
-
-        <div>
-            <!-- 리스트가 비어 있는 경우 -->
-            <div th:if="${#lists.isEmpty(friendList)}">
-                <p>친구가 없습니다.. </p>
+            <div id="tab1">
+                <div id="indexListAjax"></div>
             </div>
-            <!-- 리스트가 있는 경우 -->
-            <div id="friendList">
-                <table>
-                    <tbody>
-                        <tr th:unless="${#lists.isEmpty(friendList)}" th:id="${friend.friendId}" th:each="friend:${friendList}">
-                            <td th:text="${friend.friendId}" ></td>
-                            <td><input type="button" th:id="${friendStat.count+'_'+friend.friendId}" th:value="삭제" onclick="delFriend(this.id)"/></td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <div id="tab2" th:if="${not #lists.isEmpty(friendList)}">
+                    <div class="title-left"><h3>내 친구 목록</h3></div>
+                    <div class="css-div">
+                        <button type="button" th:id="editFriend_btn" th:value="off" class="css-term-btn">편집하기</button>
+                    </div>
+                </div>
+
+                    <div class="css-div">
+                        <!-- 리스트가 비어 있는 경우 -->
+                        <div th:if="${#lists.isEmpty(friendList)}">
+                            <p>친구가 없습니다.. </p>
+                        </div>
+                        <!-- 리스트가 있는 경우 -->
+                        <div id="friendList">
+                                    <div th:unless="${#lists.isEmpty(friendList)}" th:id="${friend.friendId}" th:each="friend:${friendList}">
+                                        <div th:text="${friend.friendId}" ></div>
+                                        <div class="css-btnArea">
+                                            <input type="button" th:id="${friendStat.count+'_'+friend.friendId}" th:value="삭제" onclick="delFriend(this.id)"/>
+                                        </div>
+                                    </div>
+
+                        </div>
+                    </div>
+                </div>
+            <th:block th:replace="fragments/footer :: footer"></th:block>
             </div>
-        </div>
-
-        </div>
-    </div>
-</div>
-
-
+        </div><!-- /page -->
 </body>
 </html>

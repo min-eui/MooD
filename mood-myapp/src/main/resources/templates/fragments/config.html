@@ -11,27 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
     <!-- 공통으로 쓰이는 js파일 -->
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
   </head>
-  <div class="header">
-    <div class="search_and_login" >
-      <div class="header-logoArea" th:onclick="|location.href='@{/}'|">
-        <img class="header-logo"  th:src="@{/img/MooD_Logo.jpg}" alt="Logo" />
-      </div>
-      <div class="header-searchArea">
-        <div class="header-inputArea">
-          <input type="text" id="search_input" class="header-input" />
-        </div>
-
-        <div class="header-searchImg">
-          <img class="header-searchImg"  th:src="@{/img/icon-magnifying.jpg}" alt="icon-searchImg.jpg" />
-        </div>
-      </div>
-
-      <div class="header-loginArea">
-        <input type="button" id="login_btn" class="header-login-btn" value="로그인" th:onclick="|location.href='@{/login/login.do}'|" />
-      </div>
-    </div>
-  </div>
 
 </th:block>
 </html>
