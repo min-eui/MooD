@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
+    <script type="text/javascript">
+        function resize(obj) {
+            obj.style.height = '1px';
+            obj.style.height = (12 + obj.scrollHeight) + 'px';
+        }
+    </script>
+    <meta charset="UTF-8">
+    <title>글쓰기페이지</title>
+</head>
+<body>
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+        <div class="container">
+                <form role = "form" id="moodForm" name="moodForm" th:action="@{/mood/write.do}" th:object="${mood}" method="post">
+                    <div class="emotionArea">
+                        <input type="button" id="emo-1" class="css-emotion" value="happy"/>
+                        <input type="button" id="emo-2" class="css-emotion" value="alright"/>
+                        <input type="button" id="emo-3" class="css-emotion" value="notBad"/>
+                        <input type="button" id="emo-4" class="css-emotion" value="angry"/>
+                        <input type="button" id="emo-5" class="css-emotion" value="annoyed"/>
+                        <input type="button" id="emo-6" class="css-emotion" value="depressed"/>
+                        <input type="button" id="emo-7" class="css-emotion" value="sad"/>
+                    </div>
+
+                    <div class="text-section">
+                        <textarea id="contents" name="contents" placeholder="What's happening?" autofocus onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+
+
+                        <div class="text-btnArea">
+                            <div class="default-smallBtnArea">
+                                <img class="default-smallBtn"  th:src="@{/img/photoBtn.jpg}" alt="photoBtn" />
+                            </div>
+                            <div class="default-btnArea">
+                                <button type="submit" class="default-btn">Mood</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+        </div>
+        <th:block th:replace="fragments/footer :: footer"></th:block>
+    </div>
+</div>
+</body>
+</html>

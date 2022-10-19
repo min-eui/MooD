@@ -3,9 +3,11 @@ package mood.moodmyapp.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import mood.moodmyapp.jpaEntity.BaseTimeEntity;
+import mood.moodmyapp.jpaEntity.BaseTimeModifyEntity;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -20,7 +22,7 @@ import java.util.Date;
 @Setter
 @Entity(name="Member")// 회원가입에 관한 entity
 @Table(name="tbl_member")   //class이름과 테이블이름이 다를 경우에 써주어야함.
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTimeModifyEntity {
 
             @Id
             //@GeneratedValue //주키 자동생성 전략
@@ -53,6 +55,7 @@ public class Member extends BaseTimeEntity {
             @Column(name="reg_date", length = 50, nullable = false)
             private LocalDateTime reg_date;
 
+            @LastModifiedDate
             @Column(name="update_date", length = 50, nullable = true)
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
             private LocalDateTime update_date;

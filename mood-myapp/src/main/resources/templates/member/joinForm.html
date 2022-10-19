@@ -4,6 +4,100 @@
     <!--공통 css, js-->
     <th:block th:replace="fragments/config :: config"></th:block>
     <script type="text/javascript">
+        //회원가입 버튼 클릭시
+        function checks() {
+            //유효성
+            var checkIdVal = /^[a-zA-Z0-9]{8,15}$/; //아이디와 비밀번호 유효성 검사 정규식
+            var checkPwVal = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/; //비밀번호 유효성 검사 정규식
+            var checkName = /^[가-힣]{0,50}$/; //이름 유효성 검사 정규식(한글만 가능)
+            var checkNickname = /[가-힣a-zA-Z]/; //닉네임 유효성 검사 정규식(한글만 가능)
+            var checkPhoneVal = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;//핸드폰 번호 유효성 검사 정규식
+            //값 불러오기
+            var userId = document.getElementById("userId"); //아이디
+            var userPw = document.getElementById("userPw"); //비밀번호
+            var userPwChk = document.getElementById("checkPw"); //비밀번호 확인
+            var userName = document.getElementById("userName"); //이름
+            var userNickname = document.getElementById("userNickname"); //이름
+            var userPhone = document.getElementById("phoneNum"); //핸드폰번호
+
+            /*아이디 유효성 검사*/
+            //아이디에서 입력 필수 조건문
+            if (userId.value == '') {
+                alert("아이디를 입력해야 합니다.");
+                return false;
+            }
+            //아이디 입력 문자수를 8~15자로 제한하는 조건문
+            if (!checkIdVal.test(userId.value)) {
+                alert("아이디는 8~15자 이내로 입력 가능합니다.");
+                return false;
+            }
+            //아이디 중복 체크
+            if ($("#idCheckBtn").val() != "Y") {
+                alert('중복 체크를 해야합니다.');
+                $('#idCheckBtn').focus();
+                return false;
+            }
+            //비밀번호에서 입력 필수 조건문
+            if (userPw.value == '') {
+                alert("비밀번호를 입력해야 합니다.");
+                return false;
+            }
+            //비밀번호 입력 문자수를 8~15자/특수문자로 제한하는 조건문
+            if (!checkPwVal.test(userPw.value)) {
+                alert("비밀번호는 특수문자 포함 8~20자 이내로 입력 가능합니다.");
+                return false;
+            }
+            if (userPwChk.value == '') {
+                alert("비밀번호 확인을 입력해야 합니다.");
+                return false;
+            }
+
+            /*이름 유효성검사*/
+            if (userName.value == '') {
+                alert("이름을 입력해주세요.");
+                return false;
+            }
+            //이름 한글 입력
+            if (!checkName.test(userName.value)) {
+                alert("특수문자,영어,숫자는 사용할수 없습니다. 한글만 입력하여 주세요.");
+                return false;
+            }
+
+            /*닉네임 유효성검사*/
+            if (userNickname.value == '') {
+                alert("닉네임을 입력해주세요.");
+                return false;
+            }
+
+            //닉네임 유효성 검사
+            if (!checkNickname.test(userNickname.value)) {
+                alert("특수문자는 사용할수 없습니다. 한글, 영문, 숫자만 입력하여 주세요.");
+                return false;
+            }
+
+            /*핸드폰 번호 유효성검사*/
+            //핸드폰 번호에서 입력 필수 조건문
+            if (userPhone.value == '') {
+                alert("핸드폰 번호 입력해주세요.");
+                return false;
+            }
+            //핸드폰 번호 형식 입력
+            if (!checkPhoneVal.test(userPhone.value)) {
+                alert("(-) 제외 형식으로 입력하여주세요.");
+                return false;
+            }
+            //필수 약관 동의
+            if ($("input:checkbox[name=term1]:checked").val() == 'N') {
+                alert("약관 동의에 체크 해주세요.");
+                return false;
+            }
+            //개인정보 동의
+            if ($("input:checkbox[name=term2]:checked").val() == 'N') {
+                alert("개인정보 동의에 체크 해주세요.");
+                return false;
+            }
+        }
+            <!-- /유효성 검사 -->
 
     function check_pw(){
 
@@ -49,7 +143,7 @@
     $(function() {   //1
 
         $("#idCheckBtn").on("click", function (e) { //2
-
+            $("#idCheckBtn").val('Y');
             e.preventDefault(); //form 태그안의 버튼이라 그냥 submit 되는거 방지
 
             $.ajax({    //3
@@ -62,6 +156,7 @@
                         isIdChecked=true;
                         $('#idNotAvailable').hide();
                         $('#idAvailable').show().text(data).append($('<br />'));
+
                     }
                     // 실패 시 실패 메시지 show, 성공 메시지 hide
                     else{
@@ -153,7 +248,7 @@
     <div class="wrapper">
         <div class="container">
             <div class="title"><h3>회원가입</h3></div>
-            <form role = "form" th:action="@{/member/join.do}" th:object="${member}" method="post">
+            <form role = "form" th:action="@{/member/join.do}" th:object="${member}" method="post" th:onsubmit="return checks()">
                 <!--회원가입시 카카오 로그인 여부는 N으로 설정-->
                 <input type="hidden" id="kakaoYn" name="kakaoYn" value="N"/>
                 <div class="form-items">
@@ -162,7 +257,7 @@
                             <label for="userId" class="css-label">아이디</label>
                         </div>
                         <div class="css-inputArea">
-                            <input type="text" id="userId" name="userId" class="css-input" placeholder="아이디를 입력하세요">
+                            <input type="text" id="userId" name="userId" class="css-input" minlength="8" maxlength="15" placeholder="아이디를 입력하세요"/>
                         </div>
                         <div class="css-alert-div">
                             <p id="idAvailable" class="css-alert-val" style="display: none;"></p>
@@ -177,7 +272,8 @@
                             <label for="userPw" class="css-label">비밀번호</label>
                         </div>
                         <div class="css-inputArea">
-                            <input type="password" id="userPw" name="userPw" class="css-input" placeholder="비밀번호를 입력하세요">
+                            <!--소대문자 a~z 숫자 1~9까지-->
+                            <input type="password" id="userPw" name="userPw" class="css-input" minlength="8" maxlength="15" pattern="[a-zA-Z0-9]+" placeholder="비밀번호를 입력하세요">
                         </div>
                     </div>
                     <div class="css-div">
@@ -185,7 +281,7 @@
                             <label for="checkPw" class="css-label">비밀번호 확인</label>
                         </div>
                         <div class="css-inputArea">
-                            <input type="password" id="checkPw" name="checkPw" class="css-input" placeholder="비밀번호를 한번 더 입력하세요" onKeyUp="check_pw()"/>&nbsp;<span id="check"></span>
+                            <input type="password" id="checkPw" name="checkPw" class="css-input" minlength="8" maxlength="15" onKeyUp="check_pw()" placeholder="비밀번호를 한번 더 입력하세요" />&nbsp;<span id="check"></span>
                         </div>
                     </div>
                     <div class="css-div">
@@ -193,7 +289,7 @@
                             <label for="userName" class="css-label">이름</label>
                         </div>
                         <div class="css-inputArea">
-                            <input type="text" id="userName" name="userName" class="css-input" placeholder="이름을 입력하세요">
+                            <input type="text" id="userName" name="userName" class="css-input" minlength="1" maxlength="15" placeholder="이름을 입력하세요">
                         </div>
                     </div>
                     <div class="css-div">
@@ -201,7 +297,7 @@
                             <label for="nickName" class="css-label">닉네임</label>
                         </div>
                         <div class="css-inputArea">
-                            <input type="text" id="nickName" name="nickName" class="css-input" placeholder="닉네임을 입력하세요">
+                            <input type="text" id="nickName" name="nickName" class="css-input" minlength="1" maxlength="15" placeholder="닉네임을 입력하세요">
                         </div>
                         <div class="css-alert-div">
                             <p id="nickAvailable" class="css-alert-val" style="display: none;"></p>
@@ -216,7 +312,7 @@
                             <label for="phoneNum" class="css-label">휴대폰번호</label>
                         </div>
                         <div class="css-inputArea">
-                            <input type="text" id="phoneNum" name="phoneNum" class="css-input" placeholder="휴대폰번호를 입력하세요">
+                            <input type="text" id="phoneNum" name="phoneNum" class="css-input" pattern="[0-9]+" maxlength="13" placeholder="휴대폰번호를 입력하세요">
                         </div>
                     </div>
 
@@ -247,7 +343,7 @@
 
                 <div class="signup">
                     <div>
-                        <button type="submit" class="signup-btn">회원가입하기</button>
+                        <button type="submit" class="signup-btn" onclick="checks()">회원가입하기</button>
                     </div>
                 </div>
 

@@ -5,7 +5,7 @@ html,body {
 
 .wrapper{
     position: absolute;
-    margin-top: 160px;
+    margin-top: 130px;
     margin-bottom: 90px;
 
     width: 100%;
@@ -67,7 +67,7 @@ html,body {
     padding: 0px 10px;
     text-align: center;
     overflow: hidden;
-    width: 80px;
+    width: auto;    //글씨 크기가 달라진것에 맞추어 크기 변형
     height: 40px;
     font-size: 17px;
     font-weight: 500;
@@ -148,13 +148,13 @@ html,body {
     width: 100%;
 }
 .container{
-    width: 680px;
+    width: 800px;
     /*margin-top: 50px;*/
     /*margin-bottom: 60px;*/
     /*background-color: #fff;*/
     padding-bottom: 90px;
     margin: auto;
-    margin-top: 150px;
+    margin-top: 70px;
     margin-bottom: 100px;
     top: 25%;
     left: 10%;
@@ -184,8 +184,7 @@ html,body {
 
 
 .form-items{
-
-    margin-left: 90px;
+    /*margin-left: 90px;*/
 }
 
 .css-div{
@@ -374,7 +373,6 @@ html,body {
     font-family: 'Noto Sans KR', sans-serif;
 }
 
-
 .signup-btn-black {
     display: block;
     padding: 0px 10px;
@@ -547,3 +545,100 @@ html,body {
     text-align: left;
 }
 
+
+/* 글쓰기 페이지 textArea css */
+
+.emotionArea {
+    align-items: center;
+}
+
+
+.text-section {
+    width: 100%;
+    padding: 5px;
+    align-items: center;
+    border-right: solid 1px #cbcbcb;
+    border-left: solid 1px #cbcbcb;
+    border-bottom: solid 1px #cbcbcb;
+}
+
+.text-section-main {
+    width: 100%;
+    align-items: center;
+
+    border-bottom: solid 1px #cbcbcb;
+    border-right: solid 1px #cbcbcb;
+    border-left: solid 1px #cbcbcb;
+}
+
+.text-btnArea-main {
+    width: 100%;
+    height: 45px;
+    /*padding: 5px;*/
+    display: flex;
+    justify-items: center;
+    border-top: solid 1px #cbcbcb;
+}
+
+.contents-section {
+    border-top: solid 1px #cbcbcb;
+}
+
+
+textarea {
+    width: 95%;
+    min-height: 5rem;
+    overflow-y: hidden;
+    resize: none;
+    border: none;
+
+    font-size: 22px;
+}
+textarea:focus {
+    outline: none;
+}
+
+.text-btnArea {
+    width: 100%;
+    height: 60px;
+    /*padding: 5px;*/
+    display: flex;
+    justify-items: center;
+    border-top: solid 1px #cbcbcb;
+}
+
+
+.default-btnArea {
+    width: 294px;
+    height: 100%;
+    float: right;
+    padding: 3px;
+    justify-items: center;
+}
+
+.default-smallBtnArea {
+    width: 500px;
+    height: 100%;
+    float: left;
+    padding: 3px;
+}
+
+
+.default-btn{
+    display: block;
+    padding: 0px 10px;
+    overflow: hidden;
+    width: 80px;
+    height: 30px;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 30px;
+
+    color: #fff;
+    border: solid 1.5px #009fff;
+    background: #009fff;
+    font-family: 'Noto Sans KR', sans-serif;
+
+
+
+}
