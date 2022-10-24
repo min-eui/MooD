@@ -28,8 +28,11 @@ public class Mood extends BaseTimeEntity {
     @Column(name="userId", length = 50, nullable = false)
     private String userId;              //회원아이디(작성자)
 
-    @Column(name="mood", length = 20, nullable = true)
-    private String mood;                //감정
+    @Column(name="userProfile", length = 200, nullable = true)
+    private String userProfile;   //프로필사진
+
+    @Column(name="emotion", length = 20, nullable = true)
+    private String emotion;                //감정
 
     @Column(name="contents", length = 5000, nullable = false)
     private String contents;            //글내용

@@ -40,15 +40,16 @@ public class MemberService {
         //같은 이름이 있는 중복 회원x
         validateDuplicateMember(member);
        member = Member.builder()
-                       .userId(member.getUserId())
-                       .userPw(EncryptionUtils.encryptSHA256(member.getUserPw()))
-                       .userName(member.getUserName())
-                       .nickName(member.getNickName())
-                       .phoneNum(member.getPhoneNum())
-                       .kakaoYn(member.getKakaoYn())
-                       .term1(member.getTerm1())
-                       .term2(member.getTerm2())
-                       .build();
+                        .userId(member.getUserId())
+                        .userPw(EncryptionUtils.encryptSHA256(member.getUserPw()))
+                        .userName(member.getUserName())
+                        .nickName(member.getNickName())
+                        .userProfile(member.getUserProfile())
+                        .phoneNum(member.getPhoneNum())
+                        .kakaoYn(member.getKakaoYn())
+                        .term1(member.getTerm1())
+                        .term2(member.getTerm2())
+                        .build();
         System.out.println(EncryptionUtils.encryptSHA256(member.getUserPw()));
         memberRepository.save(member);  //리포지토리에 맴버만 save하면 됨
         return "Success";

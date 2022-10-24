@@ -3,6 +3,122 @@
 <head>
     <!--공통 css, js-->
     <th:block th:replace="fragments/config :: config"></th:block>
+    <script type="text/javascript">
+        /* 텍스트 박스 리사이징 */
+        function resize(obj) {
+            obj.style.height = '1px';
+            obj.style.height = (12 + obj.scrollHeight) + 'px';
+        }
+
+        /* 더보기 버튼 체크 */
+        function chkFold(btnId) {
+
+            var foldVal = $("#"+btnId).val();
+            if(foldVal == "unfold"){
+                $("#"+btnId).attr("src","/img/list_btn/minus_btn.png");
+                $("#"+btnId).val("fold");
+                // var parentDiv = document.querySelector(btnId);
+                // var dropDown = parentDiv.querySelector('.dropdown-content');
+                // $("[value='fold']").
+                // dropDown.show();
+                //$("#"+btnId).children(".dropdown-content").show();
+                // var test = $("#"+btnId).parent(".dropdown").children(".dropdown-content").val();
+                // alert(test);
+                var parentId = $("#"+btnId).parents(".top-btnArea");
+                parentId.children(".dropdown-content").show();
+
+                // test.children(".dropdown-content").show();
+                // alert(test);
+
+            }else if(foldVal == "fold"){
+                $("#"+btnId).attr("src","/img/list_btn/plus_btn.png");
+                $("#"+btnId).val("unfold");
+                // $(".dropdown-content").hide();
+                // $("#"+btnId).children().hide();
+                // $("#"+btnId).querySelector('.dropdown-content').hide();
+                // var parentDiv = document.querySelector(btnId);
+                // var dropDown = parentDiv.querySelector('.dropdown-content');
+                // dropDown.hide();
+                // $("[value='unfold']").hide();
+                // var test = $("#"+btnId).parent(".dropdown");
+                // test.children(".dropdown-content").hide();
+                // alert(test.val());
+                // var test = $("#"+btnId).parents(".contents-section").val();
+                // test.children(".dropdown-content").show();
+                // $("#"+btnId).parents(".contents-section").children(".dropdown-content").hide();
+                var parentId = $("#"+btnId).parents(".top-btnArea");
+                parentId.children(".dropdown-content").hide();
+
+            }
+        }
+
+        /* 감정 정보 담아서 글전송 */
+        function takeEmotion(){
+            const emoVal = document.querySelectorAll('#emotionArea > img');
+            const moodForm = document.getElementById('moodForm');
+
+            for(let i=0; i < emoVal.length; i++){
+                if(emoVal[i].value==="checked"){
+                    var moodVal = emoVal[i].id;
+                }
+            }
+            const emoInput = document.createElement('input');
+            emoInput.setAttribute("type","text");
+            emoInput.setAttribute("name","emotion");
+            emoInput.setAttribute("value",moodVal);
+
+            //append input (to form)
+            moodForm.appendChild(emoInput);
+
+            //append form(to body)
+            document.body.appendChild(moodForm);
+
+            // submit form
+            moodForm.submit();
+        }
+
+        function sendMoodNum(moodNum){
+             var link = '/mood/detail/'+moodNum; // 해당 글 상세페이지로 이동
+            location.replace(link);
+        }
+
+        history.pushState(null, null, '');  //data, title, url값 들어감. 비워두면 이벤트 발생의 플래그로 사용됨.
+        window.onpopstate = function (event) {  //뒤로가기 이벤트 캐치
+            location.href = '/';
+        }
+
+        /* html 최초 로드 및 이벤트 상시 대기 실시 */
+         window.onload = function () {
+             //모두 언체크된 상태로 만든다.
+             $(".top-btnArea > img").val("unfold");
+             $(".emotionArea > img").val("unchecked");
+         }
+         /* 이미지 클릭 체크 */
+        function checkClick(imgId){
+
+            const allImg = document.querySelectorAll('#emotionArea > img');
+            var chkVal = $("#"+imgId).val();
+            var clickedIdx = $("#"+imgId).index();
+
+            if(chkVal=="unchecked") {
+                $("#"+imgId).val("checked");
+                $("#"+imgId).attr("src","/img/emotion/"+imgId+"_color.png");
+                // 해당 값 빼고 다른 이미지들 값 unchecked로 리셋해주기
+
+                for(let i=0; i < allImg.length; i++){
+                    if(i != clickedIdx){
+                        var unchkId = allImg[i].id
+                        $("#"+unchkId).val("unchecked");
+                        $("#"+unchkId).attr("src","/img/emotion/"+unchkId+"_def.png");
+                    }
+                }
+
+            }else {
+                $("#"+imgId).val("unchecked");
+                $("#"+imgId).attr("src","/img/emotion/"+imgId+"_def.png");
+            }
+   }
+    </script>
     <meta charset="UTF-8">
     <title>메인페이지</title>
 </head>
@@ -14,15 +130,31 @@
             <div class="title"><h3>메인페이지</h3></div>
 
             <form role = "form" id="moodForm" name="moodForm" th:action="@{/mood/write.do}" th:object="${mood}" method="post">
-                <div class="emotionArea">
-                    <input type="button" id="emo-1" class="css-emotion" value="happy"/>
-                    <input type="button" id="emo-2" class="css-emotion" value="alright"/>
-                    <input type="button" id="emo-3" class="css-emotion" value="notBad"/>
-                    <input type="button" id="emo-4" class="css-emotion" value="angry"/>
-                    <input type="button" id="emo-5" class="css-emotion" value="annoyed"/>
-                    <input type="button" id="emo-6" class="css-emotion" value="depressed"/>
-                    <input type="button" id="emo-7" class="css-emotion" value="sad"/>
+                <div class="emotionArea" id="emotionArea">
+                    <img th:src="@{/img/emotion/happy_def.png}" th:id="happy" class="emotion-img" alt="happy_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                    <img th:src="@{/img/emotion/alright_def.png}" th:id="alright" class="emotion-img" alt="alright_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                    <img th:src="@{/img/emotion/notBad_def.png}" th:id="notBad" class="emotion-img" alt="notBad_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                    <img th:src="@{/img/emotion/angry_def.png}" th:id="angry" class="emotion-img" alt="angry_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                    <img th:src="@{/img/emotion/annoyed_def.png}" th:id="annoyed" class="emotion-img" alt="annoyed_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                    <img th:src="@{/img/emotion/depressed_def.png}" th:id="depressed" class="emotion-img" alt="depressed_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                    <img th:src="@{/img/emotion/sad_def.png}" th:id="sad" class="emotion-img" alt="sad_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
                 </div>
+
+                <div class="text-section">
+                    <textarea id="contents" name="contents" placeholder="What's happening?" autofocus onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+
+                    <div class="text-btnArea">
+                        <div class="default-smallBtnArea">
+                            <img class="default-smallBtn"  th:src="@{/img/photoBtn.jpg}" alt="photoBtn" />
+                        </div>
+                        <div class="default-btnArea">
+                            <button type="button" class="default-btn" th:onclick="takeEmotion()">Mood</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
                 <!-- 리스트가 없는 경우 -->
                 <div class="css-div">
                     <!-- 리스트가 비어 있는 경우 -->
@@ -34,23 +166,40 @@
                 <!-- 리스트가 있는 경우 -->
                 <div class="text-section-main">
                     <div class="contents-section" th:unless="${#lists.isEmpty(moodList)}" th:id="${mood.moodNum}" th:each="mood:${moodList}">
-                        <div class="text-main-date">
-                            <p th:text="${mood.reg_date}"></p>
-                        </div>
-                        <textarea th:text="${mood.contents}" id="contents" name="contents" ></textarea>
+                        <div class="dropdown">
+                            <div class="top-btnArea">
+                                <img class="top-btn"  th:id="${moodStat.count+'_btnId'}" th:src="@{/img/list_btn/plus_btn.png}" alt="plus_btn.png" value="unfold" th:onclick="chkFold(this.id)"/>
 
+
+                            <div class="dropdown-content" th:id="${moodStat.count+'_dropId'}">
+                                <div>삭제하기</div>
+                                <div>수정하기</div>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="sendPageNum-div"  th:id="${mood.moodNum}" th:onclick="sendMoodNum(this.id)">
+                            <div class="text-main-date">
+                                <span th:text="${mood.reg_date}"></span>
+                            </div>
+                            <div th:if="${not #strings.isEmpty(mood.userProfile)}" class="text-main-userProfile">
+                                <div th:text="${mood.userProfile}" id="userProfile" name="userProfile"></div>
+                            </div>
+                            <div class="text-main-userId">
+                                <span th:text="${mood.userId}" id="userId" name="userId"></span>
+                            </div>
+                            <div class="contents-spanArea-css">
+                                <span th:text="${mood.contents}" class="contents-span-css"  name="contents" ></span>
+                            </div>
+                        </div>
                         <div class="text-btnArea-main">
                             <div class="default-smallBtnArea">
                                 <img class="default-smallBtn"  th:src="@{/img/replyBtn.jpg}" alt="reply-btn" />
-                                <img class="default-smallBtn"  th:src="@{/img/viewerBtn.jpg}" alt="viewer-btn" />
                                 <img class="default-smallBtn"  th:src="@{/img/likerBtn.jpg}" alt="liker-btn" />
                             </div>
 
                         </div>
                     </div>
                 </div>
-
-            </form>
         </div>
         <th:block th:replace="fragments/footer :: footer"></th:block>
     </div>

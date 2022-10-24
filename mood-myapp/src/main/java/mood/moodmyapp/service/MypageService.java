@@ -1,9 +1,8 @@
 package mood.moodmyapp.service;
 
-import mood.moodmyapp.common.EncryptionUtils;
+
 import mood.moodmyapp.domain.Friend;
 import mood.moodmyapp.domain.Member;
-import mood.moodmyapp.jpaEntity.BaseTimeEntity;
 import mood.moodmyapp.repository.MemberRepository;
 import mood.moodmyapp.repository.MypageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +104,7 @@ public class MypageService {
                 .userPw(member.getUserPw())
                 .userName(member.getUserName())
                 .nickName(member.getNickName())
+                .userProfile(member.getUserProfile())
                 .phoneNum(member.getPhoneNum())
                 .term1(member.getTerm1())
                 .term2(member.getTerm2())

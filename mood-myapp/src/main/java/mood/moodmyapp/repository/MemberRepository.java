@@ -24,7 +24,6 @@ public interface MemberRepository extends MemberJpaRepository {
     @Query("SELECT m FROM Member  m WHERE m.userId = :userId AND m.userPw = :userPw")
     Optional<Member> findByIdAndPw(String userId, @Param("userPw")String userPw);
 
-
     List<Member> findAll();
 
     @Query("SELECT m FROM Member  m WHERE m.userId = :userId")

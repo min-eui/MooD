@@ -25,7 +25,8 @@ public class MoodService {
         Mood mood = new Mood();
         mood = Mood.builder()
                 .userId(moodForm.getUserId())
-                .mood(moodForm.getMood())
+                .userProfile(moodForm.getUserProfile())
+                .emotion(moodForm.getEmotion())
                 .contents(moodForm.getContents())
                 .photo(moodForm.getPhoto())
                 .likers(moodForm.getLikers())
@@ -39,8 +40,21 @@ public class MoodService {
 
     public List<Mood> findAllMood() {
 
-        List<Mood> moodList = moodRepository.findAll();
+        List<Mood> moodList = moodRepository.findAllOrderByReg_dateDesc();
 
         return moodList;
+    }
+
+    /**
+     *
+     * @param moodNum
+     * @return moodPage
+     */
+
+    public Mood findByMoodNum(Long moodNum) {
+
+        Mood moodPage = moodRepository.findByMoodNum(moodNum);
+        return moodPage;
+
     }
 }
