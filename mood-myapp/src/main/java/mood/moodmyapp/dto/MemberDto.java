@@ -18,6 +18,7 @@ public class MemberDto {
     private String userPw;        //  회원비밀번호
     private String userName;      //  회원이름
     private String nickName;      //  회원닉네임
+    private String userProfile;     //프로필사진
     private String phoneNum;      //  회원휴대폰번호
     private String kakaoYn;       //  카카오로그인여부
     private LocalDateTime reg_date;     // 날짜와 시간

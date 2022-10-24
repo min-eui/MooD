@@ -64,18 +64,19 @@ html,body {
 
 .header-login-btn {
     display: block;
-    padding: 0px 10px;
+    padding-left: 20px;
+    padding-right: 20px;
     text-align: center;
     overflow: hidden;
     width: auto;    //글씨 크기가 달라진것에 맞추어 크기 변형
-    height: 40px;
-    font-size: 17px;
+    height: 65px;
+    font-size: 22px;
     font-weight: 500;
     border-radius: 30px;
 
     color: #fff;
-    border: solid 1.5px #009fff;
-    background: #009fff;
+    border: solid 1.5px #2fa060;
+    background: #2fa060;
     font-family: 'Noto Sans KR', sans-serif;
 
 }
@@ -87,7 +88,7 @@ html,body {
 }
 
 .header-searchImg > img{
-    /*width: 45px;*/
+    width: 100%;
     justify-content: center;
     max-width: 100%;
     max-height: 100%;
@@ -118,7 +119,7 @@ html,body {
     align-items: center;
     padding: 0px 11px 1px 15px;
     border-radius: 50px;
-    border: solid 3px #65c6ff;
+    border: solid 3px #5ea680;
     outline: none;
 }
 
@@ -368,8 +369,8 @@ html,body {
     border-radius: 30px;
 
     color: #fff;
-    border: solid 1.5px #009fff;
-    background: #009fff;
+    border: solid 1.5px #2fa060;
+    background: #2fa060;
     font-family: 'Noto Sans KR', sans-serif;
 }
 
@@ -582,6 +583,10 @@ html,body {
 
 .contents-section {
     border-top: solid 1px #cbcbcb;
+    margin: 0 auto;
+    font-size: 23px;
+    text-align: left;
+    padding: 30px 0;
 }
 
 
@@ -591,11 +596,35 @@ textarea {
     overflow-y: hidden;
     resize: none;
     border: none;
+    IME-MODE: active;
 
     font-size: 22px;
 }
 textarea:focus {
     outline: none;
+}
+
+.sendPageNum-div {
+    width: 100%;
+    margin: 0 auto;
+    align-items: center;
+}
+.contents-spanArea-css {
+    display: flex;
+    width: 88%;
+    margin: 0 auto;
+    font-size: 23px;
+    /*transform: translate(-50%, -50%);*/
+    text-align: center;
+    /*padding: 40px 0;*/
+    /*text-align: left;*/
+}
+
+.contents-span-css {
+    width: 100%;
+    padding: 20px;
+    text-align: left;
+
 }
 
 .text-btnArea {
@@ -635,10 +664,73 @@ textarea:focus {
     border-radius: 30px;
 
     color: #fff;
-    border: solid 1.5px #009fff;
-    background: #009fff;
+    border: solid 1.5px #2fa060;
+    background: #2fa060;
     font-family: 'Noto Sans KR', sans-serif;
 
+}
 
+.list-btnArea {
+    width: 200px;
+    height: 45px;
+    float: left;
+    padding: 3px;
+}
 
+.btn-greenBlack {
+    width: 55%;
+    height: 40px;
+    font-size: 22px;
+    display: block;
+    padding: 0px;
+    border-radius: 13px;
+    border: solid 1.5px #113c24;
+    background: #113c24;
+    color: #fff;
+}
+
+/* emotion  */
+
+.emotionArea {
+    width: 100%;
+    height: 100px;
+
+}
+
+.emotionArea > img {
+    width: 90px;
+}
+
+.top-btnArea {
+    padding: 5px;
+    width: 40px;
+    height: 20px;
+    float: right;
+
+}
+
+.top-btnArea > img {
+    width:20px;
+}
+
+.dropdown-content{
+    display : none;
+    position : absolute;
+    float: left;
+    z-index : 1; /*다른 요소들보다 앞에 배치*/
+    font-weight: 400;
+    background-color: #f9f9f9;
+    min-width : 200px;
+}
+
+.dropdown-content div{
+    display : block;
+    text-decoration : none;
+    color : rgb(37, 37, 37);
+    font-size: 12px;
+    padding : 12px 20px;
+}
+
+.dropdown-content div:hover{
+    background-color : #ececec
 }

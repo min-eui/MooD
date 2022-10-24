@@ -38,6 +38,9 @@ public class Member extends BaseTimeModifyEntity {
             @Column(name="nickName", length = 20, nullable = false, unique = true)
             private String nickName;      //  회원닉네임
 
+            @Column(name="userProfile", length = 200, nullable = true)
+            private String userProfile;   //프로필사진
+
             @Column(name="phoneNum", length = 20, nullable = false, unique = true)
             private String phoneNum;      //  회원휴대폰번호
 

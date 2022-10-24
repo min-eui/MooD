@@ -6,9 +6,7 @@ import mood.moodmyapp.service.MoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -61,6 +59,7 @@ public class MoodController {
 
         HttpSession session = request.getSession(false);
 
+
         //비로그인 상태면(세션이 없다면) 로그인페이지로 이동
         if(session == null){
             return "redirect:/login/login.do";
@@ -71,6 +70,11 @@ public class MoodController {
 
         // 세션에서 글 작성자를 userId로 세팅
         moodForm.setUserId(userId);
+
+//        moodForm.setMood(String.valueOf(mood));
+//        System.out.println("##################mood" + moodForm.getMood());
+//        moodForm.setMood(moodForm.getMood());
+
         Mood isSaved = moodService.saveMood(moodForm);
         HashMap<String,String> map = new HashMap();
         if(isSaved==null){
@@ -93,6 +97,21 @@ public class MoodController {
         List<Mood> moodList = moodService.findAllMood();
         model.addAttribute("moodList",moodList);
         return "index";
+    }
+
+
+    /**
+     * 상세 페이지
+     * @param
+     * @return
+     */
+    @GetMapping("/mood/detail/{moodNum}")
+    public String moodDetail(@PathVariable String moodNum, Model model) {
+
+        Long  MoodNumL= Long.parseLong(moodNum);
+        Mood moodPage = moodService.findByMoodNum(MoodNumL);
+        model.addAttribute("moodPage",moodPage);
+        return "/mood/detail";
     }
 
 }

@@ -1,20 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <th:block th:fragment="header">
-        <head>
-            <script type="text/javascript">
-
-                // var userSession = document.querySelector('#userSession').value;
-                // var userSession = $('#userSession').val().ty
-                // console.log(userSession);
-            </script>
-            <meta charset="UTF-8">
-            <title>header</title>
-        </head>
         <div class="header">
             <div class="search_and_login" >
                 <div class="header-logoArea" th:onclick="|location.href='@{/}'|">
-                    <img class="header-logo"  th:src="@{/img/MooD_Logo.jpg}" alt="Logo" />
+                    <img class="header-logo"  th:src="@{/img/MooD_Logo_gr.jpg}" alt="Logo" />
                 </div>
                 <div class="header-searchArea">
                     <div class="header-inputArea">
@@ -22,7 +12,7 @@
                     </div>
 
                     <div class="header-searchImg">
-                        <img class="header-searchImg"  th:src="@{/img/icon-magnifying.jpg}" alt="icon-searchImg.jpg" />
+                        <img class="header-searchImg"  th:src="@{/img/icon-magnifying-glass.jpg}" alt="icon-magnifying-glass.jpg" />
                     </div>
                 </div>
 

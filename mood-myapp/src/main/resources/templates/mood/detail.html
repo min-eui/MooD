@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
+    <script type="text/javascript">
+        function resize(obj) {
+            obj.style.height = '1px';
+            obj.style.height = (12 + obj.scrollHeight) + 'px';
+        }
+
+       window.onload = function () {
+            var listBtn = document.getElementById("listBtn");
+           listBtn.onclick = function () {
+               var link = '/';
+               location.replace(link);
+           }
+       }
+    </script>
+    <meta charset="UTF-8">
+    <title>글상세페이지</title>
+</head>
+<body>
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+        <div class="container">
+
+            <!-- 목록 버튼 -->
+            <div class="list-btnArea">
+                <input type="button" id="listBtn" class="btn-greenBlack" value="목록">
+            </div>
+
+            <!-- 리스트가 없는 경우 -->
+            <div class="css-div">
+                <!-- 리스트가 비어 있는 경우 -->
+                <div th:if="${#lists.isEmpty(moodPage)}">
+                    <p>삭제되었거나 없는 페이지 입니다. </p>
+                </div>
+            </div>
+
+            <!-- 리스트가 있는 경우 -->
+            <div class="text-section-main">
+                <div class="contents-section" th:unless="${#lists.isEmpty(moodPage)}" th:id="${mood.moodNum}" th:each="mood:${moodPage}">
+                    <div class="sendPageNum-div"  th:id="${mood.moodNum}">
+                        <div class="text-main-date">
+                            <span th:text="${mood.reg_date}"></span>
+                        </div>
+                        <div th:if="${not #strings.isEmpty(mood.userProfile)}" class="text-main-userProfile">
+                            <div th:text="${mood.userProfile}" id="userProfile" name="userProfile"></div>
+                        </div>
+                        <div class="text-main-userId">
+                            <span th:text="${mood.userId}" id="userId" name="userId"></span>
+                        </div>
+                        <div class="contents-spanArea-css">
+                            <span th:text="${mood.contents}" class="contents-span-css" id="contents" name="contents" ></span>
+                        </div>
+                    </div>
+                    <div class="text-btnArea-main">
+                        <div class="default-smallBtnArea">
+                            <img class="default-smallBtn"  th:src="@{/img/replyBtn.jpg}" alt="reply-btn" />
+                            <img class="default-smallBtn"  th:src="@{/img/viewerBtn.jpg}" alt="viewer-btn" />
+                            <img class="default-smallBtn"  th:src="@{/img/likerBtn.jpg}" alt="liker-btn" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <th:block th:replace="fragments/footer :: footer"></th:block>
+    </div>
+</div>
+</body>
+</html>
