@@ -211,10 +211,6 @@ public class MypageController {
         Member member;
         if(memberInfo.isPresent()){
             member = memberInfo.get();
-           //LocalDateTime parseDateTime = member.getReg_date();
-            //final LocalDateTime parseReg_date = LocalDateTime.parse(parseDateTime,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            //member.setReg_date(parseDateTime);
-            //System.out.println("time : "+parseReg_date);
         }else{
             throw new Exception();
         }
@@ -240,17 +236,6 @@ public class MypageController {
         }
 
         member.setUserPw(userPw);
-
-
-        //String reg_date = String.valueOf(member.getReg_date());
-        //String reg_date = member.getReg_date().toString();
-        //reg_date = member.setReg_date();
-        //System.out.println("reg_date 타입 : " + reg_date.getClass().getSimpleName());
-
-//        String parseDateTime = member.getReg_date().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-//        LocalDateTime parseReg_date = LocalDateTime.parse(parseDateTime,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-//        member.setReg_date(parseReg_date);
-
         Member isUpdate = mypageService.updateInfoProc(member);
 
         return "redirect:/";

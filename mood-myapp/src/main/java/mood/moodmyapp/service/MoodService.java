@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MoodService {
@@ -23,6 +24,22 @@ public class MoodService {
     public Mood saveMood(Mood moodForm) {
 
         Mood mood = new Mood();
+        // moodForm에서 moodNum 있는지 체크
+        if(moodForm.getMoodNum()!=null){
+            Optional<Mood> isMoodOp = moodRepository.findById(moodForm.getMoodNum());
+
+            // 해당 글 번호가 존재하면 업데이트 처리
+            if(isMoodOp.isPresent()){
+                mood = isMoodOp.get();
+                mood.setContents(moodForm.getContents());
+                mood.setEmotion(moodForm.getEmotion());
+                mood.setPhoto(moodForm.getPhoto());
+
+                return mood;
+            }
+        }
+
+
         mood = Mood.builder()
                 .userId(moodForm.getUserId())
                 .userProfile(moodForm.getUserProfile())
@@ -57,4 +74,10 @@ public class MoodService {
         return moodPage;
 
     }
+
+    public int deleteByMoodNum(Long moodNum) {
+        int isDel = moodRepository.deleteByMoodNum(moodNum);
+        return isDel;
+    }
+
 }
