@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
+    <script type="text/javascript">
+        function resize(obj) {
+            obj.style.height = '1px';
+            obj.style.height = (12 + obj.scrollHeight) + 'px';
+        }
+
+        /* 목록 버튼 */
+        function goList() {
+            var link = '/';
+            location.replace(link);
+        }
+
+        window.onload = function () {
+            var listBtn = document.getElementById("listBtn");
+            listBtn.onclick = function () {
+                var link = '/';
+                location.replace(link);
+            }
+        }
+
+        /* 더보기 버튼 체크 */
+        function chkFold(btnId) {
+
+            var foldVal = $("#"+btnId).val();
+            if(foldVal == "unfold"){
+                $("#"+btnId).attr("src","/img/list_btn/minus_btn.png");
+                $("#"+btnId).val("fold");
+
+                var parentId = $("#"+btnId).parents(".top-btnArea");
+                parentId.children(".dropdown-content").show();
+
+            }else if(foldVal == "fold"){
+                $("#"+btnId).attr("src","/img/list_btn/plus_btn.png");
+                $("#"+btnId).val("unfold");
+
+                var parentId = $("#"+btnId).parents(".top-btnArea");
+                parentId.children(".dropdown-content").hide();
+
+            }
+        }
+
+        /* 삭제버튼 */
+        function deleteList(delId) {
+            var listClass = $("#"+delId).parents(".contents-section");
+            var listId = listClass.attr('id');
+
+            $.ajax({
+                url: '/mood/deleteMood.do',
+                type: 'post',
+                // contentType:'application/json',
+                // dataType:"json",
+                data: {"moodNum": listId},
+                // data: JSON.stringify(moodNum),
+                success: function (data) {
+                    //삭제할 아이디(글번호)를 가진 div를 삭제
+                    $("#"+listId).remove();
+                    window.location.href="/";
+
+                }, error: function (req, status, err) {
+                    console.log(req);
+                    alert("오류로 인해 글 삭제에 실패했습니다.");
+                }
+
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log("에러");
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+
+            });
+        }
+
+        /* 감정 정보 담아서 글전송 */
+        function takeEmotion(){
+            const emoVal = document.querySelectorAll('#emotionArea > img');
+            const moodForm = document.getElementById('moodForm');
+
+            for(let i=0; i < emoVal.length; i++){
+                if(emoVal[i].value==="checked"){
+                    var moodVal = emoVal[i].id;
+                }
+            }
+
+            const emoInput = document.createElement('input');
+            emoInput.setAttribute("type","text");
+            emoInput.setAttribute("name","emotion");
+            emoInput.setAttribute("value",moodVal);
+
+            //append input (to form)
+            moodForm.appendChild(emoInput);
+
+            //append form(to body)
+            document.body.appendChild(moodForm);
+
+            // submit form
+            moodForm.submit();
+        }
+
+        function sendMoodNum(moodNum){
+            var link = '/mood/detail/'+moodNum; // 해당 글 상세페이지로 이동
+            location.replace(link);
+        }
+
+        history.pushState(null, null, '');  //data, title, url값 들어감. 비워두면 이벤트 발생의 플래그로 사용됨.
+        window.onpopstate = function (event) {  //뒤로가기 이벤트 캐치
+            location.href = '/';
+        }
+
+        /* html 최초 로드 및 이벤트 상시 대기 실시 */
+        window.onload = function () {
+            //모두 언체크된 상태로 만든다.
+            $(".top-btnArea > img").val("unfold");
+            $(".emotionArea > img").val("unchecked");
+        }
+        /* 이미지 클릭 체크 */
+        function checkClick(imgId){
+            const allImg = document.querySelectorAll('#emotionArea > img');
+            var chkVal = $("#"+imgId).val();
+            var clickedIdx = $("#"+imgId).index();
+
+            if(chkVal=="unchecked") {
+                $("#"+imgId).val("checked");
+                $("#"+imgId).attr("src","/img/emotion/"+imgId+"_color.png");
+                // 해당 값 빼고 다른 이미지들 값 unchecked로 리셋해주기
+
+                for(let i=0; i < allImg.length; i++){
+                    if(i != clickedIdx){
+                        var unchkId = allImg[i].id
+                        $("#"+unchkId).val("unchecked");
+                        $("#"+unchkId).attr("src","/img/emotion/"+unchkId+"_def.png");
+                    }
+                }
+
+            }else {
+                $("#"+imgId).val("unchecked");
+                $("#"+imgId).attr("src","/img/emotion/"+imgId+"_def.png");
+            }
+        }
+    </script>
+    <meta charset="UTF-8">
+    <title>글수정페이지</title>
+</head>
+<body>
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+        <div class="container">
+
+            <!-- 목록 버튼 -->
+            <div class="list-btnArea">
+                <input type="button" id="listBtn" class="btn-greenBlack" th:onclick="goList()" value="목록">
+            </div>
+
+            <!-- 리스트가 없는 경우 -->
+            <div class="css-div">
+                <!-- 리스트가 비어 있는 경우 -->
+                <div th:if="${#lists.isEmpty(moodPage)}">
+                    <p>삭제되었거나 없는 페이지 입니다. </p>
+                </div>
+            </div>
+
+            <!-- 리스트가 있는 경우 -->
+            <div class="text-section-main">
+                <form role = "form" id="moodForm" name="moodForm" th:action="@{/mood/update.do}" th:object="${mood}" method="post">
+                    <div class="emotionArea" id="emotionArea">
+                        <img th:src="@{/img/emotion/happy_def.png}" th:id="happy" class="emotion-img" alt="happy_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/alright_def.png}" th:id="alright" class="emotion-img" alt="alright_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/notBad_def.png}" th:id="notBad" class="emotion-img" alt="notBad_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/angry_def.png}" th:id="angry" class="emotion-img" alt="angry_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/annoyed_def.png}" th:id="annoyed" class="emotion-img" alt="annoyed_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/depressed_def.png}" th:id="depressed" class="emotion-img" alt="depressed_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/sad_def.png}" th:id="sad" class="emotion-img" alt="sad_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                    </div>
+                    <div class="contents-section" th:unless="${#lists.isEmpty(moodPage)}" th:id="${mood.moodNum}" th:each="mood:${moodPage}">
+                        <div class="dropdown">
+                            <div class="top-btnArea">
+                                <img class="top-btn"  th:id="${moodStat.count+'_btnId'}" th:src="@{/img/list_btn/plus_btn.png}" alt="plus_btn.png" value="unfold" th:onclick="chkFold(this.id)"/>
+
+
+                                <div class="dropdown-content" th:id="${moodStat.count+'_dropId'}">
+                                    <div th:id="${moodStat.count+'_delBtn'}" th:onclick="deleteList(this.id)">삭제하기</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sendPageNum-div"  th:id="${mood.moodNum}">
+                            <input type="hidden" th:name="moodNum" th:value="${mood.moodNum}"/>
+                            <div class="text-section">
+                                <textarea th:text="${mood.contents}" class="contents-span-css" id="contents" name="contents" ></textarea>
+
+                                <div class="text-btnArea">
+                                    <div class="default-smallBtnArea">
+                                        <img class="default-smallBtn"  th:src="@{/img/list_btn/photo_btn.png}" alt="photoBtn" />
+                                    </div>
+                                    <div class="default-btnArea">
+                                        <button type="button" class="default-btn" th:onclick="takeEmotion()">Mood</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <th:block th:replace="fragments/footer :: footer"></th:block>
+    </div>
+</div>
+</body>
+</html>

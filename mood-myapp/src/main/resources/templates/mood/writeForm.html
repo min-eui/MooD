@@ -19,14 +19,14 @@
     <div class="wrapper">
         <div class="container">
                 <form role = "form" id="moodForm" name="moodForm" th:action="@{/mood/write.do}" th:object="${mood}" method="post">
-                    <div class="emotionArea">
-                        <input type="button" id="emo-1" class="css-emotion" value="happy"/>
-                        <input type="button" id="emo-2" class="css-emotion" value="alright"/>
-                        <input type="button" id="emo-3" class="css-emotion" value="notBad"/>
-                        <input type="button" id="emo-4" class="css-emotion" value="angry"/>
-                        <input type="button" id="emo-5" class="css-emotion" value="annoyed"/>
-                        <input type="button" id="emo-6" class="css-emotion" value="depressed"/>
-                        <input type="button" id="emo-7" class="css-emotion" value="sad"/>
+                    <div class="emotionArea" id="emotionArea">
+                        <img th:src="@{/img/emotion/happy_def.png}" th:id="happy" class="emotion-img" alt="happy_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/alright_def.png}" th:id="alright" class="emotion-img" alt="alright_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/notBad_def.png}" th:id="notBad" class="emotion-img" alt="notBad_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/angry_def.png}" th:id="angry" class="emotion-img" alt="angry_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/annoyed_def.png}" th:id="annoyed" class="emotion-img" alt="annoyed_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/depressed_def.png}" th:id="depressed" class="emotion-img" alt="depressed_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
+                        <img th:src="@{/img/emotion/sad_def.png}" th:id="sad" class="emotion-img" alt="sad_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
                     </div>
 
                     <div class="text-section">
@@ -35,7 +35,7 @@
 
                         <div class="text-btnArea">
                             <div class="default-smallBtnArea">
-                                <img class="default-smallBtn"  th:src="@{/img/photoBtn.jpg}" alt="photoBtn" />
+                                <img class="default-smallBtn"  th:src="@{/img/list_btn/photo_btn.png}" alt="photoBtn" />
                             </div>
                             <div class="default-btnArea">
                                 <button type="submit" class="default-btn">Mood</button>

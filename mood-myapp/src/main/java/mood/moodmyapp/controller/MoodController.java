@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MoodController {
@@ -112,6 +113,55 @@ public class MoodController {
         Mood moodPage = moodService.findByMoodNum(MoodNumL);
         model.addAttribute("moodPage",moodPage);
         return "/mood/detail";
+    }
+
+    /**
+     * 글 삭제 처리
+     */
+
+    @ResponseBody
+    @PostMapping(value ="/mood/deleteMood.do", produces = "text/plain;charset=utf-8")
+    public void deleteProc(HttpServletRequest request, @RequestParam(value = "moodNum") String moodNum){
+
+        Long moodNumPars = Long.parseLong(moodNum);
+
+        /* 본인 글만 삭제할 수 있다. 로그인> 세션에서 아이디 체크 > 아이디에 쓴 글에만 삭제수정버튼 노출*/
+        /* 어차피 지우면 안되는 글은 버튼이 없을테니까 삭제버튼만 구현하자 */
+        int isDel = moodService.deleteByMoodNum(moodNumPars);
+//        HashMap<String,String> stateCode =  new HashMap<String,String>();
+//        String code="";
+//        if(isDel!=0){
+//            code = "친구삭제에 성공했습니다.";
+//
+//        }else {
+//            code = "친구삭제에 실패했습니다.";
+//        }
+//        return code;
+    }
+
+    /**
+     * 글수정 페이지
+     * @param
+     * @return
+     */
+    @GetMapping("/mood/update/{moodNum}")
+    public String moodUpdate(@PathVariable String moodNum, Model model) {
+
+        Long  MoodNumL= Long.parseLong(moodNum);
+        Mood moodPage = moodService.findByMoodNum(MoodNumL);
+        model.addAttribute("moodPage",moodPage);
+        return "/mood/update";
+    }
+
+    /**
+     * 글 수정 처리
+     */
+    @PostMapping("/mood/update.do")
+    public String moodUpdateProc(Mood moodForm){
+//        System.out.println("############컨트롤러"+moodForm.getMoodNum());
+        Mood isUpdate = moodService.saveMood(moodForm);
+        System.out.println("업데이트 성공 : " + isUpdate);
+        return "redirect:/";
     }
 
 }
