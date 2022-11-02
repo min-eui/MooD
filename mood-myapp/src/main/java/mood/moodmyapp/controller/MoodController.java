@@ -1,29 +1,38 @@
 package mood.moodmyapp.controller;
 
 import mood.moodmyapp.Session.SessionConstant;
+import mood.moodmyapp.common.FileStore;
+import mood.moodmyapp.domain.IsLike;
 import mood.moodmyapp.domain.Mood;
+import mood.moodmyapp.domain.UploadFile;
+import mood.moodmyapp.domain.MoodForm;
+import mood.moodmyapp.dto.IsLikeDto;
 import mood.moodmyapp.service.MoodService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class MoodController {
 
 
     private final MoodService moodService;
+    private final FileStore fileStore;
 
     @Autowired
-    public MoodController(MoodService moodService) {
+    public MoodController(MoodService moodService, FileStore fileStore) {
         this.moodService = moodService;
+        this.fileStore = fileStore;
     }
 
 
@@ -55,8 +64,9 @@ public class MoodController {
     /**
      * 글쓰기 처리
      */
-    @PostMapping("/mood/write.do")
-    public String writeProc(Mood moodForm, HttpServletRequest request){
+
+    @RequestMapping (value="/mood/write.do")
+    public String writeProc(@ModelAttribute("moodForm") MoodForm moodForm, HttpServletRequest request) throws IOException {
 
         HttpSession session = request.getSession(false);
 
@@ -65,16 +75,22 @@ public class MoodController {
         if(session == null){
             return "redirect:/login/login.do";
         }
+        // mood값 세팅할 객체 선언
+//        Mood mood = new Mood();
+
         //로그인한 상태라면
         // 세션에 저장된 회원 조회
         String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
 
         // 세션에서 글 작성자를 userId로 세팅
+//        mood.setUserId(userId);
         moodForm.setUserId(userId);
+        //moodForm에서 multifile타입으로 받아온 이미지 uploadFile타입으로 변환
+        //List<UploadFile> storeImageFiles = fileStore.storeFiles(moodForm.getImagesFiles());
 
-//        moodForm.setMood(String.valueOf(mood));
-//        System.out.println("##################mood" + moodForm.getMood());
-//        moodForm.setMood(moodForm.getMood());
+        //데이터베이스에 저장
+//        mood.setImagesFiles(storeImageFiles);
+
 
         Mood isSaved = moodService.saveMood(moodForm);
         HashMap<String,String> map = new HashMap();
@@ -131,10 +147,10 @@ public class MoodController {
 //        HashMap<String,String> stateCode =  new HashMap<String,String>();
 //        String code="";
 //        if(isDel!=0){
-//            code = "친구삭제에 성공했습니다.";
+//            code = "글 삭제에 성공했습니다.";
 //
 //        }else {
-//            code = "친구삭제에 실패했습니다.";
+//            code = "글 삭제에 실패했습니다.";
 //        }
 //        return code;
     }
@@ -157,11 +173,71 @@ public class MoodController {
      * 글 수정 처리
      */
     @PostMapping("/mood/update.do")
-    public String moodUpdateProc(Mood moodForm){
-//        System.out.println("############컨트롤러"+moodForm.getMoodNum());
+    public String moodUpdateProc(MoodForm moodForm) throws IOException {
+
         Mood isUpdate = moodService.saveMood(moodForm);
         System.out.println("업데이트 성공 : " + isUpdate);
         return "redirect:/";
     }
 
+    /**
+     * 글에서 이미지 보여주기
+     */
+    @ResponseBody
+    @GetMapping("/images/{filename}")
+    public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
+        return new UrlResource("file:" + fileStore.getFullPath(filename));
+    }
+
+
+    /**
+     * 좋아요 처리
+     */
+    @ResponseBody
+    @PostMapping("/mood/like.do")
+    public String likeProc(@RequestParam(name = "moodNum") String moodNum, @RequestParam(name = "isLike") int isLike, HttpServletRequest request){
+
+        Long  moodNumL= Long.parseLong(moodNum);
+        HttpSession session = request.getSession(false);
+
+//        IsLikeDto islike = new IsLikeDto();
+        //비로그인 상태면(세션이 없다면) 로그인페이지로 이동
+        if(session == null){
+            return "로그인후 이용해주세요.";
+        }
+
+        //로그인한 상태라면
+        // 세션에 저장된 회원 조회
+        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+
+       // 세션에서 좋아요 클릭한 사람을 userId로 세팅
+
+//        isLike.setMoodNum();
+        System.out.println("###############MoodController MoodNum = "+moodNum);
+        moodService.likeProc(moodNumL,isLike,userId);
+        return "1";
+    }
+
+    /**
+     * 좋아요 취소
+     */
+    @ResponseBody
+    @PostMapping("/mood/likeCancel.do")
+    public String likeCancel(@RequestParam(name="moodNum") String moodNum, @RequestParam(name = "isLike") int isLike, HttpServletRequest request){
+
+        Long  moodNumL= Long.parseLong(moodNum);
+        HttpSession session = request.getSession(false);
+
+//        IsLikeDto islike = new IsLikeDto();
+        //비로그인 상태면(세션이 없다면) 로그인페이지로 이동
+        if(session == null){
+            return "로그인후 이용해주세요.";
+        }
+        //로그인한 상태라면
+        // 세션에 저장된 회원 조회
+        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+
+        moodService.likeCancel(moodNumL,isLike,userId);
+        return "0";
+    }
 }

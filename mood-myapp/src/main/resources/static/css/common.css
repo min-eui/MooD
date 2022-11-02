@@ -185,7 +185,8 @@ html,body {
 
 
 .form-items{
-    /*margin-left: 90px;*/
+    margin-left: 130px;
+    align-items: center;
 }
 
 .css-div{
@@ -288,17 +289,21 @@ html,body {
 }
 
 .css-long-btnArea {
-    width: 40%;
-    float: left;
-    padding-left: 100px;
+    width: 100%;
+    padding-left: 300px;
+    margin: 10px;
     display:flex;
     justify-items: center;
     align-items:center;
 }
 .css-sns-btnArea {
-    width: 40%;
+    width: 100%;
+    margin: 10px;
+    padding-left: 300px;
     display:flex;
-    float: left;
+    justify-items: center;
+    align-items:center;
+    /*float: left;*/
 }
 
 
@@ -342,7 +347,7 @@ html,body {
 }
 .btn-items {
     width: 630px;
-    height: 60px;
+    height: 150px;
 }
 
 
@@ -352,7 +357,8 @@ html,body {
     -webkit-box-pack: center;
     justify-content: center;
     border-bottom: 1px solid rgb(247, 247, 247);
-    padding: 50px 0px;
+    padding-top: 20px;
+    padding-bottom: 40px;
     margin-top: 10px;
     margin-bottom: 40px;
 }
@@ -381,14 +387,41 @@ html,body {
     align-items: center;
     justify-items: center;
     overflow: hidden;
-    width: 170px;
-    height: 49px;
+    width: 200px;
+    height: 44px;
     font-size: 14px;
     font-weight: 500;
     border-radius: 15px;
     color: #fff;
     border: solid 1.5px #555;
     background: #555;
+
+
+    width: 180px;
+    /*border-radius: 3px;*/
+    /*color: #ffcf51;*/
+    padding:5px 10px 5px 7px; /* Firefox */
+    line-height:17px; /* Safari */
+
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+
+.signup-btn-white {
+    display: block;
+    padding: 0px 10px;
+    text-align: center;
+    align-items: center;
+    justify-items: center;
+    overflow: hidden;
+    width: 200px;
+    height: 44px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 15px;
+    color: #555;
+    border: solid 1px #555;
+    background: #fff;
 
 
     width: 180px;
@@ -556,17 +589,24 @@ html,body {
 
 .text-section {
     width: 100%;
-    padding: 5px;
     align-items: center;
+    border-top: solid 1px #cbcbcb;
     border-right: solid 1px #cbcbcb;
     border-left: solid 1px #cbcbcb;
+}
+
+.text-section-write {
+    width: 100%;
+    align-items: center;
+    border-top: solid 1px #cbcbcb;
     border-bottom: solid 1px #cbcbcb;
+    border-right: solid 1px #cbcbcb;
+    border-left: solid 1px #cbcbcb;
 }
 
 .text-section-main {
     width: 100%;
     align-items: center;
-
     border-bottom: solid 1px #cbcbcb;
     border-right: solid 1px #cbcbcb;
     border-left: solid 1px #cbcbcb;
@@ -597,7 +637,7 @@ textarea {
     resize: none;
     border: none;
     IME-MODE: active;
-
+    padding: 20px;
     font-size: 22px;
 }
 textarea:focus {
@@ -640,11 +680,12 @@ textarea:focus {
 
 
 .default-btnArea {
-    width: 294px;
-    height: 100%;
+    width: 30%;
     float: right;
-    padding: 3px;
+    padding: 10px 0;
+    margin: 0 auto;
     justify-items: center;
+    vertical-align: middle;
 }
 
 .default-smallBtnArea {
@@ -662,11 +703,12 @@ textarea:focus {
 
 .default-btn{
     display: block;
-    padding: 0px 10px;
+    vertical-align: middle;
+    align-items: center;
     overflow: hidden;
-    width: 80px;
-    height: 30px;
-    font-size: 18px;
+    width: 90%;
+    height: 40px;
+    font-size: 22px;
     font-weight: 500;
     border-radius: 30px;
 
@@ -678,14 +720,14 @@ textarea:focus {
 }
 
 .list-btnArea {
-    width: 200px;
+    width: 100px;
     height: 45px;
-    float: left;
-    padding: 3px;
+    margin: auto;
+    justify-items: center;
 }
 
 .btn-greenBlack {
-    width: 55%;
+    width: 100%;
     height: 40px;
     font-size: 22px;
     display: block;
@@ -743,3 +785,21 @@ textarea:focus {
 .dropdown-content div:hover{
     background-color : #ececec
 }
+
+/*사진아이콘으로 input버튼 대체*/
+.photo-input {
+    /*display: none;*/
+}
+
+.photo-divArea {
+    width: 70%;
+    margin: 0 auto;
+    padding: 60px 40px;
+    align-items: center;
+
+}
+
+ .photo-div {
+     width: 100%;
+
+ }

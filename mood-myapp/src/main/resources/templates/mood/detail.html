@@ -16,6 +16,27 @@
                location.replace(link);
            }
        }
+
+        /* 더보기 버튼 체크 */
+        function chkFold(btnId) {
+
+            var foldVal = $("#"+btnId).val();
+            if(foldVal == "unfold"){
+                $("#"+btnId).attr("src","/img/list_btn/minus_btn.png");
+                $("#"+btnId).val("fold");
+
+                var parentId = $("#"+btnId).parents(".top-btnArea");
+                parentId.children(".dropdown-content").show();
+
+            }else if(foldVal == "fold"){
+                $("#"+btnId).attr("src","/img/list_btn/plus_btn.png");
+                $("#"+btnId).val("unfold");
+
+                var parentId = $("#"+btnId).parents(".top-btnArea");
+                parentId.children(".dropdown-content").hide();
+
+            }
+        }
     </script>
     <meta charset="UTF-8">
     <title>글상세페이지</title>
@@ -42,6 +63,18 @@
             <!-- 리스트가 있는 경우 -->
             <div class="text-section-main">
                 <div class="contents-section" th:unless="${#lists.isEmpty(moodPage)}" th:id="${mood.moodNum}" th:each="mood:${moodPage}">
+                    <!--내가 쓸 글에만 더보기 버튼 노출된다-->
+                    <div class="dropdown" th:if="${mood.userId.toString().equals(session.loginMember)}">
+                        <div class="top-btnArea">
+                            <img class="top-btn"  th:id="${moodStat.count+'_btnId'}" th:src="@{/img/list_btn/plus_btn.png}" alt="plus_btn.png" value="unfold" th:onclick="chkFold(this.id)"/>
+
+                            <div class="dropdown-content" th:id="${moodStat.count+'_dropId'}">
+                                <div th:id="${moodStat.count+'_delBtn'}" th:onclick="deleteList(this.id)">삭제하기</div>
+                                <div th:id="${moodStat.count+'_editBtn'}" th:onclick="editList(this.id)">수정하기</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="sendPageNum-div"  th:id="${mood.moodNum}">
                         <div class="text-main-date">
                             <span th:text="${mood.reg_date}"></span>
@@ -58,9 +91,8 @@
                     </div>
                     <div class="text-btnArea-main">
                         <div class="default-smallBtnArea">
-                            <img class="default-smallBtn"  th:src="@{/img/replyBtn.jpg}" alt="reply-btn" />
-                            <img class="default-smallBtn"  th:src="@{/img/viewerBtn.jpg}" alt="viewer-btn" />
-                            <img class="default-smallBtn"  th:src="@{/img/likerBtn.jpg}" alt="liker-btn" />
+                            <img class="default-smallBtn"  th:src="@{/img/list_btn/reply_btn.png}" alt="reply-btn" />
+                            <img class="default-smallBtn"  th:src="@{/img/list_btn/like_btn_def.png}" alt="like-btn" />
                         </div>
 
                     </div>
