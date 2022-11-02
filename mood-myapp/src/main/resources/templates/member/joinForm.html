@@ -8,7 +8,7 @@
         function checks() {
             //유효성
             var checkIdVal = /^[a-zA-Z0-9]{8,15}$/; //아이디와 비밀번호 유효성 검사 정규식
-            var checkPwVal = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/; //비밀번호 유효성 검사 정규식
+            var checkPwVal = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&_+=]).*$/; //비밀번호 유효성 검사 정규식
             var checkName = /^[가-힣]{0,50}$/; //이름 유효성 검사 정규식(한글만 가능)
             var checkNickname = /[가-힣a-zA-Z]/; //닉네임 유효성 검사 정규식(한글만 가능)
             var checkPhoneVal = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;//핸드폰 번호 유효성 검사 정규식
@@ -44,7 +44,7 @@
             }
             //비밀번호 입력 문자수를 8~15자/특수문자로 제한하는 조건문
             if (!checkPwVal.test(userPw.value)) {
-                alert("비밀번호는 특수문자 포함 8~20자 이내로 입력 가능합니다.");
+                alert("비밀번호는 특수문자를 포함해야합니다. 사용가능 특수문자:[!@#$%^&_+=]");
                 return false;
             }
             if (userPwChk.value == '') {
@@ -64,7 +64,7 @@
             }
 
             /*닉네임 유효성검사*/
-            if (userNickname.value == '') {
+            if (nickname.value == '') {
                 alert("닉네임을 입력해주세요.");
                 return false;
             }
@@ -273,7 +273,7 @@
                         </div>
                         <div class="css-inputArea">
                             <!--소대문자 a~z 숫자 1~9까지-->
-                            <input type="password" id="userPw" name="userPw" class="css-input" minlength="8" maxlength="15" pattern="[a-zA-Z0-9]+" placeholder="비밀번호를 입력하세요">
+                            <input type="password" id="userPw" name="userPw" class="css-input" placeholder="비밀번호를 입력하세요">
                         </div>
                     </div>
                     <div class="css-div">

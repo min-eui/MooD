@@ -85,20 +85,37 @@
                     var moodVal = emoVal[i].id;
                 }
             }
+            alert(moodVal);
 
-            const emoInput = document.createElement('input');
-            emoInput.setAttribute("type","text");
-            emoInput.setAttribute("name","emotion");
-            emoInput.setAttribute("value",moodVal);
+            /** 감정정보가 있을때만 input에 담아서 전송 **/
+            if(!isEmpty(moodVal)) {
+                const emoInput = document.createElement('input');
+                emoInput.setAttribute("type","text");
+                emoInput.setAttribute("name","emotion");
+                emoInput.setAttribute("value",moodVal);
 
-            //append input (to form)
-            moodForm.appendChild(emoInput);
+                //append input (to form)
+                moodForm.appendChild(emoInput);
 
-            //append form(to body)
-            document.body.appendChild(moodForm);
+                //append form(to body)
+                document.body.appendChild(moodForm);
 
-            // submit form
+                // submit form
+                moodForm.submit();
+            }
             moodForm.submit();
+        }
+
+        /**
+         * 문자열이 빈 문자열인지 체크하여 결과값을 리턴한다.
+         * @param str		: 체크할 문자열
+         */
+        function isEmpty(str){
+
+            if(typeof str == "undefined" || str == null || str == "")
+                return true;
+            else
+                return false ;
         }
 
         function sendMoodNum(moodNum){
@@ -181,7 +198,6 @@
                             <div class="top-btnArea">
                                 <img class="top-btn"  th:id="${moodStat.count+'_btnId'}" th:src="@{/img/list_btn/plus_btn.png}" alt="plus_btn.png" value="unfold" th:onclick="chkFold(this.id)"/>
 
-
                                 <div class="dropdown-content" th:id="${moodStat.count+'_dropId'}">
                                     <div th:id="${moodStat.count+'_delBtn'}" th:onclick="deleteList(this.id)">삭제하기</div>
                                 </div>
@@ -190,7 +206,7 @@
                         <div class="sendPageNum-div"  th:id="${mood.moodNum}">
                             <input type="hidden" th:name="moodNum" th:value="${mood.moodNum}"/>
                             <div class="text-section">
-                                <textarea th:text="${mood.contents}" class="contents-span-css" id="contents" name="contents" ></textarea>
+                                <textarea th:text="${mood.contents}" id="contents" name="contents" ></textarea>
 
                                 <div class="text-btnArea">
                                     <div class="default-smallBtnArea">
