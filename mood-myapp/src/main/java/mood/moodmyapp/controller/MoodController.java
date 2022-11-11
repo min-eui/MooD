@@ -7,6 +7,9 @@ import mood.moodmyapp.domain.Mood;
 import mood.moodmyapp.domain.UploadFile;
 import mood.moodmyapp.domain.MoodForm;
 import mood.moodmyapp.dto.IsLikeDto;
+import mood.moodmyapp.dto.MoodDto;
+import mood.moodmyapp.dto.MoodJoinDto;
+import mood.moodmyapp.dto.MoodJoinIsLikeDto;
 import mood.moodmyapp.service.MoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -21,6 +24,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MoodController {
@@ -111,9 +115,15 @@ public class MoodController {
     @GetMapping("/")
     public String mainPage(Model model){
 
+
         List<Mood> moodList = moodService.findAllMood();
+
+//        List<Mood> moodList = moodService.findAllMood();
+//        List<IsLike> isLikeList = moodService.findAllIsLike();
+        // 좋아요 했는지 아닌지 체크> 글마다 체크해줘야함
+//        model.addAttribute("isLikeList",isLikeList);
         model.addAttribute("moodList",moodList);
-        return "index";
+        return "/index";
     }
 
 
@@ -208,13 +218,12 @@ public class MoodController {
 
         //로그인한 상태라면
         // 세션에 저장된 회원 조회
-        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+        String likeUserId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
 
        // 세션에서 좋아요 클릭한 사람을 userId로 세팅
 
-//        isLike.setMoodNum();
-        System.out.println("###############MoodController MoodNum = "+moodNum);
-        moodService.likeProc(moodNumL,isLike,userId);
+        System.out.println("###############MoodController MoodNum = "+moodNumL);
+        moodService.likeProc(moodNumL,isLike,likeUserId);
         return "1";
     }
 
@@ -235,9 +244,10 @@ public class MoodController {
         }
         //로그인한 상태라면
         // 세션에 저장된 회원 조회
-        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+        String likeUserId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
 
-        moodService.likeCancel(moodNumL,isLike,userId);
+        moodService.likeCancel(moodNumL,isLike,likeUserId);
+        System.out.println("좋아요취소moodNumL : " + moodNumL);
         return "0";
     }
 }

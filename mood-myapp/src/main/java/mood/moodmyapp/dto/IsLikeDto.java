@@ -10,7 +10,8 @@ import javax.persistence.*;
 @Builder
 public class IsLikeDto {
 
+    private Long isLikeId;       //아이디
     private Long moodNum;   // 글번호
-    private String userId;  // 좋아요한 사람 아이디
+    private String likeUserId;  // 좋아요한 사람 아이디
     private int isLike;       // 좋아요
 }

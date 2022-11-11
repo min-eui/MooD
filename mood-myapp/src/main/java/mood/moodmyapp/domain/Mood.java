@@ -2,6 +2,7 @@ package mood.moodmyapp.domain;
 
 import lombok.*;
 import mood.moodmyapp.jpaEntity.BaseTimeEntity;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
@@ -11,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static java.util.Collections.emptySet;
 
 //@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // 상속 전략
 //@DiscriminatorColumn(name="moodNum")   //  구분하는 칼럼
@@ -31,10 +34,9 @@ public class Mood extends BaseTimeEntity {
     private Long moodNum;               //감정인덱스번호
 
 
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="moodNum")
-    private Collection<IsLike> isLike;
+//    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "moodNum", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<IsLike> isLike = emptySet();
 
     @Column(name="userId", length = 50, nullable = false)
     private String userId;              //회원아이디(작성자)
@@ -61,5 +63,9 @@ public class Mood extends BaseTimeEntity {
 
     @Column(name="totalLike", length = 500, nullable = true)
     private Long totalLike; //좋아요 개수
+
+    @Column(name="likeUserList", length = 200, nullable = true)
+    private String likeUserList;    //좋아요한 사람들
+
 
 }

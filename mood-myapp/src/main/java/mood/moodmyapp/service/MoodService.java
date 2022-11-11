@@ -5,6 +5,8 @@ import mood.moodmyapp.domain.IsLike;
 import mood.moodmyapp.domain.Mood;
 import mood.moodmyapp.domain.MoodForm;
 import mood.moodmyapp.domain.UploadFile;
+import mood.moodmyapp.dto.MoodDto;
+import mood.moodmyapp.dto.MoodJoinDto;
 import mood.moodmyapp.repository.IsLikeRepository;
 import mood.moodmyapp.repository.MoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -70,6 +73,7 @@ public class MoodService {
     public List<Mood> findAllMood() {
 
         List<Mood> moodList = moodRepository.findAllOrderByReg_dateDesc();
+//        List<Mood> moodList = moodRepository.findAllOrderByReg_dateDesc();
 
         return moodList;
     }
@@ -110,13 +114,13 @@ public class MoodService {
     /**
      * 좋아요 처리
      */
-    public void likeProc(Long moodNum,int isLike,String userId){
+    public void likeProc(Long moodNum, int isLike, String likeUserId){
         //moodNum 으로 해당 객체 찾아와서 그 객체의 좋아요 수 변경 및 좋아요 테이블 값도 세팅
 
         Optional<Mood>checkMoodNum = Optional.ofNullable(moodRepository.findByMoodNum(moodNum));
-        Optional<IsLike> checkIsLike = Optional.ofNullable(isLikeRepository.findByMoodNumAndUserId(moodNum, userId));
+        Optional<IsLike> checkIsLike = Optional.ofNullable(isLikeRepository.findByMoodNumAndlikeUserId(moodNum, likeUserId));
         System.out.println("###############MoodService MoodNum = "+moodNum);
-        System.out.println("###############MoodService 좋아요한 userId = "+userId);
+        System.out.println("###############MoodService 좋아요한 userId = "+likeUserId);
         // 글넘버가 존재하면
         if(checkMoodNum.isPresent()){
             // 좋아요 데이터가 없으면 저장
@@ -124,13 +128,18 @@ public class MoodService {
                 IsLike saveLike = new IsLike();
                 saveLike = IsLike.builder()
                         .moodNum(moodNum)
-                        .userId(userId)
+                        .likeUserId(likeUserId)
                         .isLike(isLike)
                         .build();
                 isLikeRepository.save(saveLike);
+                // mood의 totalLike 에 +1 해주기
+                moodRepository.addTotalLike(moodNum);
             }else{
                 //좋아요값이 있으면 업데이트
-                isLikeRepository.updateBymoodNumAndUserId(moodNum, isLike, userId);
+                isLikeRepository.updateBymoodNumAndlikeUserId(moodNum, isLike, likeUserId);
+
+                // mood의 totalLike 에 +1 해주기
+                moodRepository.addTotalLike(moodNum);
             }
         }
 
@@ -140,18 +149,27 @@ public class MoodService {
     /**
      * 좋아요 취소
      */
-    public void likeCancel(Long moodNum, int isLike, String userId) {
-        Optional<IsLike>checkIsLike = Optional.ofNullable(isLikeRepository.findByMoodNumAndUserId(moodNum,userId));
+    public void likeCancel(Long moodNum, int isLike, String likeUserId) {
+        Optional<IsLike>checkIsLike = Optional.ofNullable(isLikeRepository.findByMoodNumAndlikeUserId(moodNum,likeUserId));
 
         System.out.println("###############MoodService MoodNum = "+moodNum);
-        System.out.println("###############MoodService 좋아요한 userId = "+userId);
+        System.out.println("###############MoodService 좋아요한 userId = "+likeUserId);
         if(checkIsLike.isPresent()){
-            isLikeRepository.updateBymoodNumAndUserId(moodNum, isLike, userId);
+            isLikeRepository.updateBymoodNumAndlikeUserId(moodNum, isLike, likeUserId);
+
+            // mood의 totalLike 에 -1 해주기
+            moodRepository.subtractTotalLike(moodNum);
 
         }
 
     }
 
-
-
+    /**
+     * 좋아요한사람 체크
+     * @return
+     */
+//    public List<IsLike> findAllIsLike() {
+//        List<IsLike> isLikeList = isLikeRepository.findAllIsLike();
+//        return isLikeList;
+//    }
 }
