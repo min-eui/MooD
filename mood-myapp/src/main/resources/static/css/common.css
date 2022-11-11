@@ -690,16 +690,39 @@ textarea:focus {
 
 .default-smallBtnArea {
     width: 100%;
-
     float: left;
     padding: 5px;
 }
+
+/*.color_likeArea {*/
+/*    width: 100%;*/
+/*    float: left;*/
+/*    padding: 5px;*/
+/*}*/
+
+/*.def_likeArea {*/
+/*    width: 30px;*/
+/*    height: 30px;*/
+/*    float: left;*/
+
+/*}*/
 
 .default-smallBtn {
     width: 28px;
     padding: 5px;
 }
+.color_like {
+    width: 28px;
+    padding: 5px;
 
+}
+
+.def_like {
+    /*display: none;*/
+    width: 28px;
+    padding: 5px;
+
+}
 
 .default-btn{
     display: block;
@@ -724,6 +747,12 @@ textarea:focus {
     height: 45px;
     margin: auto;
     justify-items: center;
+}
+
+.small-span-div {
+    width: 28px;
+    padding: 5px;
+    float: right;
 }
 
 .btn-greenBlack {
@@ -803,3 +832,4 @@ textarea:focus {
      width: 100%;
 
  }
+
