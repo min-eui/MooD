@@ -162,36 +162,49 @@
         function chkLike(likeBtnId) {
             //default-smallBtn 의 children class def_like color_like인지 구분
             var contentsId = $("#"+likeBtnId).parents(".contents-section");
-            var moodNum = contentsId.children(".sendPageNum-div").id;
+            // var moodNum = contentsId.children(".sendPageNum-div").id;
             var conClass = $("#" + likeBtnId).parents(".contents-section");
             var moodNum = conClass[0].getAttribute('id'); // getElements- 메서드는 값을 객체로 받아오기 때문에 ele.함수(x)> ele[i].함수(o)
             var isLike = 0;
 
             // default-smallBtnArea 의 2번째 img 태그 class가 어떤건지 따라서 isLike 구분값 설정
-            const textBtnArea = $("#"+likeBtnId).parents(".text-btnArea-main");
-            const textBtnAreaId = textBtnArea[0].getAttribute('id');
-            const likeTag = $("#"+textBtnAreaId).find('img:eq(1)');
+            var textBtnArea = $("#"+likeBtnId).parents(".text-btnArea-main");
+            var textBtnAreaId = textBtnArea[0].getAttribute('id');
+            var likeTag = $("#"+textBtnAreaId).find('img:eq(1)');
             checkLike = likeTag[0].getAttribute('class');
 
+
+            var spanVar = $("#"+textBtnAreaId).find('span:eq(0)');
+            var spanId = spanVar[0].getAttribute('id');
+            const spanOrigin = Number($("#"+spanId).text());    //상수로 선언, 문자열> 숫자로 파싱
+            const spanLike = spanOrigin+1;
+            const spanDisLike = spanOrigin-1;
+
+            // alert("spanTxt : "+spanTxt);
+
+
             // 이미 좋아요 눌려있을때
-            if(checkLike == "def_like"){
-                isLike = 1;//isLike 값 1으로 세팅후 전송
+            if(checkLike == "color_like"){
+                alert("checkLike : "+checkLike);
+                isLike = 0;//isLike 값 0으로 세팅후 전송
                 $.ajax({
-                    url: '/mood/like.do',
+                    url: '/mood/likeCancel.do',
                     type: 'post',
                     data: {'moodNum': moodNum, 'isLike': isLike},
                     // contentType: 'application/json',
                     success: function (data) {
-                        checkLike == "color_like";
-                        if (data == 1) {
-                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_color.png");
-                            $("#" + likeBtnId).attr("class", "color_like");     //class로 버튼 구분하기 때문에 다시 설정
-                        } else {
+                        if (data == 0) {
+                            alert("성공")
+                            checkLike == "def_like";
                             $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_def.png");
+                            $("#" + likeBtnId).attr("class", "def_like");     //class로 버튼 구분하기 때문에 다시 설정
+                            $("#"+spanId).text(spanDisLike);                     // totalLike 원래값으로 변경
+                        } else {
+                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_color.png");
                         }
                     }, error: function (req, status, err) {
                         console.log(req);
-                        alert("오류로 인해 좋아요 실패했습니다.");
+                        alert("오류로 인해 좋아요취소 실패했습니다.");
                     }
 
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -202,25 +215,28 @@
 
                 });
                 // 좋아요 안눌려 있을때
-            }else if(checkLike =="color_like"){
-
-                isLike = 0; //isLike 값 0으로 세팅후 전송
+            }else if(checkLike =="def_like"){
+                alert("checkLike : "+checkLike);
+                isLike = 1; //isLike 값 0으로 세팅후 전송
                 $.ajax({
-                    url: '/mood/likeCancel.do',
+                    url: '/mood/like.do',
                     type: 'post',
                     data: {'moodNum': moodNum, 'isLike': isLike},
                     // contentType: 'application/json',
                     success: function (data) {
-                        checkLike == "def_like";
-                        if (data == 0) {
-                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_def.png");
-                            $("#" + likeBtnId).attr("class", "def_like");   //class로 버튼 구분하기 때문에 다시 설정
-                        } else {
+                        if (data == 1) {
+                            alert("성공")
+                            checkLike == "color_like";
                             $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_color.png");
+                            $("#" + likeBtnId).attr("class", "color_like");   //class로 버튼 구분하기 때문에 다시 설정
+                            $("#"+spanId).text(spanLike);                   //totalLike+1
+
+                        } else {
+                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_def.png");
                         }
                     }, error: function (req, status, err) {
                         console.log(req);
-                        alert("오류로 인해 좋아요취소에 실패했습니다.");
+                        alert("오류로 인해 좋아요 실패했습니다.");
                     }
 
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -331,24 +347,16 @@
                             <div class="photo-divArea">
                                 <img class="photo-div" th:each="imageFile : ${mood.imageFiles}" th:src="@{${'/images/'+imageFile.getStoreFileName()}}" alt="photo" width="300px"/>
                             </div>
-<!--                            <div>-->
-<!--                                <span th:text="${mood.totalLike}" name="totalLike"></span>-->
-<!--                            </div>-->
-
-
                         </div>
                         <div class="text-btnArea-main" th:id="${'text-btnArea-main_'+moodStat.count}">
                             <div class="default-smallBtnArea" th:id="${'default-smallBtnArea_'+moodStat.count}">
                                 <img class="default-smallBtn"  th:src="@{/img/list_btn/reply_btn.png}" alt="reply-btn" />
-                                <!--                                    <div class="color_likeArea" th:each="isLike:${moodList[0].isLike}">-->
-                                <img th:each="isLike:${moodList[0].isLike}" th:class="color_like"  th:if="${mood.moodNum} == ${moodList[0].isLike[0].moodNum} and ${#strings.equals(isLike['likeUserId'],session.loginMember)} and ${isLike['isLike']} > 0" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_color.png}" th:onclick="chkLike(this.id)" alt="like-btn" />
-                                <!--                                    </div>-->
-                                <!--                                    <div class="def_likeArea" >-->
+
+                                <img th:each="isLike:${mood.isLike}" th:class="color_like"  th:if="${isLike.moodNum.equals(mood.moodNum)} and ${#strings.equals(isLike['likeUserId'],session.loginMember)} and ${isLike['isLike']} > 0" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_color.png}" th:onclick="chkLike(this.id)" alt="like-btn" />
                                 <img th:class="def_like" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_def.png}" th:onclick="chkLike(this.id)" alt="like-btn" />
-                                <div class="small-span-div">
-                                    <span th:text="${mood.totalLike}" name="totalLike"></span>
+                                <div class="small-span-div" th:id="${'spanDiv_totalLike_'+mood.moodNum}">
+                                    <span class="class_totalLike" th:id="${'span_totalLike_'+mood.moodNum}" th:text="${mood.totalLike}" name="totalLike"></span>
                                 </div>
-                                <!--                                    </div>-->
                             </div>
                         </div>
                     </div>
