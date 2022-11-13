@@ -817,7 +817,7 @@ textarea:focus {
 
 /*사진아이콘으로 input버튼 대체*/
 .photo-input {
-    /*display: none;*/
+    display: none;
 }
 
 .photo-divArea {
@@ -832,4 +832,6 @@ textarea:focus {
      width: 100%;
 
  }
-
+.text-main-emotion >img{
+    width: 90px;
+}
