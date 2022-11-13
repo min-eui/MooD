@@ -53,48 +53,11 @@
          * @param str		: 체크할 문자열
          */
         function isEmpty(str){
-
             if(typeof str == "undefined" || str == null || str == "")
                 return true;
             else
                 return false ;
         }
-
-        // function uploadAjax() {
-        //     alert("업로드 클릭");
-        //     var formData = new FormData();
-        //
-        //     var inputFile = $("input[type='file']");
-        //
-        //     var files = inputFile[0].files;
-        //
-        //     for (var i = 0; i < files.length; i++) {
-        //         console.log(files[i]);
-        //         formData.append("photo", files[i]);
-        //     }
-        //     // readImage(inputFile);
-        //     //실제 업로드 부분
-        //     //upload ajax
-        //     //파일업로드를 위해 contentType 속성을 반드시 false로 지정한다 -> multipart/form-data 타입을 사용하기위해
-        //     $.ajax({
-        //         url: '/mood/upload.do',
-        //         processData: false,
-        //         contentType: false,
-        //         data: formData,
-        //         type: 'POST',
-        //         success: function (result) {
-        //             console.log(result);
-        //             //나중에 화면 처리
-        //             alert(result);
-        //         },
-        //         error: function (jqXHR, textStatus, errorThrown) {
-        //             console.log(textStatus);
-        //             alert(textStatus);
-        //         }
-        //
-        //     }); //$.ajax
-        // }
-
 
         /* html 최초 로드 및 이벤트 상시 대기 실시 */
         window.onload = function () {
@@ -102,7 +65,6 @@
             //모두 언체크된 상태로 만든다.
             $(".emotionArea > img").val("unchecked");
         }
-
 
         /* 이미지 클릭 체크 */
         function checkClick(imgId){
@@ -147,71 +109,35 @@
 
         }
 
-        // function clickCheck(){
-        //     clickCnt++;
-        //     alert(clickCnt);
-        // }
-        /* 이미지 버튼 클릭시 인풋버튼 추가 */
-        // function addInput(labelId){
-        //     // clickCnt++;
-        //     // alert(clickCnt);
-        //     var labelIdEl = document.getElementById(labelId);
-        //     // var inputCnt = labelIdEl.childElementCount;
-        //     // alert("clickCnt : "+clickCnt)
-        //     //클릭하는것을 개수를 세고 개수가 4개이상이면 안만들어지게
-        //     // if(clickCnt==inputCnt && inputCnt<=4){
-        //         var newInput = document.createElement("input");
-        //         newInput.setAttribute("type","file");
-        //         newInput.setAttribute("name","imageFiles");
-        //         newInput.setAttribute("class","photo-input");
-        //         newInput.setAttribute("onchange","readImage(this)")
-        //         var labelEl = document.getElementById(labelId);
-        //         //라벨 안에다가 인풋버튼 추가하기
-        //         labelEl.appendChild(newInput);
-        //         newInput.click();
-        //         // var allInput = document.querySelectorAll("input[name='imageFiles']");
-        //         // var inputId = allInput[inputCnt-1];
-        //         // alert("inputCnt : "+inputCnt)
-        //         // inputId.click();
-        //
-        //     // }
-        //
-        //
-        // }
         var clickCnt = 0;
-        // $(document).ready(function (){
         $(function () {
-
             $("#imgLabel").click(function () {
-
-
-                // var inputCnt = labelIdEl.childElementCount;
-
-                //클릭하는것을 개수를 세고 개수가 4개이상이면 안만들어지게
-                 if (clickCnt < 4){
+                //클릭하는것을 개수를 세고 개수가 1개이상이면 안만들어지게
+                 if (clickCnt < 1){
                      alert("아직 "+ clickCnt + "번째");
+                     // if($("#imgLabel").find('input:eq(clickCnt)').val() != null){
                      var newInput = document.createElement("input");
                      newInput.setAttribute("type", "file");
-                     newInput.setAttribute("id", clickCnt+"_id");
+                     // newInput.setAttribute("id", clickCnt+"_id");
+                     newInput.setAttribute("id", "imageFiles");
                      newInput.setAttribute("name", "imageFiles");
                      newInput.setAttribute("class", "photo-input");
-                     newInput.setAttribute("onchange", "readImage(this)")
+                     newInput.setAttribute("style", "display: none");
+                     newInput.setAttribute("multiple","");
+                     newInput.setAttribute("onchange", "readImage(this)");
                      var labelEl = document.getElementById("imgLabel");
-                     alert("setAttribute");
+
                      // //라벨 안에다가 인풋버튼 추가하기
                      labelEl.appendChild(newInput);
                      var newInputId = newInput.id;
                      alert("newInputId" + newInputId);
+                     clickCnt++;
 
-                     // $("#"+newInputId).trigger("click");    //클릭이벤트 강제 발생
-                     //$("#imgLabel").children("input:eq(0)").trigger("click");//클릭이벤트 강제 발생
+                     $("#imgLabel").find('input:eq(clickCnt)').click();
 
                  }
-
-                clickCnt++;
             });
 
-            // });
         });
 
     </script>
@@ -246,12 +172,8 @@
 
                         <div class="text-btnArea">
                             <div class="default-smallBtnArea">
-<!--                                <div id="imgLabel" th:onclick="addInput(this.id)">-->
-                                <div id="imgLabel"><img class="default-smallBtn" th:src="@{/img/list_btn/photo_btn.png}" alt="photoBtn" th:id="selPhotoBtn" />
-<!--                                <input type="file" th:multiple="multiple" id="imageFiles" name="imageFiles" class="photo-input" onchange="readImage(this);"/>-->
-                                </div>
-<!--                                <button type="button" th:id="uploadBtn" class="uploadBtn" th:onclick="uploadFile()">Upload</button>-->
-
+                                <label id="imgLabel" for="imageFiles"><img class="default-smallBtn" th:src="@{/img/list_btn/photo_btn.png}" alt="photoBtn" th:id="selPhotoBtn" />
+                                </label>
                             </div>
 
                             <div class="default-btnArea">
