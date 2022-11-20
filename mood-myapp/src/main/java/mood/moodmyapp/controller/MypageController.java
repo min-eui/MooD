@@ -3,13 +3,10 @@ package mood.moodmyapp.controller;
 
 import mood.moodmyapp.Session.SessionConstant;
 import mood.moodmyapp.common.EncryptionUtils;
-import mood.moodmyapp.common.KakaoOauthService;
 import mood.moodmyapp.domain.Friend;
 import mood.moodmyapp.domain.Member;
-import mood.moodmyapp.repository.MemberRepository;
 import mood.moodmyapp.service.MemberService;
 import mood.moodmyapp.service.MypageService;
-import nonapi.io.github.classgraph.json.JSONUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,11 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RequestMapping(value="/mypage")
@@ -43,7 +35,6 @@ public class MypageController {
         this.memberService = memberService;
         this.mypageService = mypageService;
     }
-
 
 
     /**
@@ -70,9 +61,7 @@ public class MypageController {
         //세션이 있다면 마이페이지 메인으로 이동
         model.addAttribute("member", isMember);
         return "/mypage/main";
-
     }
-
 
     /**
      * 내 친구목록 조회하기
@@ -88,6 +77,7 @@ public class MypageController {
 
         return "/mypage/friendList";
     }
+
 
     /**
      * 친구 찾기
@@ -133,8 +123,6 @@ public class MypageController {
 
     }
 
-
-
     /**
      * 친구 추가하기
      */
@@ -155,7 +143,6 @@ public class MypageController {
         return friendMap;
 
     }
-
 
     /**
      * 친구 삭제하기
@@ -203,11 +190,6 @@ public class MypageController {
 
         // 세션에 저장된 아이디로 회원조회/
         Optional<Member> memberInfo = memberService.findById(userId);
-//         memberService.findById(userId).map(
-//                member -> {
-//                    //Member 객체 반환
-//                    return new Member(member.getUserId(), member.getUserPw(), member.getUserName(), member.getNickName(), member.getPhoneNum(), member.getTerm1(), member.getTerm2(), member.getKakaoYn(), member.getReg_date());
-//                });
         Member member;
         if(memberInfo.isPresent()){
             member = memberInfo.get();

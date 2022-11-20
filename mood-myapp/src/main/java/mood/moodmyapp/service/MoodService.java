@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -165,11 +168,25 @@ public class MoodService {
     }
 
     /**
-     * 좋아요한사람 체크
+     * 월별 감정 통계 데이터 조회
      * @return
      */
-//    public List<IsLike> findAllIsLike() {
-//        List<IsLike> isLikeList = isLikeRepository.findAllIsLike();
-//        return isLikeList;
+    public List<List>  findMonthlyStatics(String searchYear, String userId) {
+        searchYear = searchYear+"-01 00:00:00.000";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        LocalDateTime yearTodate = LocalDateTime.parse(searchYear,formatter);
+        List<List> staticMList = moodRepository.findMonthlyStaticsByReg_date(yearTodate, userId);
+        return staticMList;
+    }
+//    /**
+//     * 년도별 감정 통계 데이터 조회
+//     */
+//    public List<List> findYearlyStatics(String searchYear) {
+//        searchYear = searchYear+"-01-01 00:00:00.000";
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+//        LocalDateTime yearTodate = LocalDateTime.parse(searchYear,formatter);
+//        List<List> staticYList = moodRepository.findYearlyStaticsByReg_date(yearTodate);
+//
+//        return staticYList;
 //    }
 }

@@ -1,0 +1,339 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
+    <!--chart.js CDN-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+    <script type="text/javascript">
+            window.onload = function () {
+                // 처음 로딩시 현재 년도, 월로 그래프 세팅을 위해 날짜 가져오기
+                var today = new Date();
+                var thisYear = today.getFullYear();
+                var thisMonth = ('0' + (today.getMonth() + 1)).slice(-2);   //getMonth()함수는 0~11을 반환하기 때문에 항상 +1 해줘야함
+                getEmoThisMonth(thisYear, thisMonth);  //파이 그래프 실행
+                // getEmoThisYear(thisYear);  //라인 그래프 실행
+                selectThisDate(thisYear, thisMonth);
+                $("#noDataMsg-pieChart").hide();
+            }
+
+            /* 라인 차트 함수*/
+            // function getEmoThisYear(thisYear) {
+            //     $.ajax({
+            //         type: "post",
+            //         url: "/mood/statics/yearly/EmotionDataType.do",
+            //         data: {"searchYear": thisYear},   // 년도 파라미터로 전송 테스트로 하드코딩
+            //         dataType: "json",
+            //         success: function (data) {
+            //             alert("통신 성공");
+            //             console.log(data);
+            //             let emoLineList = new Array();  // 데이터를 담아올 리스트 선언
+            //             var allYear = 12;
+            //
+            //             //data 값이 없다면
+            //             if (data.length===0) {
+            //                 alert("올해 데이터가 없습니다.");
+            //                 $(".chart-class-line").hide();
+            //                 $("#noDataMsg-pieChart").show();
+            //
+            //                 //data 값 있으면 pie그리기
+            //             } else {
+            //                 $(".chart-class-line").show();
+            //                 for (let i = 0; i < data.length; i++) {
+            //                     for (let j = 0; j < data[i].length; j++) {
+            //
+            //                         emoLineList.push(data[i][j + 2]);
+            //                         console.log(data[i][j + 2]);
+            //                     }
+            //                 }
+            //
+            //                 /* 차트 그리기 */
+            //                 var context = document
+            //                     .getElementById("lineChart").getContext("2d");
+            //                 lineChart = new Chart(context, {  //chart 내용, update() 사용위해 전역변수 선언
+            //                     type: 'line', // 차트의 형태
+            //                     data: { // 차트에 들어갈 데이터
+            //                         labels: [
+            //                             //x 축
+            //                             'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            //                         ],
+            //                         datasets: [
+            //                             { //데이터
+            //                                 label: 'emoLineChart', //차트 제목
+            //                                 fill: false, // line 형태일 때, 선 안쪽을 채우는지 안채우는지
+            //                                 data:
+            //                                 emoLineList //x축 label에 대응되는 데이터 값
+            //                                 ,
+            //                                 backgroundColor: [
+            //                                     //색상
+            //                                     'rgba(255, 99, 132, 0.2)',
+            //                                     'rgba(54, 162, 235, 0.2)',
+            //                                     'rgba(255, 206, 86, 0.2)',
+            //                                     'rgba(75, 192, 192, 0.2)',
+            //                                     'rgba(153, 102, 255, 0.2)',
+            //                                     'rgba(255, 159, 64, 0.2)',
+            //                                     'rgba(23, 147, 64, 0.2)',
+            //                                     'rgba(225, 99, 122, 0.2)',
+            //                                     'rgba(54, 122, 265, 0.2)',
+            //                                     'rgba(250, 106, 86, 0.2)',
+            //                                     'rgba(70, 132, 192, 0.2)',
+            //                                     'rgba(153, 92, 255, 0.2)',
+            //                                     'rgba(155, 119, 64, 0.2)'
+            //                                 ],
+            //                                 fill:false,
+            //                                 tension:0
+            //                             }
+            //                         ]
+            //                     },
+            //                     options: {
+            //                         maintainAspectRatio: false, //true 하게 되면 캔버스 width,height에 따라 리사이징된다.
+            //
+            //                     }//차트 만들기 끝
+            //                 });
+            //             }
+            //
+            //         }, error(req, status, err) {
+            //             // 실패 시
+            //             alert("통신에 실패했습니다")
+            //         }
+            //     })
+            //         .done(function (json) {
+            //
+            //
+            //         }).fail(function (xhr, status, errorThrown) {
+            //         $("#text2").html("오류가 발생했다.<br>")
+            //             .append("오류명: " + errorThrown + "<br>")
+            //             .append("상태: " + status);
+            //     }).always(function (xhr, status) {
+            //         $("#text2").html("요청이 완료되었습니다!");
+            //     }); //ajax 끝
+            // }   //getEmoThisYear 끝
+
+            function getEmoThisMonth(thisYear, thisMonth) {
+
+                $.ajax({
+                    type: "post",
+                    url: "/mood/statics/monthly/EmotionDataType.do",
+                    data: {"searchYear": thisYear + "-" + thisMonth},   // 년도 파라미터로 전송 테스트로 하드코딩
+                    dataType: "json",
+                    success: function (data) {
+                        //alert("통신 성공");
+                        //console.log(data);
+                        let emoList = new Array();  // 데이터를 담아올 리스트 선언
+                        var allYear = 12;
+
+                        //data 값이 없다면
+                        if (data.length===0) {
+                            alert("이번 달 데이터가 없습니다.");
+                            $(".chart-class-pie").hide();
+                            $("#noDataMsg-pieChart").show();
+
+                        //data 값 있으면 pie그리기
+                        } else {
+                            $(".chart-class-pie").show();
+                            for (let i = 0; i < data.length; i++) {
+                                for (let j = 0; j < data[i].length; j++) {
+
+                                    emoList.push(data[i][j + 2]);
+                                    //console.log(data[i][j + 2]);
+                                }
+                            }
+
+                            /* 차트 그리기 */
+                            var context = document
+                                .getElementById("pieChart").getContext("2d");
+                            pieChart = new Chart(context, {  //chart 내용, update() 사용위해 전역변수 선언
+                                type: 'pie', // 차트의 형태
+                                data: { // 차트에 들어갈 데이터
+                                    labels: [
+                                        //x 축
+                                        '아주좋음', '좋음', '보통', '분노', '짜증', '우울', '나쁨'
+                                    ],
+                                    datasets: [
+                                        { //데이터
+                                            label: 'emoPieChart', //차트 제목
+                                            fill: false, // line 형태일 때, 선 안쪽을 채우는지 안채우는지
+                                            data:
+                                            emoList //x축 label에 대응되는 데이터 값
+                                            ,
+                                            backgroundColor: [
+                                                //색상
+                                                'rgba(255, 99, 132, 0.2)',
+                                                'rgba(54, 162, 235, 0.2)',
+                                                'rgba(255, 206, 86, 0.2)',
+                                                'rgba(75, 192, 192, 0.2)',
+                                                'rgba(153, 102, 255, 0.2)',
+                                                'rgba(255, 159, 64, 0.2)',
+                                                'rgba(23, 147, 64, 0.2)'
+                                            ],
+
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    maintainAspectRatio: false, //true 하게 되면 캔버스 width,height에 따라 리사이징된다.
+
+                                }//차트 만들기 끝
+                            });
+                        }
+
+                    }, error(req, status, err) {
+                        // 실패 시
+                        alert("통신에 실패했습니다")
+                    }
+                })
+                    .done(function (json) {
+
+
+                    }).fail(function (xhr, status, errorThrown) {
+                    $("#text").html("오류가 발생했다.<br>")
+                        .append("오류명: " + errorThrown + "<br>")
+                        .append("상태: " + status);
+                }).always(function (xhr, status) {
+                    $("#text").html("요청이 완료되었습니다!");
+                }); //ajax 끝
+
+            }   //getEmoThisMonth() 끝
+
+            /* 날짜 selectBox 처음 세팅 */
+            function selectThisDate(thisYear, thisMonth) {
+                $("#year_selbox").val(thisYear).prop("selected", true);
+                $("#month_selbox").val(thisMonth).prop("selected", true);
+            }
+
+            /* (월, 달 포함)selectBox 선택 변경시 값 전송 */
+            function changeSel() {
+                var selectedYEl = document.getElementById("year_selbox");
+                var selectedMEl = document.getElementById("month_selbox");
+
+                // 선택한 option의 value
+                var optionYVal = selectedYEl.options[selectedYEl.selectedIndex].value;
+                var optionMVal = selectedMEl.options[selectedMEl.selectedIndex].value;
+
+                $.ajax({
+                    type: "post",
+                    url: "/mood/statics/monthly/EmotionDataType.do",
+                    data: {"searchYear": optionYVal + "-" + optionMVal},   // 년도 파라미터로 전송 테스트로 하드코딩
+                    dataType: "json",
+                    success: function (data) {
+                        //alert("통신 성공");
+                        //console.log(data);
+                        let emoList = new Array();  // 데이터를 담아올 리스트 선언
+                        var allYear = 12;
+
+                        //data 값이 없다면
+                        if (data.length===0) {
+                            alert(optionYVal+"년 "+optionMVal+"월 "+"데이터가 없습니다.");
+                            //이전 data값 삭제
+                            // pieChart.data.datasets.forEach(function (dataset){
+                            //     dataset.data.pop();
+                            // });
+                            //$("#pieChart").hide();
+                            $("#noDataMsg-pieChart").show();
+                            $(".chart-class-pie").hide();
+
+
+                            //data 값 있으면 pie그리기
+                        } else {
+                            $("#noDataMsg-pieChart").hide();
+                            $(".chart-class-pie").show();
+                            for (let i = 0; i < data.length; i++) {
+                                //emoList.push(data[i]);
+                                for (let j = 0; j < data[i].length; j++) {
+                                    emoList.push(data[i][j + 2]);
+                                    //console.log(data[i][j + 2]);
+
+                                }
+                            }
+
+                            pieChart.data.datasets[0].data = emoList;
+                            pieChart.update();
+                        }
+
+                    }, error(req, status, err) {
+                        // 실패 시
+                        //alert("통신에 실패했습니다")
+                    }
+                })
+                    .done(function (json) {
+
+
+                    }).fail(function (xhr, status, errorThrown) {
+                    $("#text").html("오류가 발생했다.<br>")
+                        .append("오류명: " + errorThrown + "<br>")
+                        .append("상태: " + status);
+                }).always(function (xhr, status) {
+                    $("#text").html("요청이 완료되었습니다!");
+                });
+
+            }
+
+    </script>
+
+    <meta charset="UTF-8">
+    <title>통계페이지</title>
+</head>
+<body>
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+        <div class="container">
+            <!-- 라인차트 영역 -->
+
+<!--            <div class="msgArea" id="noDataMsg-LineChart">-->
+<!--                <span class="msg-span">데이터가 없습니다.</span>-->
+<!--            </div>-->
+
+<!--            <div class="line-class-pie">-->
+<!--                &lt;!&ndash;line 차트가 그려질 부분&ndash;&gt;-->
+<!--                <canvas th:id="lineChart"></canvas>-->
+<!--            </div>-->
+
+
+<!--            <span id="text2"></span>-->
+
+            <!-- 파이차트 영역 -->
+
+            <!-- 드롭다운 -->
+            <!-- 년도 -->
+
+            <div class="dropdown-def">
+                    <select class="dropdown-content-def" th:id="year_selbox">
+                        <option value="2022">2022년</option>
+                    </select>
+            </div>
+
+            <!-- 월 -->
+            <div class="dropdown-def">
+                    <select class="dropdown-content-def" th:id="month_selbox" th:onchange="changeSel()">
+                        <option value="01">1월</option>
+                        <option value="02">2월</option>
+                        <option value="03">3월</option>
+                        <option value="04">4월</option>
+                        <option value="05">5월</option>
+                        <option value="06">6월</option>
+                        <option value="07">7월</option>
+                        <option value="08">8월</option>
+                        <option value="09">9월</option>
+                        <option value="10">10월</option>
+                        <option value="11">11월</option>
+                        <option value="12">12월</option>
+                    </select>
+            </div>
+            <div class="msgArea" id="noDataMsg-pieChart">
+                <span class="msg-span">데이터가 없습니다.</span>
+            </div>
+            <div class="chart-class-pie">
+                    <!--pie 차트가 그려질 부분-->
+                <canvas th:id="pieChart"></canvas>
+            </div>
+
+<!--            <span id="text"></span>-->
+
+        </div> <!-- /container -->
+        <th:block th:replace="fragments/footer :: footer"></th:block>
+    </div> <!-- /wrapper -->
+</div> <!-- /page -->
+</body>
+</html>
