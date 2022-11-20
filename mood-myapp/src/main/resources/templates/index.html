@@ -384,7 +384,6 @@
                 </div>
             </form>
 
-
                 <!-- 리스트가 없는 경우 -->
                 <div class="css-div" th:if="${#lists.isEmpty(moodList)}">
                         <p>작성한 글이 없습니다. </p>
@@ -412,11 +411,11 @@
                             <div th:if="${not #strings.isEmpty(mood.userProfile)}" class="text-main-userProfile">
                                 <div th:text="${mood.userProfile}" id="userProfile" name="userProfile"></div>
                             </div>
-                            <div th:if="${not #strings.isEmpty(mood.emotion)}" class="text-main-emotion">
-                                <img th:src="@{/img/emotion/{emotion}_color.png(emotion=${mood.emotion})}" alt="emotion.png" />
-                            </div>
                             <div class="text-main-userId">
                                 <span th:text="${mood.userId}" id="userId" name="userId"></span>
+                            </div>
+                            <div th:if="${not #strings.isEmpty(mood.emotion)}" class="text-main-emotion">
+                                <img th:src="@{/img/emotion/{emotion}_color.png(emotion=${mood.emotion})}" alt="emotion.png" />
                             </div>
                             <div class="contents-spanArea-css">
                                 <span th:text="${mood.contents}" class="contents-span-css"  name="contents" ></span>
@@ -432,7 +431,8 @@
                                 <img th:each="isLike:${mood.isLike}" th:class="color_like"  th:if="${isLike.moodNum.equals(mood.moodNum)} and ${#strings.equals(isLike['likeUserId'],session.loginMember)} and ${isLike['isLike']} > 0" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_color.png}" th:onclick="chkLike(this.id)" alt="like-btn" />
                                 <img th:class="def_like" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_def.png}" th:onclick="chkLike(this.id)" alt="like-btn" />
                                 <div class="small-span-div" th:id="${'spanDiv_totalLike_'+mood.moodNum}">
-                                    <span class="class_totalLike" th:id="${'span_totalLike_'+mood.moodNum}" th:text="${mood.totalLike}" name="totalLike"></span>
+                                    <span th:if="${!#lists.isEmpty(mood.totalLike)}" class="class_totalLike" th:id="${'span_totalLike_'+mood.moodNum}" th:text="${mood.totalLike}" name="totalLike"></span>
+                                    <span th:unless="${!#lists.isEmpty(mood.totalLike)}" class="class_totalLike" th:id="${'span_totalLike_'+mood.moodNum}" th:text="0" name="totalLike"></span>
                                 </div>
                             </div>
                         </div>

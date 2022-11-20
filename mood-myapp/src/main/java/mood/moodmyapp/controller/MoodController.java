@@ -2,14 +2,8 @@ package mood.moodmyapp.controller;
 
 import mood.moodmyapp.Session.SessionConstant;
 import mood.moodmyapp.common.FileStore;
-import mood.moodmyapp.domain.IsLike;
 import mood.moodmyapp.domain.Mood;
-import mood.moodmyapp.domain.UploadFile;
 import mood.moodmyapp.domain.MoodForm;
-import mood.moodmyapp.dto.IsLikeDto;
-import mood.moodmyapp.dto.MoodDto;
-import mood.moodmyapp.dto.MoodJoinDto;
-import mood.moodmyapp.dto.MoodJoinIsLikeDto;
 import mood.moodmyapp.service.MoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -22,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -250,4 +245,53 @@ public class MoodController {
         System.out.println("좋아요취소moodNumL : " + moodNumL);
         return "0";
     }
+
+    /**
+     * 통계 페이지
+     */
+    @GetMapping("/mood/statics/moodStatics.do")
+    public String moodStatics(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        //비로그인 상태면(세션이 없다면) 로그인페이지로 이동
+        if(session == null){
+            return "redirect:/login/login.do";
+        }
+        //로그인한 상태라면
+        // 세션에 저장된 회원 조회
+        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+
+        // 세션에 회원 데이터가 없으면 홈으로 이동
+        if(userId == null){
+            return "redirect:/login/login.do";
+        }
+        return "/mood/moodStatics";
+    }
+
+    /**
+     * 월별 감정 통계 데이터 조회
+     */
+    @ResponseBody
+    @PostMapping("/mood/statics/monthly/EmotionDataType.do")
+    public List<List> emotionMonthlyStatics (HttpServletRequest request, String searchYear){
+
+        HttpSession session = request.getSession(false);
+        //통계페이지에서 로그인 체크를 해서 로그인한 상태
+        // 세션에 저장된 회원 조회
+        String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
+
+        List<List> staticMList = moodService.findMonthlyStatics(searchYear, userId);
+        return staticMList;
+    }
+
+//    /**
+//     * 년도별 감정 통계 데이터 조회
+//     */
+//    @ResponseBody
+//    @PostMapping("/mood/statics/yearly/EmotionDataType.do")
+//    public List<List> emotionYearlyStatic(String searchYear) {
+//        List<List> staticYList = moodService.findYearlyStatics(searchYear);
+//        return staticYList;
+//    }
+
+
 }

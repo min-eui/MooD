@@ -11,6 +11,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +29,6 @@ public interface MoodRepository extends MoodJpaRepository {
 
 //    @Query("SELECT distinct m FROM Mood  m left  join fetch m.isLike left  join fetch m.imageFiles ORDER BY m.reg_date DESC")
 //    List<Mood> findAllOrderByReg_dateDesc();
-
-
     @Query("SELECT m FROM Mood  m WHERE m.moodNum =:moodNum")
     Mood findByMoodNum(@Param("moodNum") Long moodNum);
 
@@ -53,15 +53,20 @@ public interface MoodRepository extends MoodJpaRepository {
     @Query("UPDATE Mood m SET m.totalLike =m.totalLike-1 WHERE m.moodNum =:moodNum")
     void subtractTotalLike(Long moodNum);
 
+    /**
+     * 월별 감정 개수
+     */
+            @Query(
+    "SELECT YEAR(m.reg_date) as year, MONTH(m.reg_date) as month, " +
+            "(SELECT count(m2) FROM Mood m2 WHERE m2.emotion='happy' AND YEAR(m2.reg_date) = YEAR(:reg_date) AND MONTH(m.reg_date)=MONTH(m2.reg_date) AND m2.userId = :userId) AS happy, " +
+            "(SELECT count(m2) FROM Mood m2 WHERE m2.emotion='alright' AND YEAR(m2.reg_date) = YEAR(:reg_date) AND MONTH(m.reg_date)=MONTH(m2.reg_date) AND m2.userId = :userId) AS alright, " +
+            "(SELECT count(m2) FROM Mood m2 WHERE m2.emotion='notBad' AND YEAR(m2.reg_date) = YEAR(:reg_date) AND MONTH(m.reg_date)=MONTH(m2.reg_date) AND m2.userId = :userId) AS notBad, " +
+            "(SELECT count(m2) FROM Mood m2 WHERE m2.emotion='angry' AND YEAR(m2.reg_date) = YEAR(:reg_date)  AND MONTH(m.reg_date)=MONTH(m2.reg_date) AND m2.userId = :userId) AS angry, " +
+            "(SELECT count(m2) FROM Mood m2 WHERE m2.emotion='annoyed'AND YEAR(m2.reg_date) = YEAR(:reg_date)   AND MONTH(m.reg_date)=MONTH(m2.reg_date) AND m2.userId = :userId) AS annoyed, " +
+            "(SELECT count(m2) FROM Mood m2 WHERE m2.emotion='depressed'AND YEAR(m2.reg_date) = YEAR(:reg_date) AND MONTH(m.reg_date)=MONTH(m2.reg_date) AND m2.userId = :userId) AS depressed," +
+            "(SELECT count(m2) FROM Mood m2 WHERE m2.emotion='sad' AND YEAR(m2.reg_date) = YEAR(:reg_date) AND MONTH(m.reg_date)=MONTH(m2.reg_date) AND m2.userId = :userId) AS sad " +
+            "FROM Mood m WHERE YEAR(m.reg_date) = YEAR(:reg_date) AND MONTH(m.reg_date)=MONTH(:reg_date) AND m.userId = :userId GROUP BY MONTH(m.reg_date), YEAR(m.reg_date)")
+    List<List> findMonthlyStaticsByReg_date(@Param("reg_date") LocalDateTime yearTodate, @Param("userId") String userId);
 
-//    @Modifying
-//    @Transactional
-//    @Query("UPDATE SET FROM Mood m WHERE m.moodNum =:moodNum")
-//    int deleteByMoodNum(Long moodNum);
-
-//    @Modifying
-//    @Transactional
-//    @Query("UPDATE Mood m SET m.isLike=:isLike WHERE m.moodNum =:moodNum")
-//    void updateIsLike(@Param("moodNum")Long moodNum, @Param("isLike") int isLike);
 
 }

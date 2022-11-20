@@ -33,8 +33,6 @@ public class Mood extends BaseTimeEntity {
     @Column(name="moodNum", length = 500, nullable = false, unique = true)
     private Long moodNum;               //감정인덱스번호
 
-
-//    @BatchSize(size = 100)
     @OneToMany(mappedBy = "moodNum", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<IsLike> isLike = emptySet();
 
