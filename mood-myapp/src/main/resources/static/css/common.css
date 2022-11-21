@@ -594,6 +594,14 @@ html,body {
     border-right: solid 1px #cbcbcb;
     border-left: solid 1px #cbcbcb;
 }
+.text-section-reply {
+    width: 100%;
+    align-items: center;
+    border-top: solid 1px #cbcbcb;
+    /*border-right: solid 1px #cbcbcb;*/
+    /*border-left: solid 1px #cbcbcb;*/
+}
+
 
 .text-section-write {
     width: 100%;
@@ -614,7 +622,7 @@ html,body {
 
 .text-btnArea-main {
     width: 100%;
-    height: 45px;
+    height: 40px;
     /*padding: 5px;*/
     display: flex;
     justify-items: center;
@@ -678,6 +686,15 @@ textarea:focus {
     border-top: solid 1px #cbcbcb;
 }
 
+.default-btnArea-idx {
+    width: 700px;
+    /*float: right;*/
+    padding: 5px;
+    /*margin: 0 auto;*/
+    /*justify-items: center;*/
+    /*vertical-align: middle;*/
+}
+
 
 .default-btnArea {
     width: 30%;
@@ -688,10 +705,15 @@ textarea:focus {
     vertical-align: middle;
 }
 
+.default-smallBtnArea-index {
+    padding: 3px;
+}
+
+
 .default-smallBtnArea {
     width: 100%;
     float: left;
-    padding: 5px;
+    padding: 4px;
 }
 
 /*.color_likeArea {*/
@@ -724,6 +746,39 @@ textarea:focus {
 
 }
 
+.default-btn-idx{
+    display: block;
+    float: right;
+    width: 100px;
+    height: 30px;
+    font-size: 17px;
+    border-radius: 30px;
+    text-align: center;
+    color: #fff;
+    border: solid 1.5px #2fa060;
+    background: #2fa060;
+    font-family: 'Noto Sans KR', sans-serif;
+
+}
+
+
+
+element.style {
+}
+.default-reply-btn {
+    display: block;
+    float: right;
+    width: 100px;
+    height: 30px;
+    font-size: 17px;
+    border-radius: 30px;
+    text-align: center;
+    color: #fff;
+    border: solid 1.5px #2fa060;
+    background: #2fa060;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
 .default-btn{
     display: block;
     vertical-align: middle;
@@ -741,6 +796,25 @@ textarea:focus {
     font-family: 'Noto Sans KR', sans-serif;
 
 }
+
+/*.default-reply-btn{*/
+/*    display: block;*/
+/*    vertical-align: middle;*/
+/*    align-items: center;*/
+/*    overflow: hidden;*/
+/*    width: 120px;*/
+/*    height: 40px;*/
+/*    font-size: 22px;*/
+/*    font-weight: 500;*/
+/*    border-radius: 30px;*/
+
+/*    color: #fff;*/
+/*    border: solid 1.5px #2fa060;*/
+/*    background: #2fa060;*/
+/*    font-family: 'Noto Sans KR', sans-serif;*/
+
+/*}*/
+
 
 .list-btnArea {
     width: 100px;
@@ -780,8 +854,8 @@ textarea:focus {
 }
 
 .top-btnArea {
-    padding: 5px;
-    width: 40px;
+    margin: 0 auto;
+    width: 30px;
     height: 20px;
     float: right;
 
@@ -792,12 +866,18 @@ textarea:focus {
 }
 
 .dropdown-def {
-    float: left;
-    width: 100px;
-    height: 50px;
+    float: right;
+    height: 20px;
+    margin: 15px;
+}
 
+.dropdown {
+    width: 150px;
+    height: 50px;
+    margin: 10px;
 
 }
+
 
 .dropdown {
     float: left;
@@ -851,13 +931,13 @@ textarea:focus {
 .photo-divArea {
     width: 70%;
     margin: 0 auto;
-    padding: 60px 40px;
     align-items: center;
 
 }
 
  .photo-div {
      width: 100%;
+     padding-bottom: 50px;
 
  }
 .text-main-emotion >img{

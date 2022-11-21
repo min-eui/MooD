@@ -55,7 +55,6 @@ public class MoodController {
             return "redirect:/login/login.do";
         }
 
-
         return "/mood/writeForm";
     }
 
@@ -112,11 +111,6 @@ public class MoodController {
 
 
         List<Mood> moodList = moodService.findAllMood();
-
-//        List<Mood> moodList = moodService.findAllMood();
-//        List<IsLike> isLikeList = moodService.findAllIsLike();
-        // 좋아요 했는지 아닌지 체크> 글마다 체크해줘야함
-//        model.addAttribute("isLikeList",isLikeList);
         model.addAttribute("moodList",moodList);
         return "/index";
     }

@@ -35,6 +35,13 @@ public class MoodService {
         this.fileStore = fileStore;
         this.isLikeRepository = isLikeRepository;
     }
+
+    /**
+     * 글 저장하기
+     * @param moodForm
+     * @return
+     * @throws IOException
+     */
     @Transactional
     public Mood saveMood(MoodForm moodForm) throws IOException {
 
@@ -76,13 +83,11 @@ public class MoodService {
     public List<Mood> findAllMood() {
 
         List<Mood> moodList = moodRepository.findAllOrderByReg_dateDesc();
-//        List<Mood> moodList = moodRepository.findAllOrderByReg_dateDesc();
-
         return moodList;
     }
 
     /**
-     *
+     * 글 상세페이지
      * @param moodNum
      * @return moodPage
      */

@@ -91,7 +91,7 @@
                     var moodVal = emoVal[i].id;
                 }
             }
-            alert(moodVal);
+            //alert(moodVal);
 
             /** 감정정보가 있을때만 input에 담아서 전송 **/
             if(!isEmpty(moodVal)) {
@@ -147,14 +147,10 @@
              if(colorLikeImg){
                  for(var i=0; i< colorLikeImg.length; i++){
                      var colorLikeId = colorLikeImg[i].id;
-                     const hideDefImg = $("#"+colorLikeId).parents(".default-smallBtnArea").children(".def_like");
+                     const hideDefImg = $("#"+colorLikeId).parents(".default-smallBtnArea-index").children(".def_like");
                      hideDefImg.css('display','none');
                  }
              }
-
-             //없으면 해당 contents에만 display block
-             //var likeState="N";
-
          }
 
 
@@ -167,7 +163,7 @@
             var moodNum = conClass[0].getAttribute('id'); // getElements- 메서드는 값을 객체로 받아오기 때문에 ele.함수(x)> ele[i].함수(o)
             var isLike = 0;
 
-            // default-smallBtnArea 의 2번째 img 태그 class가 어떤건지 따라서 isLike 구분값 설정
+            // default-smallBtnArea-index 의 2번째 img 태그 class가 어떤건지 따라서 isLike 구분값 설정
             var textBtnArea = $("#"+likeBtnId).parents(".text-btnArea-main");
             var textBtnAreaId = textBtnArea[0].getAttribute('id');
             var likeTag = $("#"+textBtnAreaId).find('img:eq(1)');
@@ -369,16 +365,16 @@
                 </div>
 
                 <div class="text-section">
-                    <textarea id="contents" name="contents" placeholder="What's happening?" autofocus onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                    <textarea id="contents" name="contents" onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
                     <img style="width: 500px;" th:id="showImage">
 
-                    <div class="text-btnArea">
-                        <div class="default-smallBtnArea">
+                    <div class="text-btnArea-main">
+                        <div class="default-smallBtnArea-index">
                             <label id="imgLabel" for="imageFiles"><img class="default-smallBtn" th:src="@{/img/list_btn/photo_btn.png}" alt="photoBtn" th:id="selPhotoBtn" />
                             </label>
                         </div>
-                        <div class="default-btnArea">
-                            <button type="button" class="default-btn" th:onclick="takeEmotion()">Mood</button>
+                        <div class="default-btnArea-idx">
+                            <button type="button" class="default-btn-idx" th:onclick="takeEmotion()">Mood</button>
                         </div>
                     </div>
                 </div>
@@ -393,7 +389,7 @@
                 <div class="text-section-main">
                     <div class="contents-section" th:unless="${#lists.isEmpty(moodList)}" th:id="${mood.moodNum}" th:each="mood:${moodList}">
 <!--                        내가 쓸 글에만 더보기 버튼 노출된다-->
-                        <div class="dropdown" th:if="${mood.userId.toString().equals(session.loginMember)}">
+                        <div class="dropdown-def" th:if="${mood.userId.toString().equals(session.loginMember)}">
                             <div class="top-btnArea">
                                 <img class="top-btn"  th:id="${moodStat.count+'_btnId'}" th:src="@{/img/list_btn/plus_btn.png}" alt="plus_btn.png" value="unfold" th:onclick="chkFold(this.id)"/>
 
@@ -425,7 +421,7 @@
                             </div>
                         </div>
                         <div class="text-btnArea-main" th:id="${'text-btnArea-main_'+moodStat.count}">
-                            <div class="default-smallBtnArea" th:id="${'default-smallBtnArea_'+moodStat.count}">
+                            <div class="default-smallBtnArea-index" th:id="${'default-smallBtnArea-index_'+moodStat.count}">
                                 <img class="default-smallBtn"  th:src="@{/img/list_btn/reply_btn.png}" alt="reply-btn" />
 
                                 <img th:each="isLike:${mood.isLike}" th:class="color_like"  th:if="${isLike.moodNum.equals(mood.moodNum)} and ${#strings.equals(isLike['likeUserId'],session.loginMember)} and ${isLike['isLike']} > 0" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_color.png}" th:onclick="chkLike(this.id)" alt="like-btn" />
