@@ -22,15 +22,25 @@ public interface MoodRepository extends MoodJpaRepository {
 
     Mood save(Mood mood);
 
+    /**
+     * 글 전체조회하기
+     * @return
+     */
     // 지연로딩에서 즉시로딩으로 바꾸고 싶은 필드의 이름
     @EntityGraph(attributePaths = {"imageFiles"})
     @Query("SELECT distinct m FROM Mood  m left  join fetch m.isLike ORDER BY m.reg_date DESC")
     List<Mood> findAllOrderByReg_dateDesc();
 
-//    @Query("SELECT distinct m FROM Mood  m left  join fetch m.isLike left  join fetch m.imageFiles ORDER BY m.reg_date DESC")
-//    List<Mood> findAllOrderByReg_dateDesc();
-    @Query("SELECT m FROM Mood  m WHERE m.moodNum =:moodNum")
-    Mood findByMoodNum(@Param("moodNum") Long moodNum);
+
+    /**
+     * 글 상세페이지
+     * @param moodNum
+     * @return
+     */
+      @EntityGraph(attributePaths = {"imageFiles"})
+      @Query("SELECT m FROM Mood  m left  join fetch m.isLike WHERE m.moodNum =:moodNum")
+      Mood findByMoodNum(@Param("moodNum") Long moodNum);
+
 
     @Modifying
     @Transactional

@@ -10,12 +10,202 @@
         }
 
        window.onload = function () {
-            var listBtn = document.getElementById("listBtn");
+           var listBtn = document.getElementById("listBtn");
            listBtn.onclick = function () {
                var link = '/';
                location.replace(link);
            }
+
+           cntReNum = 0;    //댓글 번호 0으로 세팅
+
+           //모두 언체크된 상태로 만든다.
+           $(".top-btnArea > img").val("unfold");
+           $(".emotionArea > img").val("unchecked");
+           //color_like class가 있는지 확인하기
+           var colorLikeImg = document.querySelectorAll(".color_like");
+           // alert(colorLikeImg.length);
+
+           if(colorLikeImg){
+               for(var i=0; i< colorLikeImg.length; i++){
+                   var colorLikeId = colorLikeImg[i].id;
+                   const hideDefImg = $("#"+colorLikeId).parents(".default-smallBtnArea").children(".def_like");
+                   hideDefImg.css('display','none');
+               }
+           }
        }
+
+
+        /* 댓글 입력 버튼 */
+        function replyProc(){
+
+            //하단에 createElemente 해서 append해버리
+            var replyDiv = document.createElement("div");   //contents-section div
+            replyDiv.setAttribute("class","contents-section");
+            /* moodNum 가져오기 */
+            const sendMoodNum = $(".sendPageNum-div").attr("id");
+
+            /* userId 가져오기 */
+            var spanUserId = $("#userId").text();
+
+            /* 댓글 폼생성 */
+            var replyHtml = "";
+            cntReNum++;
+            replyHtml += "<form id='replyForm_" +cntReNum+"'class ='replyForm' name='replyForm' action='/reply/addReply.do' method='post'>";
+            replyHtml += "<div class='text-section-reply'>";
+            replyHtml += "<textarea id='reply_contents' name='reply_contents' onkeydown='resize(this)' onkeyup='resize(this)'></textarea>";
+            replyHtml += "<img style='width: 500px;' th:id='showImage'>";
+            replyHtml +=  "<div class='text-btnArea-main'>";
+            replyHtml +=  "<div class='default-smallBtnArea-index'>";
+            replyHtml +=  "<label id='imgLabel' for='imageFiles'><img class='default-smallBtn' src='/img/list_btn/photo_btn.png' alt='photoBtn' th:id='selPhotoBtn' /></label>";
+            replyHtml += "</div>";
+            replyHtml += "<input type='hidden' value=" +spanUserId+ " name = 'registrant'/>";
+            replyHtml += "<input type='hidden' value=" +sendMoodNum+ " name = 'moodNum'/>";
+            replyHtml += "<div class='default-btnArea-idx'>";
+            replyHtml += "<button type='button' id='reply-btn_"+cntReNum+"'class='default-reply-btn' onclick='submitReplyForm(this.id)'>작성하기</button>";
+            replyHtml += "</div>";
+            replyHtml += "</div>";
+            replyHtml+="</form>";
+
+            $(".contents-section").after(replyHtml);
+
+
+        }
+
+        /* 댓글 전송 버튼 클릭시 */
+        function submitReplyForm(reBtnId) {
+
+           const replyFormId = $("#"+reBtnId).parents(".replyForm").attr('id');
+            //alert(replyFormId);
+            $("#"+replyFormId).submit();
+        }
+
+        /* 삭제버튼 */
+        function deleteList(delId) {
+            var listClass = $("#"+delId).parents(".contents-section");
+            var listId = listClass.attr('id');
+
+            $.ajax({
+                url: '/mood/deleteMood.do',
+                type: 'post',
+                // contentType:'application/json',
+                // dataType:"json",
+                data: {"moodNum": listId},
+                // data: JSON.stringify(moodNum),
+                success: function (data) {
+                    //삭제할 아이디(글번호)를 가진 div를 삭제
+                    $("#"+listId).remove();
+
+                }, error: function (req, status, err) {
+                    console.log(req);
+                    alert("오류로 인해 글 삭제에 실패했습니다.");
+                }
+
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log("에러");
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+
+            });
+        }
+
+        /* 수정버튼 */
+        function editList(editId) {
+            var listClass = $("#"+editId).parents(".contents-section");
+            var listId = listClass.attr('id');
+            location.href = '/mood/update/'+listId;
+        }
+
+        /* 좋아요 클릭 체크 */
+        function chkLike(likeBtnId) {
+            //default-smallBtn 의 children class def_like color_like인지 구분
+            var contentsId = $("#"+likeBtnId).parents(".contents-section");
+            // var moodNum = contentsId.children(".sendPageNum-div").id;
+            var conClass = $("#" + likeBtnId).parents(".contents-section");
+            var moodNum = conClass[0].getAttribute('id'); // getElements- 메서드는 값을 객체로 받아오기 때문에 ele.함수(x)> ele[i].함수(o)
+            var isLike = 0;
+
+            // default-smallBtnArea 의 2번째 img 태그 class가 어떤건지 따라서 isLike 구분값 설정
+            var textBtnArea = $("#"+likeBtnId).parents(".text-btnArea-main");
+            var textBtnAreaId = textBtnArea[0].getAttribute('id');
+            var likeTag = $("#"+textBtnAreaId).find('img:eq(1)');
+            checkLike = likeTag[0].getAttribute('class');
+
+
+            var spanVar = $("#"+textBtnAreaId).find('span:eq(0)');
+            var spanId = spanVar[0].getAttribute('id');
+            const spanOrigin = Number($("#"+spanId).text());    //상수로 선언, 문자열> 숫자로 파싱
+            const spanLike = spanOrigin+1;
+            const spanDisLike = spanOrigin-1;
+
+            // alert("spanTxt : "+spanTxt);
+
+
+            // 이미 좋아요 눌려있을때
+            if(checkLike == "color_like"){
+                alert("checkLike : "+checkLike);
+                isLike = 0;//isLike 값 0으로 세팅후 전송
+                $.ajax({
+                    url: '/mood/likeCancel.do',
+                    type: 'post',
+                    data: {'moodNum': moodNum, 'isLike': isLike},
+                    // contentType: 'application/json',
+                    success: function (data) {
+                        if (data == 0) {
+                            alert("성공")
+                            checkLike == "def_like";
+                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_def.png");
+                            $("#" + likeBtnId).attr("class", "def_like");     //class로 버튼 구분하기 때문에 다시 설정
+                            $("#"+spanId).text(spanDisLike);                     // totalLike 원래값으로 변경
+                        } else {
+                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_color.png");
+                        }
+                    }, error: function (req, status, err) {
+                        console.log(req);
+                        alert("오류로 인해 좋아요취소 실패했습니다.");
+                    }
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log("에러");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+
+                });
+                // 좋아요 안눌려 있을때
+            }else if(checkLike =="def_like"){
+                alert("checkLike : "+checkLike);
+                isLike = 1; //isLike 값 0으로 세팅후 전송
+                $.ajax({
+                    url: '/mood/like.do',
+                    type: 'post',
+                    data: {'moodNum': moodNum, 'isLike': isLike},
+                    // contentType: 'application/json',
+                    success: function (data) {
+                        if (data == 1) {
+                            alert("성공")
+                            checkLike == "color_like";
+                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_color.png");
+                            $("#" + likeBtnId).attr("class", "color_like");   //class로 버튼 구분하기 때문에 다시 설정
+                            $("#"+spanId).text(spanLike);                   //totalLike+1
+
+                        } else {
+                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_def.png");
+                        }
+                    }, error: function (req, status, err) {
+                        console.log(req);
+                        alert("오류로 인해 좋아요 실패했습니다.");
+                    }
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log("에러");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+
+                });
+            }
+        }
 
         /* 더보기 버튼 체크 */
         function chkFold(btnId) {
@@ -62,9 +252,9 @@
 
             <!-- 리스트가 있는 경우 -->
             <div class="text-section-main">
-                <div class="contents-section" th:unless="${#lists.isEmpty(moodPage)}" th:id="${mood.moodNum}" th:each="mood:${moodPage}">
+                <div class="contents-section" th:unless="${#lists.isEmpty(moodPage)}" th:id="${'contents-sectionId_'+mood.moodNum}" th:each="mood:${moodPage}">
                     <!--내가 쓸 글에만 더보기 버튼 노출된다-->
-                    <div class="dropdown" th:if="${mood.userId.toString().equals(session.loginMember)}">
+                    <div class="dropdown-def" th:if="${mood.userId.toString().equals(session.loginMember)}">
                         <div class="top-btnArea">
                             <img class="top-btn"  th:id="${moodStat.count+'_btnId'}" th:src="@{/img/list_btn/plus_btn.png}" alt="plus_btn.png" value="unfold" th:onclick="chkFold(this.id)"/>
 
@@ -85,16 +275,27 @@
                         <div class="text-main-userId">
                             <span th:text="${mood.userId}" id="userId" name="userId"></span>
                         </div>
+                        <div th:if="${not #strings.isEmpty(mood.emotion)}" class="text-main-emotion">
+                            <img th:src="@{/img/emotion/{emotion}_color.png(emotion=${mood.emotion})}" alt="emotion.png" />
+                        </div>
                         <div class="contents-spanArea-css">
                             <span th:text="${mood.contents}" class="contents-span-css" id="contents" name="contents" ></span>
                         </div>
-                    </div>
-                    <div class="text-btnArea-main">
-                        <div class="default-smallBtnArea">
-                            <img class="default-smallBtn"  th:src="@{/img/list_btn/reply_btn.png}" alt="reply-btn" />
-                            <img class="default-smallBtn"  th:src="@{/img/list_btn/like_btn_def.png}" alt="like-btn" />
+                        <div class="photo-divArea">
+                            <img class="photo-div" th:each="imageFile : ${mood.imageFiles}" th:src="@{${'/images/'+imageFile.getStoreFileName()}}" alt="photo" width="300px"/>
                         </div>
+                    </div>
+                    <div class="text-btnArea-main" th:id="${'text-btnArea-main_'+moodStat.count}">
+                        <div class="default-smallBtnArea" th:id="${'default-smallBtnArea_'+moodStat.count}">
+                            <img class="default-smallBtn"  th:src="@{/img/list_btn/reply_btn.png}" alt="reply-btn" th:onclick="replyProc()"/>
 
+                            <img th:each="isLike:${mood.isLike}" th:class="color_like"  th:if="${isLike.moodNum.equals(mood.moodNum)} and ${#strings.equals(isLike['likeUserId'],session.loginMember)} and ${isLike['isLike']} > 0" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_color.png}" th:onclick="chkLike(this.id)" alt="like-btn" />
+                            <img th:class="def_like" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_def.png}" th:onclick="chkLike(this.id)" alt="like-btn" />
+                            <div class="small-span-div" th:id="${'spanDiv_totalLike_'+mood.moodNum}">
+                                <span th:if="${!#lists.isEmpty(mood.totalLike)}" class="class_totalLike" th:id="${'span_totalLike_'+mood.moodNum}" th:text="${mood.totalLike}" name="totalLike"></span>
+                                <span th:unless="${!#lists.isEmpty(mood.totalLike)}" class="class_totalLike" th:id="${'span_totalLike_'+mood.moodNum}" th:text="0" name="totalLike"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
