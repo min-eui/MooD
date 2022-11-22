@@ -4,6 +4,8 @@ import mood.moodmyapp.domain.Reply;
 import mood.moodmyapp.repository.ReplyRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReplyService {
 
@@ -25,5 +27,24 @@ public class ReplyService {
         }else{
             return false;
         }
+    }
+
+    /**
+     * MoodNum에 달린 모든 댓글 조회
+     * @param moodNum
+     * @return
+     */
+    public List<Reply> findAllByMoodNum(Long moodNum) {
+        List<Reply> replyList =  replyRepository.findAllByMoodNum(moodNum);
+        return replyList;
+    }
+    /**
+     * replyNum과 일치하는 댓글 삭제
+     * @param replyNum
+     * @return
+     */
+    public int deleteByReplyNum(Long replyNum) {
+        int isDel = replyRepository.deleteByReplyNum(replyNum);
+        return isDel;
     }
 }

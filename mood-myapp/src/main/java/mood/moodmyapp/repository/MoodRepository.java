@@ -42,6 +42,11 @@ public interface MoodRepository extends MoodJpaRepository {
       Mood findByMoodNum(@Param("moodNum") Long moodNum);
 
 
+    /**
+     * 글 삭제하기
+     * @param moodNum
+     * @return
+     */
     @Modifying
     @Transactional
     @Query("DELETE FROM Mood m WHERE m.moodNum =:moodNum")
