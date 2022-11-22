@@ -58,7 +58,7 @@
             replyHtml +=  "<div class='default-smallBtnArea-index'>";
             replyHtml +=  "<label id='imgLabel' for='imageFiles'><img class='default-smallBtn' src='/img/list_btn/photo_btn.png' alt='photoBtn' th:id='selPhotoBtn' /></label>";
             replyHtml += "</div>";
-            replyHtml += "<input type='hidden' value=" +spanUserId+ " name = 'registrant'/>";
+            // replyHtml += "<input type='hidden' value=" +spanUserId+ " name = 'registrant'/>";
             replyHtml += "<input type='hidden' value=" +sendMoodNum+ " name = 'moodNum'/>";
             replyHtml += "<div class='default-btnArea-idx'>";
             replyHtml += "<button type='button' id='reply-btn_"+cntReNum+"'class='default-reply-btn' onclick='submitReplyForm(this.id)'>작성하기</button>";
@@ -79,7 +79,37 @@
             $("#"+replyFormId).submit();
         }
 
-        /* 삭제버튼 */
+        /* 댓글 삭제버튼 */
+        function deleteReplyList(delId) {
+            var listClass = $("#"+delId).parents(".contents-section");
+            var listId = listClass.attr('id');
+
+            $.ajax({
+                url: '/reply/deleteReply.do',
+                type: 'post',
+                // contentType:'application/json',
+                // dataType:"json",
+                data: {"replyNum": listId},
+                // data: JSON.stringify(moodNum),
+                success: function (data) {
+                    //삭제할 댓글번호를 가진 div를 삭제
+                    $("#"+listId).remove();
+
+                }, error: function (req, status, err) {
+                    console.log(req);
+                    alert("오류로 인해 댓글 삭제에 실패했습니다.");
+                }
+
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log("에러");
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+
+            });
+        }
+
+        /* 글 삭제버튼 */
         function deleteList(delId) {
             var listClass = $("#"+delId).parents(".contents-section");
             var listId = listClass.attr('id');
@@ -109,7 +139,7 @@
             });
         }
 
-        /* 수정버튼 */
+        /* 글 수정버튼 */
         function editList(editId) {
             var listClass = $("#"+editId).parents(".contents-section");
             var listId = listClass.attr('id');
@@ -295,6 +325,50 @@
                                 <span th:if="${!#lists.isEmpty(mood.totalLike)}" class="class_totalLike" th:id="${'span_totalLike_'+mood.moodNum}" th:text="${mood.totalLike}" name="totalLike"></span>
                                 <span th:unless="${!#lists.isEmpty(mood.totalLike)}" class="class_totalLike" th:id="${'span_totalLike_'+mood.moodNum}" th:text="0" name="totalLike"></span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 댓글 리스트가 있는 경우 -->
+            <div class="text-section-main">
+                <div class="contents-section" th:unless="${#lists.isEmpty(replyList)}" th:id="${reply.replyNum}" th:each="reply:${replyList}">
+                    <!--                        내가 쓸 글에만 더보기 버튼 노출된다-->
+                    <div class="dropdown-def" th:if="${reply.registrant.toString().equals(session.loginMember)}">
+                        <div class="top-btnArea">
+                            <img class="top-btn"  th:id="${replyStat.count+'_replyBtnId'}" th:src="@{/img/list_btn/plus_btn.png}" alt="plus_btn.png" value="unfold" th:onclick="chkFold(this.id)"/>
+
+
+                            <div class="dropdown-content" th:id="${replyStat.count+'_dropId'}">
+                                <div th:id="${replyStat.count+'_replydelBtn'}" th:onclick="deleteReplyList(this.id)">삭제하기</div>
+                                <div th:id="${replyStat.count+'_editBtn'}" th:onclick="editList(this.id)">수정하기</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sendPageNum-div"  th:id="${reply.replyNum}" th:onclick="sendMoodNum(this.id)">
+                        <div class="text-main-date">
+                            <span th:text="${reply.reg_date}"></span>
+                        </div>
+                        <div class="text-main-userId">
+                            <span th:text="${reply.registrant}" id="registrant" name="registrant"></span>
+                        </div>
+                        <div class="contents-spanArea-css">
+                            <span th:text="${reply.reply_contents}" class="contents-span-css"  name="reply_contents" ></span>
+                        </div>
+<!--                        <div class="photo-divArea">-->
+<!--                            <img class="photo-div" th:each="imageFile : ${mood.imageFiles}" th:src="@{${'/images/'+imageFile.getStoreFileName()}}" alt="photo" width="300px"/>-->
+<!--                        </div>-->
+                    </div>
+                    <div class="text-btnArea-main" th:id="${'text-btnArea-main_'+replyStat.count}">
+                        <div class="default-smallBtnArea-index" th:id="${'default-smallBtnArea-index_'+replyStat.count}">
+                            <img class="default-smallBtn"  th:src="@{/img/list_btn/reply_btn.png}" alt="reply-btn" />
+
+<!--                            <img th:each="isLike:${mood.isLike}" th:class="color_like"  th:if="${isLike.moodNum.equals(mood.moodNum)} and ${#strings.equals(isLike['likeUserId'],session.loginMember)} and ${isLike['isLike']} > 0" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_color.png}" th:onclick="chkLike(this.id)" alt="like-btn" />-->
+<!--                            <img th:class="def_like" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_def.png}" th:onclick="chkLike(this.id)" alt="like-btn" />-->
+<!--                            <div class="small-span-div" th:id="${'spanDiv_totalLike_'+mood.moodNum}">-->
+<!--                                <span th:if="${!#lists.isEmpty(mood.totalLike)}" class="class_totalLike" th:id="${'span_totalLike_'+mood.moodNum}" th:text="${mood.totalLike}" name="totalLike"></span>-->
+<!--                                <span th:unless="${!#lists.isEmpty(mood.totalLike)}" class="class_totalLike" th:id="${'span_totalLike_'+mood.moodNum}" th:text="0" name="totalLike"></span>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>

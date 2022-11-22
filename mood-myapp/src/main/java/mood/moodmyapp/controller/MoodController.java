@@ -4,7 +4,9 @@ import mood.moodmyapp.Session.SessionConstant;
 import mood.moodmyapp.common.FileStore;
 import mood.moodmyapp.domain.Mood;
 import mood.moodmyapp.domain.MoodForm;
+import mood.moodmyapp.domain.Reply;
 import mood.moodmyapp.service.MoodService;
+import mood.moodmyapp.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -16,10 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class MoodController {
@@ -27,11 +27,13 @@ public class MoodController {
 
     private final MoodService moodService;
     private final FileStore fileStore;
+    private final ReplyService replyService;
 
     @Autowired
-    public MoodController(MoodService moodService, FileStore fileStore) {
+    public MoodController(MoodService moodService, FileStore fileStore, ReplyService replyService) {
         this.moodService = moodService;
         this.fileStore = fileStore;
+        this.replyService = replyService;
     }
 
 
@@ -124,9 +126,11 @@ public class MoodController {
     @GetMapping("/mood/detail/{moodNum}")
     public String moodDetail(@PathVariable String moodNum, Model model) {
 
-        Long  MoodNumL= Long.parseLong(moodNum);
-        Mood moodPage = moodService.findByMoodNum(MoodNumL);
+        Long  moodNumL= Long.parseLong(moodNum);
+        Mood moodPage = moodService.findByMoodNum(moodNumL);
+        List<Reply> replyList = replyService.findAllByMoodNum(moodNumL);
         model.addAttribute("moodPage",moodPage);
+        model.addAttribute("replyList",replyList);
         return "/mood/detail";
     }
 
