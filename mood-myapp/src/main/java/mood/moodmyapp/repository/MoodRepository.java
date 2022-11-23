@@ -83,5 +83,10 @@ public interface MoodRepository extends MoodJpaRepository {
             "FROM Mood m WHERE YEAR(m.reg_date) = YEAR(:reg_date) AND MONTH(m.reg_date)=MONTH(:reg_date) AND m.userId = :userId GROUP BY MONTH(m.reg_date), YEAR(m.reg_date)")
     List<List> findMonthlyStaticsByReg_date(@Param("reg_date") LocalDateTime yearTodate, @Param("userId") String userId);
 
-
+    /**
+     * 검색하기
+      * @param keyword
+     */
+    @EntityGraph(attributePaths = {"imageFiles"})
+    List<Mood> findByContentsContaining(String keyword);
 }

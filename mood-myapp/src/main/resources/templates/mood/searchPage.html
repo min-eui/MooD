@@ -1,0 +1,415 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--공통 css, js-->
+    <th:block th:replace="fragments/config :: config"></th:block>
+    <script type="text/javascript">
+        /* 텍스트 박스 리사이징 */
+        function resize(obj) {
+            obj.style.height = '1px';
+            obj.style.height = (12 + obj.scrollHeight) + 'px';
+        }
+
+        /* 삭제버튼 */
+        function deleteList(delId) {
+            var listClass = $("#"+delId).parents(".contents-section");
+            var listId = listClass.attr('id');
+
+            $.ajax({
+                url: '/mood/deleteMood.do',
+                type: 'post',
+                // contentType:'application/json',
+                // dataType:"json",
+                data: {"moodNum": listId},
+                // data: JSON.stringify(moodNum),
+                success: function (data) {
+                    //삭제할 아이디(글번호)를 가진 div를 삭제
+                    $("#"+listId).remove();
+
+                }, error: function (req, status, err) {
+                    console.log(req);
+                    alert("오류로 인해 글 삭제에 실패했습니다.");
+                }
+
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log("에러");
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+
+            });
+        }
+
+        /* 수정버튼 */
+        function editList(editId) {
+            var listClass = $("#"+editId).parents(".contents-section");
+            var listId = listClass.attr('id');
+            location.href = '/mood/update/'+listId;
+        }
+
+        /* 더보기 버튼 체크 */
+        function chkFold(btnId) {
+
+            var foldVal = $("#"+btnId).val();
+            if(foldVal == "unfold"){
+                $("#"+btnId).attr("src","/img/list_btn/minus_btn.png");
+                $("#"+btnId).val("fold");
+
+                var parentId = $("#"+btnId).parents(".top-btnArea");
+                parentId.children(".dropdown-content").show();
+
+                /* 해당 아이디를 제외한 다른 모든 버튼 hide 하기 */
+                const allFoldBtn = document.querySelectorAll('.top-btn');
+
+                /* 선택한 버튼 나머지 요소들 fold 상태로 만들기 */
+                for(let i=0; i < allFoldBtn.length; i++){
+                    if(allFoldBtn[i].id != btnId){
+                        var hideList = allFoldBtn[i].id;
+                        var  hidePar= $("#"+hideList).parents('.top-btnArea');
+                        $("#"+hideList).val("unfold");
+                        hidePar.children(".dropdown-content").hide();
+                    }
+                }
+
+            }else if(foldVal == "fold"){
+                $("#"+btnId).attr("src","/img/list_btn/plus_btn.png");
+                $("#"+btnId).val("unfold");
+
+                var parentId = $("#"+btnId).parents(".top-btnArea");
+                parentId.children(".dropdown-content").hide();
+
+            }
+        }
+
+        /* 감정 정보 담아서 글전송 */
+        function takeEmotion(){
+            const emoVal = document.querySelectorAll('#emotionArea > img');
+            const moodForm = document.getElementById('moodForm');
+
+            for(let i=0; i < emoVal.length; i++){
+                if(emoVal[i].value==="checked"){
+                    var moodVal = emoVal[i].id;
+                }
+            }
+            //alert(moodVal);
+
+            /** 감정정보가 있을때만 input에 담아서 전송 **/
+            if(!isEmpty(moodVal)) {
+                const emoInput = document.createElement('input');
+                emoInput.setAttribute("type","text");
+                emoInput.setAttribute("name","emotion");
+                emoInput.setAttribute("value",moodVal);
+
+                //append input (to form)
+                moodForm.appendChild(emoInput);
+
+                //append form(to body)
+                document.body.appendChild(moodForm);
+
+                // submit form
+                moodForm.submit();
+            }
+            moodForm.submit();
+        }
+
+        /**
+         * 문자열이 빈 문자열인지 체크하여 결과값을 리턴한다.
+         * @param str		: 체크할 문자열
+         */
+        function isEmpty(str){
+
+            if(typeof str == "undefined" || str == null || str == "")
+                return true;
+            else
+                return false ;
+        }
+
+
+        function sendMoodNum(moodNum){
+            var link = '/mood/detail/'+moodNum; // 해당 글 상세페이지로 이동
+            location.replace(link);
+        }
+
+        history.pushState(null, null, '');  //data, title, url값 들어감. 비워두면 이벤트 발생의 플래그로 사용됨.
+        window.onpopstate = function (event) {  //뒤로가기 이벤트 캐치
+            location.href = '/';
+        }
+
+        /* html 최초 로드 및 이벤트 상시 대기 실시 */
+        window.onload = function () {
+            //모두 언체크된 상태로 만든다.
+            $(".top-btnArea > img").val("unfold");
+            $(".emotionArea > img").val("unchecked");
+            //color_like class가 있는지 확인하기
+            var colorLikeImg = document.querySelectorAll(".color_like");
+            // alert(colorLikeImg.length);
+
+            if(colorLikeImg){
+                for(var i=0; i< colorLikeImg.length; i++){
+                    var colorLikeId = colorLikeImg[i].id;
+                    const hideDefImg = $("#"+colorLikeId).parents(".default-smallBtnArea-index").children(".def_like");
+                    hideDefImg.css('display','none');
+                }
+            }
+        }
+
+
+        /* 좋아요 클릭 체크 */
+        function chkLike(likeBtnId) {
+            //default-smallBtn 의 children class def_like color_like인지 구분
+            var contentsId = $("#"+likeBtnId).parents(".contents-section");
+            // var moodNum = contentsId.children(".sendPageNum-div").id;
+            var conClass = $("#" + likeBtnId).parents(".contents-section");
+            var moodNum = conClass[0].getAttribute('id'); // getElements- 메서드는 값을 객체로 받아오기 때문에 ele.함수(x)> ele[i].함수(o)
+            var isLike = 0;
+
+            // default-smallBtnArea-index 의 2번째 img 태그 class가 어떤건지 따라서 isLike 구분값 설정
+            var textBtnArea = $("#"+likeBtnId).parents(".text-btnArea-main");
+            var textBtnAreaId = textBtnArea[0].getAttribute('id');
+            var likeTag = $("#"+textBtnAreaId).find('img:eq(1)');
+            checkLike = likeTag[0].getAttribute('class');
+
+
+            var spanVar = $("#"+textBtnAreaId).find('span:eq(0)');
+            var spanId = spanVar[0].getAttribute('id');
+            const spanOrigin = Number($("#"+spanId).text());    //상수로 선언, 문자열> 숫자로 파싱
+            const spanLike = spanOrigin+1;
+            const spanDisLike = spanOrigin-1;
+
+            // alert("spanTxt : "+spanTxt);
+
+
+            // 이미 좋아요 눌려있을때
+            if(checkLike == "color_like"){
+                alert("checkLike : "+checkLike);
+                isLike = 0;//isLike 값 0으로 세팅후 전송
+                $.ajax({
+                    url: '/mood/likeCancel.do',
+                    type: 'post',
+                    data: {'moodNum': moodNum, 'isLike': isLike},
+                    // contentType: 'application/json',
+                    success: function (data) {
+                        if (data == 0) {
+                            alert("성공")
+                            checkLike == "def_like";
+                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_def.png");
+                            $("#" + likeBtnId).attr("class", "def_like");     //class로 버튼 구분하기 때문에 다시 설정
+                            $("#"+spanId).text(spanDisLike);                     // totalLike 원래값으로 변경
+                        } else {
+                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_color.png");
+                        }
+                    }, error: function (req, status, err) {
+                        console.log(req);
+                        alert("오류로 인해 좋아요취소 실패했습니다.");
+                    }
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log("에러");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+
+                });
+                // 좋아요 안눌려 있을때
+            }else if(checkLike =="def_like"){
+                alert("checkLike : "+checkLike);
+                isLike = 1; //isLike 값 0으로 세팅후 전송
+                $.ajax({
+                    url: '/mood/like.do',
+                    type: 'post',
+                    data: {'moodNum': moodNum, 'isLike': isLike},
+                    // contentType: 'application/json',
+                    success: function (data) {
+                        if (data == 1) {
+                            alert("성공")
+                            checkLike == "color_like";
+                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_color.png");
+                            $("#" + likeBtnId).attr("class", "color_like");   //class로 버튼 구분하기 때문에 다시 설정
+                            $("#"+spanId).text(spanLike);                   //totalLike+1
+
+                        } else {
+                            $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_def.png");
+                        }
+                    }, error: function (req, status, err) {
+                        console.log(req);
+                        alert("오류로 인해 좋아요 실패했습니다.");
+                    }
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log("에러");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+
+                });
+            }
+        }
+
+        //       /* 이미지 클릭 체크 */
+        function checkClick(imgId) {
+
+            const allImg = document.querySelectorAll('#emotionArea > img');
+            var chkVal = $("#" + imgId).val();
+            var clickedIdx = $("#" + imgId).index();
+
+            if (chkVal == "unchecked") {
+                $("#" + imgId).val("checked");
+                $("#" + imgId).attr("src", "/img/emotion/" + imgId + "_color.png");
+                // 해당 값 빼고 다른 이미지들 값 unchecked로 리셋해주기
+
+                for (let i = 0; i < allImg.length; i++) {
+                    if (i != clickedIdx) {
+                        var unchkId = allImg[i].id
+                        $("#" + unchkId).val("unchecked");
+                        $("#" + unchkId).attr("src", "/img/emotion/" + unchkId + "_def.png");
+                    }
+                }
+
+            } else {
+                $("#" + imgId).val("unchecked");
+                $("#" + imgId).attr("src", "/img/emotion/" + imgId + "_def.png");
+            }
+        }
+        /* 이미지 클릭 체크 */
+        function checkClick(imgId){
+
+            const allImg = document.querySelectorAll('#emotionArea > img');
+            var chkVal = $("#"+imgId).val();
+            var clickedIdx = $("#"+imgId).index();
+
+            if(chkVal=="unchecked") {
+                $("#"+imgId).val("checked");
+                $("#"+imgId).attr("src","/img/emotion/"+imgId+"_color.png");
+                // 해당 값 빼고 다른 이미지들 값 unchecked로 리셋해주기
+
+                for(let i=0; i < allImg.length; i++){
+                    if(i != clickedIdx){
+                        var unchkId = allImg[i].id
+                        $("#"+unchkId).val("unchecked");
+                        $("#"+unchkId).attr("src","/img/emotion/"+unchkId+"_def.png");
+                    }
+                }
+
+            }else {
+                $("#"+imgId).val("unchecked");
+                $("#"+imgId).attr("src","/img/emotion/"+imgId+"_def.png");
+            }
+        }
+
+        /* 이미지 첨부시 미리보기 */
+        function readImage(input) {
+            // 인풋 태그에 파일이 있는 경우
+            if(input.files && input.files[0]) {
+
+                var reader = new FileReader();
+                reader.onload = function(e){
+                    document.getElementById('showImage').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+
+            }else {
+                document.getElementById('showImage').src = "";
+            }
+
+        }
+
+        var clickCnt = 0;
+        $(function () {
+            $("#imgLabel").click(function () {
+                //클릭하는것을 개수를 세고 개수가 1개이상이면 안만들어지게
+                if (clickCnt < 1){
+                    alert("아직 "+ clickCnt + "번째");
+                    // if($("#imgLabel").find('input:eq(clickCnt)').val() != null){
+                    var newInput = document.createElement("input");
+                    newInput.setAttribute("type", "file");
+                    // newInput.setAttribute("id", clickCnt+"_id");
+                    newInput.setAttribute("id", "imageFiles");
+                    newInput.setAttribute("name", "imageFiles");
+                    newInput.setAttribute("class", "photo-input");
+                    newInput.setAttribute("style", "display: none");
+                    newInput.setAttribute("multiple","");
+                    newInput.setAttribute("onchange", "readImage(this)");
+                    var labelEl = document.getElementById("imgLabel");
+
+                    // //라벨 안에다가 인풋버튼 추가하기
+                    labelEl.appendChild(newInput);
+                    var newInputId = newInput.id;
+                    alert("newInputId" + newInputId);
+                    clickCnt++;
+
+                    $("#imgLabel").find('input:eq(clickCnt)').click();
+
+                }
+            });
+
+        });
+    </script>
+    <meta charset="UTF-8">
+    <title>검색페이지</title>
+</head>
+<body>
+<div class="page">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <div class="wrapper">
+        <div class="container">
+
+            <!-- 리스트가 없는 경우 -->
+            <div class="css-div" th:if="${#lists.isEmpty(searchList)}">
+                <p>검색 결과가 없습니다. </p>
+            </div>
+
+            <!-- 리스트가 있는 경우 -->
+            <div class="text-section-main">
+                <div class="contents-section" th:unless="${#lists.isEmpty(searchList)}" th:id="${search.moodNum}" th:each="search:${searchList}">
+                    <!--                        내가 쓸 글에만 더보기 버튼 노출된다-->
+                    <div class="dropdown-def" th:if="${search.userId.toString().equals(session.loginMember)}">
+                        <div class="top-btnArea">
+                            <img class="top-btn"  th:id="${searchStat.count+'_btnId'}" th:src="@{/img/list_btn/plus_btn.png}" alt="plus_btn.png" value="unfold" th:onclick="chkFold(this.id)"/>
+
+
+                            <div class="dropdown-content" th:id="${searchStat.count+'_dropId'}">
+                                <div th:id="${searchStat.count+'_delBtn'}" th:onclick="deleteList(this.id)">삭제하기</div>
+                                <div th:id="${searchStat.count+'_editBtn'}" th:onclick="editList(this.id)">수정하기</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sendPageNum-div"  th:id="${search.moodNum}" th:onclick="sendMoodNum(this.id)">
+                        <div class="text-main-date">
+                            <span th:text="${search.reg_date}"></span>
+                        </div>
+                        <div th:if="${not #strings.isEmpty(search.userProfile)}" class="text-main-userProfile">
+                            <div th:text="${search.userProfile}" id="userProfile" name="userProfile"></div>
+                        </div>
+                        <div class="text-main-userId">
+                            <span th:text="${search.userId}" id="userId" name="userId"></span>
+                        </div>
+                        <div th:if="${not #strings.isEmpty(search.emotion)}" class="text-main-emotion">
+                            <img th:src="@{/img/emotion/{emotion}_color.png(emotion=${search.emotion})}" alt="emotion.png" />
+                        </div>
+                        <div class="contents-spanArea-css">
+                            <span th:text="${search.contents}" class="contents-span-css"  name="contents" ></span>
+                        </div>
+                        <div class="photo-divArea">
+                            <img class="photo-div" th:each="imageFile : ${search.imageFiles}" th:src="@{${'/images/'+imageFile.getStoreFileName()}}" alt="photo" width="300px"/>
+                        </div>
+                    </div>
+<!--                    <div class="text-btnArea-main" th:id="${'text-btnArea-main_'+searchStat.count}">-->
+<!--                        <div class="default-smallBtnArea-index" th:id="${'default-smallBtnArea-index_'+searchStat.count}">-->
+<!--                            <img class="default-smallBtn"  th:src="@{/img/list_btn/reply_btn.png}" alt="reply-btn" />-->
+
+<!--                            <img th:each="isLike:${search.isLike}" th:class="color_like"  th:if="${isLike.moodNum.equals(search.moodNum)} and ${#strings.equals(isLike['likeUserId'],session.loginMember)} and ${isLike['isLike']} > 0" class="default-smallBtn" th:id="${search.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_color.png}" th:onclick="chkLike(this.id)" alt="like-btn" />-->
+<!--                            <img th:class="def_like" class="default-smallBtn" th:id="${search.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_def.png}" th:onclick="chkLike(this.id)" alt="like-btn" />-->
+<!--                            <div class="small-span-div" th:id="${'spanDiv_totalLike_'+search.moodNum}">-->
+<!--                                <span th:if="${!#lists.isEmpty(search.totalLike)}" class="class_totalLike" th:id="${'span_totalLike_'+search.moodNum}" th:text="${search.totalLike}" name="totalLike"></span>-->
+<!--                                <span th:unless="${!#lists.isEmpty(search.totalLike)}" class="class_totalLike" th:id="${'span_totalLike_'+search.moodNum}" th:text="0" name="totalLike"></span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+        <th:block th:replace="fragments/footer :: footer"></th:block>
+    </div>
+</div>
+</body>
+</html>

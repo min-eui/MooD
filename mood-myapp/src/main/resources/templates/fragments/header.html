@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <th:block th:fragment="header">
-        <div class="header">
-            <div class="search_and_login" >
-                <div class="header-logoArea" th:onclick="|location.href='@{/}'|">
-                    <img class="header-logo"  th:src="@{/img/MooD_Logo_gr.jpg}" alt="Logo" />
-                </div>
-                <div class="header-searchArea">
-                    <div class="header-inputArea">
-                        <input type="text" id="search_input" class="header-input" />
+        <th:block th:fragment="header">
+            <div class="header">
+                <div class="search_and_login" >
+                    <div class="header-logoArea" th:onclick="|location.href='@{/}'|">
+                        <img class="header-logo"  th:src="@{/img/MooD_Logo_gr.jpg}" alt="Logo" />
+                    </div>
+                    <!-- 내용 키워드 검색기능 -->
+                    <div class="header-searchArea">
+                        <form class ="header-searchForm" name="search-form" th:method="get" action="/mood/search.do">
+                            <div class="header-inputArea">
+                                <input type="text" name="keyword" value="" id="search_input" class="header-input" />
+                            </div>
+                        </form>
+
+                        <div class="header-searchImg" th:onclick="searchKeyword()">
+                            <button type="button" class="btn_img">
+                                <img class="header-searchImg"  th:src="@{/img/icon-magnifying-glass.jpg}" alt="icon-magnifying-glass.jpg" />
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="header-searchImg">
-                        <img class="header-searchImg"  th:src="@{/img/icon-magnifying-glass.jpg}" alt="icon-magnifying-glass.jpg" />
+                    <div class="header-loginArea" th:if="${#strings.isEmpty(session.loginMember)}">
+                        <input type="submit" id="login_btn" class="header-login-btn" value="로그인" th:onclick="|location.href='@{/login/login.do}'|" />
                     </div>
-                </div>
+<!--                    <div class="showUserId-div" th:if="${not #strings.isEmpty(session.loginMember)}">-->
+<!--                        <span class="showUserId" th:text="${session.loginMember}"></span>-->
+<!--                    </div>-->
+                    <div class="header-loginArea" th:if="${not #strings.isEmpty(session.loginMember)}">
+                        <form role="form" th:action ="@{/logout.do}" method="post">
+                            <input type="submit" id="logout_btn" class="header-login-btn" value="로그아웃" />
+                        </form>
+                    </div>
 
-                <div class="header-loginArea" th:if="${#strings.isEmpty(session.loginMember)}">
-                    <input type="submit" id="login_btn" class="header-login-btn" value="로그인" th:onclick="|location.href='@{/login/login.do}'|" />
-                </div>
-
-                <div class="header-loginArea" th:if="${not #strings.isEmpty(session.loginMember)}">
-                    <form role="form" th:action ="@{/logout.do}" method="post">
-                        <input type="submit" id="logout_btn" class="header-login-btn" value="로그아웃" />
-                    </form>
-                </div>
-
-                <div class="header-loginArea" th:if="${not #strings.isEmpty(session.loginMember)}">
-                    <input type="button" id="mypage_btn" class="header-login-btn" value="마이페이지" th:onclick="|location.href='@{/mypage/main.do}'|" />
+                    <div class="header-mypageBtnArea" th:if="${not #strings.isEmpty(session.loginMember)}">
+                        <button type="button" id="mypage_btn" class="header-mypage-btn" value="마이페이지" th:onclick="|location.href='@{/mypage/main.do}'|" ><span class="showUserId" th:text="${session.loginMember}"></span></button>
+                    </div>
                 </div>
             </div>
 
-            <span th:if="${not #strings.isEmpty(session.loginMember)}" th:text="${session.loginMember}"></span>
-        </div>
-
-    </th:block>
+        </th:block>
 </html>
