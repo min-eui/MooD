@@ -291,5 +291,17 @@ public class MoodController {
 //        return staticYList;
 //    }
 
+    /**
+     * 글 검색 페이지
+     */
+    @GetMapping("/mood/search.do")
+    public String searchKeyword(String keyword, Model model){
+        List<Mood> searchList = moodService.searchKeyword(keyword);
+        //model.addAttribute("keyword",keyword);
+        model.addAttribute("searchList",searchList);
+        return "/mood/searchPage";
+    }
+
+
 
 }

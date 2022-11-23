@@ -183,6 +183,12 @@ public class MoodService {
         List<List> staticMList = moodRepository.findMonthlyStaticsByReg_date(yearTodate, userId);
         return staticMList;
     }
+
+    public List<Mood> searchKeyword(String keyword) {
+
+        List<Mood> searchList = moodRepository.findByContentsContaining(keyword);
+        return searchList;
+    }
 //    /**
 //     * 년도별 감정 통계 데이터 조회
 //     */

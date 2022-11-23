@@ -30,9 +30,9 @@ html,body {
 
 .header-logoArea {
     float:left;
-    width: 110px;
+    width: 135px;
     padding-top: 10px;
-    padding-right: 80px;
+    /*padding-right: 80px;*/
 
 }
 
@@ -49,7 +49,8 @@ html,body {
 }
 
 .header-logoArea > img{
-    max-width: 100%;
+    /*max-width: 100%;*/
+    width: 135px;
     max-height: 100%;
 }
 
@@ -60,6 +61,15 @@ html,body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.header-mypageBtnArea {
+    width: 200px;
+    height: 76px;
+    float: left;
+    display: flex;
+    align-items: center;
+    /*justify-content: center;*/
 }
 
 .header-login-btn {
@@ -81,10 +91,38 @@ html,body {
 
 }
 
+.header-mypage-btn {
+    display: block;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+    overflow: hidden;
+    width: auto;
+    height: 35px;
+    font-size: 22px;
+    font-weight: 500;
+    border-radius: 30px;
+
+    color: #fff;
+    border: solid 1.5px #17cc67;
+    background: #17cc67;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.header-searchForm{
+    /*width: 400px;*/
+}
+
 .header-searchImg {
     height: 45px;
     align-items: center;
     justify-content: center;
+}
+
+.btn_img {
+    border: 0;
+    outline: 0;
+    background-color: white;
 }
 
 .header-searchImg > img{
@@ -96,8 +134,9 @@ html,body {
 }
 
 .header-searchArea {
+    position: relative;
     float: left;
-    width:580px;
+    width:480px;
     height: 76px;
     display: flex;
     justify-content: center;
@@ -105,7 +144,7 @@ html,body {
 
 }
 .header-inputArea {
-    width: 70%;
+    /*width: 80%;*/
     height: 60px;
     padding-top: 11px;
     display: flex;
@@ -113,7 +152,7 @@ html,body {
     font-family: 'Noto Sans KR', sans-serif;
 }
 .header-input {
-    width: 80%;
+    /*width: 80%;*/
     height: 45px;
     font-size: 25px;
     align-items: center;
@@ -123,6 +162,16 @@ html,body {
     outline: none;
 }
 
+.showUserId {
+    font-size: 15px;
+    display: table-cell;
+    vertical-align: middle;
+}
+.showUserId-div{
+    width: 40px;
+    height: 10px;
+
+}
 /* header css 끝 */
 
 .footer {
@@ -964,5 +1013,7 @@ element.style {
     height: 200px;
     vertical-align: middle;
 }
+
+
 
 
