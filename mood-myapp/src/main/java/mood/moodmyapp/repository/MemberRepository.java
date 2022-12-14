@@ -1,6 +1,5 @@
 package mood.moodmyapp.repository;
 
-import mood.moodmyapp.domain.Friend;
 import mood.moodmyapp.domain.Member;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -49,4 +48,7 @@ public interface MemberRepository extends MemberJpaRepository {
     Member findFriendByUserId(String userId); //친구아이디를 맴버테이블에서 검색하기
 
 
+    //글쓸때 작성자 userId로 nickName찾기
+    @Query("SELECT m.nickName FROM Member m WHERE m.userId = :userId")
+    String findByUserId(@Param("userId") String userId);
 }

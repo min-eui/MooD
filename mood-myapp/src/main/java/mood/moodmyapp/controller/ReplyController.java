@@ -42,7 +42,7 @@ public class ReplyController {
         }
 
         //세션에서 댓글작성자 아이디 넣어주기
-        replyForm.setRegistrant(userId);
+        replyForm.setUserId(userId);
 
         Long moodNum = replyForm.getMoodNum();
         // null체크 나중에 추가

@@ -8,15 +8,16 @@
 
     //친구 추가 성공시 메소드
         function showFriend(result){
-            var newFriend
-                newFriend += "<tr id='newFriend'><td>"+searchFriend+"</td>"
-                newFriend += "<td><input type='button' value='삭제' onclick=\"delFriend(this.id)\"/></td>"
-                newFriend += "</tr>"
+            alert("추가할 친구 : "+searchFriend);
+            let newFriend = "<div class='friendList-div'>";
+                newFriend += "<span>"+searchFriend+"</span></div>"
+                newFriend += "<div class='css-btnArea'><input type='button' value='삭제' onclick=\"delFriend(this.id)\"/></div>"
 
+            $("#friendList").prepend(newFriend);
 
-            $("#friendList tbody").prepend(newFriend);
+           // $("#friendList tbody").prepend(newFriend);
             $("#newFriend").attr('id',searchFriend);
-            var friendNum = $("#friendList tr").length;
+            let friendNum = $("#friendList tr").length;
             alert("friendNum : " + friendNum);
             $("input[value='삭제']").attr('id',friendNum+'_'+searchFriend);
             friendNum = friendNum++;
@@ -27,7 +28,7 @@
 
         function output(userIdChk){
             $("#tab1").show();
-            var result = '<br>';
+            let result = '<br>';
 
                 result +="<tr><td>"+userIdChk
                 result += "<button type='button' id='addFriend_btn' name='addFriend_btn'>"+"친구추가하기"+"</button>"+"</td>"
@@ -44,7 +45,7 @@
 
                 console.log("addAjax : searchFriend" + searchFriend )
                 e.preventDefault();
-                var param = {"friendIdRaw" : searchFriend};
+                let param = {"friendIdRaw" : searchFriend};
                 console.log("addAjax : param",param )
                 $.ajax({
                     url: '/mypage/addFriend.do',
@@ -79,7 +80,7 @@
 
                 e.preventDefault();
 
-                var userId = $("input[name='userId']").val();
+                let userId = $("input[name='userId']").val();
 
                 $.ajax({
                     url: '/mypage/searchFriend.do',
@@ -88,12 +89,12 @@
                     success: function (data) {
                         //자기 자신을 조회했을 경우
                         if(data['code']){
-                            var errorCode = data['code'] //컨트롤러에서 넘긴 변수 이름
+                            let errorCode = data['code'] //컨트롤러에서 넘긴 변수 이름
                             alert(errorCode);
                         }else {
 
                             // 성공 시 실패 메시지 hide, 성공 메시지 show
-                            var userIdChk = data['friend']
+                            let userIdChk = data['friend']
                             searchFriend = userIdChk
                             console.log("data : ", data)
                             console.log("userIdChk : ", userIdChk)
@@ -132,7 +133,7 @@
 
     // 문서가 처음 로드됐을때 설정
     document.addEventListener("DOMContentLoaded", function (){
-        var input_btn = $("#friendList input[type=button]");
+        let input_btn = $("#friendList input[type=button]");
         // object 타입 key:value 구조
         $.each(input_btn,function (index,value){
             input_btn.hide();
@@ -149,7 +150,7 @@
             }
 
             //div friendList 안에 모든 input 버튼으로 제어
-            var input_btn = $("#friendList input[type=button]");
+            let input_btn = $("#friendList input[type=button]");
 
              if($("#editFriend_btn").val() =="on"){
                 $.each(input_btn,function (index,value){
@@ -166,12 +167,12 @@
         // 친구 삭제 버튼 클릭시
         function delFriend(clicked_id) {
             alert("clicked_id : " + clicked_id);
-            var lastIndex = clicked_id.length;
-            var splited_id = clicked_id.substring(clicked_id.indexOf('_') + 1, lastIndex);
+            let lastIndex = clicked_id.length;
+            let splited_id = clicked_id.substring(clicked_id.indexOf('_') + 1, lastIndex);
             alert("splited_id : " + splited_id);
 
             delId = splited_id;
-            var delParam = {"delId" : splited_id};
+            let delParam = {"delId" : splited_id};
             $.ajax({
                 url: '/mypage/deleteFriend.do',
                 type: 'post',
@@ -181,7 +182,7 @@
                 success: function (data) {
                     //친구 삭제 실패시
                     if (data['code']) {
-                        var errorCode = data['code']
+                        let errorCode = data['code']
                         alert(errorCode);
                     } else {
                         // 친구삭제 성공
@@ -210,12 +211,12 @@
     <title>friendList</title>
 </head>
 <body>
-<div class="page">
+<!--<div class="page">-->
     <th:block th:replace="fragments/header :: header"></th:block>
     <div class="wrapper">
         <div class="container">
                 <div class="title-left"><h3>내 친구 찾기</h3></div>
-                <div class="css-div">
+                <div class="css-div-input">
                     <div class="css-labelArea">
                         <label for="userId" class="css-label">친구 아이디</label>
                     </div>
@@ -246,7 +247,9 @@
                         <!-- 리스트가 있는 경우 -->
                         <div id="friendList">
                                     <div th:unless="${#lists.isEmpty(friendList)}" th:id="${friend.friendId}" th:each="friend:${friendList}">
-                                        <div th:text="${friend.friendId}" ></div>
+                                        <div class="friendList-div">
+                                        <span th:text="${friend.friendId}" ></span>
+                                        </div>
                                         <div class="css-btnArea">
                                             <input type="button" th:id="${friendStat.count+'_'+friend.friendId}" th:value="삭제" onclick="delFriend(this.id)"/>
                                         </div>
@@ -257,6 +260,5 @@
                 </div>
             <th:block th:replace="fragments/footer :: footer"></th:block>
             </div>
-        </div><!-- /page -->
 </body>
 </html>

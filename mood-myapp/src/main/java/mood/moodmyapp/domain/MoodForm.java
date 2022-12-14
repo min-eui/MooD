@@ -23,6 +23,7 @@ public class MoodForm {
 
         private Long moodNum;               //감정인덱스번호
         private String userId;              //회원아이디(작성자)
+        private String nickName;
         private String userProfile;         //프로필사진
         private String emotion;             //감정
         private String contents;            //글내용

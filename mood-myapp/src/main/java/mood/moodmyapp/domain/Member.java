@@ -13,7 +13,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 @DynamicUpdate  //변경된 칼럼만 업데이트해준다
 @AllArgsConstructor // 생성자 추가
 @NoArgsConstructor  //  기본생성자 자동 추가

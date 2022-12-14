@@ -7,18 +7,18 @@
         //회원가입 버튼 클릭시
         function checks() {
             //유효성
-            var checkIdVal = /^[a-zA-Z0-9]{8,15}$/; //아이디와 비밀번호 유효성 검사 정규식
-            var checkPwVal = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&_+=]).*$/; //비밀번호 유효성 검사 정규식
-            var checkName = /^[가-힣]{0,50}$/; //이름 유효성 검사 정규식(한글만 가능)
-            var checkNickname = /[가-힣a-zA-Z]/; //닉네임 유효성 검사 정규식(한글만 가능)
-            var checkPhoneVal = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;//핸드폰 번호 유효성 검사 정규식
+            let checkIdVal = /^[a-zA-Z0-9]{8,15}$/; //아이디와 비밀번호 유효성 검사 정규식
+            let checkPwVal = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&_+=]).*$/; //비밀번호 유효성 검사 정규식
+            let checkName = /^[가-힣]{0,50}$/; //이름 유효성 검사 정규식(한글만 가능)
+            let checkNickname = /[가-힣a-zA-Z]/; //닉네임 유효성 검사 정규식(한글만 가능)
+            let checkPhoneVal = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/;//핸드폰 번호 유효성 검사 정규식
             //값 불러오기
-            var userId = document.getElementById("userId"); //아이디
-            var userPw = document.getElementById("userPw"); //비밀번호
-            var userPwChk = document.getElementById("checkPw"); //비밀번호 확인
-            var userName = document.getElementById("userName"); //이름
-            var userNickname = document.getElementById("userNickname"); //이름
-            var userPhone = document.getElementById("phoneNum"); //핸드폰번호
+            let userId = document.getElementById("userId"); //아이디
+            let userPw = document.getElementById("userPw"); //비밀번호
+            let userPwChk = document.getElementById("checkPw"); //비밀번호 확인
+            let userName = document.getElementById("userName"); //이름
+            let userNickname = document.getElementById("userNickname"); //이름
+            let userPhone = document.getElementById("phoneNum"); //핸드폰번호
 
             /*아이디 유효성 검사*/
             //아이디에서 입력 필수 조건문
@@ -126,8 +126,8 @@
     });
 
     $(document).ready(function() {
-        var isIdChecked = false;    //중복체크했을 땐 true로 변경
-        var isNickChecked = false;    //중복체크했을 땐 true로 변경
+        let isIdChecked = false;    //중복체크했을 땐 true로 변경
+        let isNickChecked = false;    //중복체크했을 땐 true로 변경
 
         $("input[name='userId']").on("change", function(e){
             isIdChecked = false;    //userId값이 변경될 때마다 중복체크버튼값 리셋
@@ -161,7 +161,7 @@
                     // 실패 시 실패 메시지 show, 성공 메시지 hide
                     else{
                         $('#idAvailable').hide();
-                        var idVal = $('#idNotAvailable').show().text('이미 사용중인 \n아이디 입니다.').append($('<br/>'));
+                        let idVal = $('#idNotAvailable').show().text('이미 사용중인 \n아이디 입니다.').append($('<br/>'));
                         idVal.html(idVal.html().replace(/\n/g, '<br/>'));
 
                     }
@@ -194,7 +194,7 @@
                         // 실패 시 실패 메시지 show, 성공 메시지 hide
                         else {
                             $('#nickAvailable').hide();
-                            var nickVal = $('#nickNotAvailable').show().text('이미 사용중인 \n닉네임 입니다.').append($('<br/>'));
+                            let nickVal = $('#nickNotAvailable').show().text('이미 사용중인 \n닉네임 입니다.').append($('<br/>'));
                             nickVal.html(nickVal.html().replace(/\n/g, '<br/>'));
                         }
 

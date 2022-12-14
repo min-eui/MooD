@@ -3,6 +3,7 @@ package mood.moodmyapp.domain;
 import lombok.*;
 import mood.moodmyapp.jpaEntity.BaseTimeEntity;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
@@ -17,6 +18,7 @@ import static java.util.Collections.emptySet;
 
 //@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // 상속 전략
 //@DiscriminatorColumn(name="moodNum")   //  구분하는 칼럼
+@DynamicInsert
 @DynamicUpdate  //변경된 칼럼만 업데이트해준다
 @AllArgsConstructor // 생성자 추가
 @NoArgsConstructor  //  기본생성자 자동 추가
@@ -32,7 +34,8 @@ public class Mood extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //주키 자동생성 전략
     @Column(name="moodNum", length = 500, nullable = false, unique = true)
     private Long moodNum;               //감정인덱스번호
-
+    // OneToMany 필드 타입을 Set으로 선언하여 중복 제거
+    // Set은 순서가 보장되지 않는 특징이 있지만, 순서 보장이 필요하면 LinkedHashSet을 사용하자
     @OneToMany(mappedBy = "moodNum", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<IsLike> isLike = emptySet();
 
@@ -40,10 +43,10 @@ public class Mood extends BaseTimeEntity {
     private String userId;              //회원아이디(작성자)
 
     @Column(name="userProfile", length = 200, nullable = true)
-    private String userProfile;   //프로필사진
+    private String userProfile;         //프로필사진
 
     @Column(name="emotion", length = 20, nullable = true)
-    private String emotion;                //감정
+    private String emotion;              //감정
 
     @Column(name="contents", length = 5000, nullable = false)
     private String contents;            //글내용
@@ -59,7 +62,7 @@ public class Mood extends BaseTimeEntity {
     private LocalDateTime reg_date; //작성일
 
 
-    @Column(name="totalLike", length = 500, nullable = true)
+    @Column(name="totalLike", length = 500, nullable = true, columnDefinition = "bigint(20) default 0")
     private Long totalLike; //좋아요 개수
 
     @Column(name="likeUserList", length = 200, nullable = true)

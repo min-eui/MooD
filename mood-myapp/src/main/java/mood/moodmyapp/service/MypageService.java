@@ -64,7 +64,6 @@ public class MypageService {
      * @param userId,friendId
      * @return
      */
-
     public void makeFriend(String userId, String friendId){
 
         Friend friend = new Friend();

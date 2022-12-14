@@ -35,6 +35,7 @@ public class Reply extends BaseTimeEntity {
     @Column(name="reg_date", length = 50, nullable = false, unique = false)
     private LocalDateTime reg_date;   //댓글등록일
 
-    @Column(name="registrant", length = 20, nullable = false, unique = false)
-    private String registrant;              //댓글작성
+    @Column(name="userId", length = 20, nullable = false, unique = false)
+    private String userId;              //댓글작성
+
 }

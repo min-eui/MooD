@@ -35,4 +35,12 @@ public interface ReplyRepository extends ReplyJpaRepository{
     @Transactional
     @Query("DELETE FROM Reply r WHERE r.replyNum = :replyNum")
     int deleteByReplyNum(Long replyNum);
+
+
+    /**
+     * 게시글 삭제시 게시글 번호(moodNum)으로 댓글들 찾기
+     * @param moodNum
+     * @return
+     */
+    List<Reply> findByMoodNum(Long moodNum);
 }
