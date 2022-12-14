@@ -257,7 +257,6 @@ public class MoodController {
      * 월별 감정 통계 데이터 조회
      */
     @ResponseBody
-//    @PostMapping("/mood/statics/monthly/EmotionDataType.do")
     @GetMapping("/mood/statics/monthly/EmotionDataType.do")
     public List<List> emotionMonthlyStatics (HttpServletRequest request, String searchYear){
 
