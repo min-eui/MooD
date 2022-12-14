@@ -180,7 +180,7 @@
 
             // 이미 좋아요 눌려있을때
             if(checkLike == "color_like"){
-                alert("checkLike : "+checkLike);
+                //alert("checkLike : "+checkLike);
                 isLike = 0;//isLike 값 0으로 세팅후 전송
                 $.ajax({
                     url: '/mood/likeCancel.do',
@@ -189,7 +189,7 @@
                     // contentType: 'application/json',
                     success: function (data) {
                         if (data == 0) {
-                            alert("성공")
+                            //alert("성공")
                             checkLike == "def_like";
                             $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_def.png");
                             $("#" + likeBtnId).attr("class", "def_like");     //class로 버튼 구분하기 때문에 다시 설정
@@ -211,7 +211,7 @@
                 });
                 // 좋아요 안눌려 있을때
             }else if(checkLike =="def_like"){
-                alert("checkLike : "+checkLike);
+                //alert("checkLike : "+checkLike);
                 isLike = 1; //isLike 값 0으로 세팅후 전송
                 $.ajax({
                     url: '/mood/like.do',
@@ -220,7 +220,7 @@
                     // contentType: 'application/json',
                     success: function (data) {
                         if (data == 1) {
-                            alert("성공")
+                            //alert("성공")
                             checkLike == "color_like";
                             $("#" + likeBtnId).attr("src", "/img/list_btn/like_btn_color.png");
                             $("#" + likeBtnId).attr("class", "color_like");   //class로 버튼 구분하기 때문에 다시 설정
