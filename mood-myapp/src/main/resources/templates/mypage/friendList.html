@@ -8,7 +8,7 @@
 
     //친구 추가 성공시 메소드
         function showFriend(result){
-            alert("추가할 친구 : "+searchFriend);
+            //alert("추가할 친구 : "+searchFriend);
             let newFriend = "<div class='friendList-div'>";
                 newFriend += "<span>"+searchFriend+"</span></div>"
                 newFriend += "<div class='css-btnArea'><input type='button' value='삭제' onclick=\"delFriend(this.id)\"/></div>"
@@ -18,7 +18,7 @@
            // $("#friendList tbody").prepend(newFriend);
             $("#newFriend").attr('id',searchFriend);
             let friendNum = $("#friendList tr").length;
-            alert("friendNum : " + friendNum);
+            //alert("friendNum : " + friendNum);
             $("input[value='삭제']").attr('id',friendNum+'_'+searchFriend);
             friendNum = friendNum++;
             $("input[value='삭제']").hide();
@@ -166,10 +166,10 @@
 
         // 친구 삭제 버튼 클릭시
         function delFriend(clicked_id) {
-            alert("clicked_id : " + clicked_id);
+            //alert("clicked_id : " + clicked_id);
             let lastIndex = clicked_id.length;
             let splited_id = clicked_id.substring(clicked_id.indexOf('_') + 1, lastIndex);
-            alert("splited_id : " + splited_id);
+            //alert("splited_id : " + splited_id);
 
             delId = splited_id;
             let delParam = {"delId" : splited_id};

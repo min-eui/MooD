@@ -82,7 +82,7 @@
 
             for(let i=0; i < emoVal.length; i++){
                 if(emoVal[i].value==="checked"){
-                    let moodVal = emoVal[i].id;
+                    var moodVal = emoVal[i].id;
                 }
             }
             //alert(moodVal);
@@ -181,7 +181,7 @@
             $("#imgLabel").click(function () {
                 //클릭하는것을 개수를 세고 개수가 1개이상이면 안만들어지게
                 if (clickCnt < 1){
-                    alert("아직 "+ clickCnt + "번째");
+                    //alert("아직 "+ clickCnt + "번째");
                     // if($("#imgLabel").find('input:eq(clickCnt)').val() != null){
                     let newInput = document.createElement("input");
                     newInput.setAttribute("type", "file");
@@ -197,7 +197,7 @@
                     // //라벨 안에다가 인풋버튼 추가하기
                     labelEl.appendChild(newInput);
                     var newInputId = newInput.id;
-                    alert("newInputId" + newInputId);
+                    //alert("newInputId" + newInputId);
                     clickCnt++;
 
                     $("#imgLabel").find('input:eq(clickCnt)').click();
