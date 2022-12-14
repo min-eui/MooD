@@ -64,33 +64,22 @@ public class MoodController {
     /**
      * 글쓰기 처리
      */
-
     @RequestMapping (value="/mood/write.do")
     public String writeProc(@ModelAttribute("moodForm") MoodForm moodForm, HttpServletRequest request) throws IOException {
 
         HttpSession session = request.getSession(false);
 
-
         //비로그인 상태면(세션이 없다면) 로그인페이지로 이동
         if(session == null){
             return "redirect:/login/login.do";
         }
-        // mood값 세팅할 객체 선언
-//        Mood mood = new Mood();
 
         //로그인한 상태라면
         // 세션에 저장된 회원 조회
         String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
 
         // 세션에서 글 작성자를 userId로 세팅
-//        mood.setUserId(userId);
         moodForm.setUserId(userId);
-        //moodForm에서 multifile타입으로 받아온 이미지 uploadFile타입으로 변환
-        //List<UploadFile> storeImageFiles = fileStore.storeFiles(moodForm.getImagesFiles());
-
-        //데이터베이스에 저장
-//        mood.setImagesFiles(storeImageFiles);
-
 
         Mood isSaved = moodService.saveMood(moodForm);
         HashMap<String,String> map = new HashMap();
@@ -107,7 +96,6 @@ public class MoodController {
      * @param model
      * @return
      */
-
     @GetMapping("/")
     public String mainPage(Model model){
 
@@ -269,7 +257,8 @@ public class MoodController {
      * 월별 감정 통계 데이터 조회
      */
     @ResponseBody
-    @PostMapping("/mood/statics/monthly/EmotionDataType.do")
+//    @PostMapping("/mood/statics/monthly/EmotionDataType.do")
+    @GetMapping("/mood/statics/monthly/EmotionDataType.do")
     public List<List> emotionMonthlyStatics (HttpServletRequest request, String searchYear){
 
         HttpSession session = request.getSession(false);

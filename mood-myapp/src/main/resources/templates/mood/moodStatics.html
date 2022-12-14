@@ -9,9 +9,9 @@
     <script type="text/javascript">
             window.onload = function () {
                 // 처음 로딩시 현재 년도, 월로 그래프 세팅을 위해 날짜 가져오기
-                var today = new Date();
-                var thisYear = today.getFullYear();
-                var thisMonth = ('0' + (today.getMonth() + 1)).slice(-2);   //getMonth()함수는 0~11을 반환하기 때문에 항상 +1 해줘야함
+                let today = new Date();
+                let thisYear = today.getFullYear();
+                let thisMonth = ('0' + (today.getMonth() + 1)).slice(-2);   //getMonth()함수는 0~11을 반환하기 때문에 항상 +1 해줘야함
                 getEmoThisMonth(thisYear, thisMonth);  //파이 그래프 실행
                 // getEmoThisYear(thisYear);  //라인 그래프 실행
                 selectThisDate(thisYear, thisMonth);
@@ -29,7 +29,7 @@
             //             alert("통신 성공");
             //             console.log(data);
             //             let emoLineList = new Array();  // 데이터를 담아올 리스트 선언
-            //             var allYear = 12;
+            //             let allYear = 12;
             //
             //             //data 값이 없다면
             //             if (data.length===0) {
@@ -49,7 +49,7 @@
             //                 }
             //
             //                 /* 차트 그리기 */
-            //                 var context = document
+            //                 let context = document
             //                     .getElementById("lineChart").getContext("2d");
             //                 lineChart = new Chart(context, {  //chart 내용, update() 사용위해 전역변수 선언
             //                     type: 'line', // 차트의 형태
@@ -113,7 +113,7 @@
             function getEmoThisMonth(thisYear, thisMonth) {
 
                 $.ajax({
-                    type: "post",
+                    type: "get",
                     url: "/mood/statics/monthly/EmotionDataType.do",
                     data: {"searchYear": thisYear + "-" + thisMonth},   // 년도 파라미터로 전송 테스트로 하드코딩
                     dataType: "json",
@@ -121,7 +121,7 @@
                         //alert("통신 성공");
                         //console.log(data);
                         let emoList = new Array();  // 데이터를 담아올 리스트 선언
-                        var allYear = 12;
+                        let allYear = 12;
 
                         //data 값이 없다면
                         if (data.length===0) {
@@ -212,24 +212,18 @@
                 var optionMVal = selectedMEl.options[selectedMEl.selectedIndex].value;
 
                 $.ajax({
-                    type: "post",
+                    type: "get",
                     url: "/mood/statics/monthly/EmotionDataType.do",
                     data: {"searchYear": optionYVal + "-" + optionMVal},   // 년도 파라미터로 전송 테스트로 하드코딩
                     dataType: "json",
                     success: function (data) {
-                        //alert("통신 성공");
-                        //console.log(data);
+
                         let emoList = new Array();  // 데이터를 담아올 리스트 선언
                         var allYear = 12;
 
                         //data 값이 없다면
                         if (data.length===0) {
                             alert(optionYVal+"년 "+optionMVal+"월 "+"데이터가 없습니다.");
-                            //이전 data값 삭제
-                            // pieChart.data.datasets.forEach(function (dataset){
-                            //     dataset.data.pop();
-                            // });
-                            //$("#pieChart").hide();
                             $("#noDataMsg-pieChart").show();
                             $(".chart-class-pie").hide();
 
@@ -240,7 +234,7 @@
                             $(".chart-class-pie").show();
                             for (let i = 0; i < data.length; i++) {
                                 //emoList.push(data[i]);
-                                for (let j = 0; j < data[i].length; j++) {
+                                for (var j = 0; j < data[i].length; j++) {
                                     emoList.push(data[i][j + 2]);
                                     //console.log(data[i][j + 2]);
 
@@ -294,18 +288,15 @@
 <!--            <span id="text2"></span>-->
 
             <!-- 파이차트 영역 -->
-
             <!-- 드롭다운 -->
             <!-- 년도 -->
-
-            <div class="dropdown-def">
+            <div class="dropdown-def-staic">
                     <select class="dropdown-content-def" th:id="year_selbox">
                         <option value="2022">2022년</option>
                     </select>
             </div>
-
             <!-- 월 -->
-            <div class="dropdown-def">
+            <div class="dropdown-def-staic">
                     <select class="dropdown-content-def" th:id="month_selbox" th:onchange="changeSel()">
                         <option value="01">1월</option>
                         <option value="02">2월</option>

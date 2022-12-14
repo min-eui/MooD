@@ -27,13 +27,15 @@ public interface MoodRepository extends MoodJpaRepository {
      * @return
      */
     // 지연로딩에서 즉시로딩으로 바꾸고 싶은 필드의 이름
-    @EntityGraph(attributePaths = {"imageFiles"})
-    @Query("SELECT distinct m FROM Mood  m left  join fetch m.isLike ORDER BY m.reg_date DESC")
+    // distinct 사용 이유는 중복제거
+    // N+1 문제를 해결하기 위해 Join Fetch 사용
+    //@EntityGraph(attributePaths = {"imageFiles"})
+    @Query("SELECT distinct m FROM Mood  m left join fetch m.isLike left join fetch m.imageFiles ORDER BY m.reg_date DESC")
     List<Mood> findAllOrderByReg_dateDesc();
 
 
     /**
-     * 글 상세페이지
+     * 글 수정페이지
      * @param moodNum
      * @return
      */
@@ -88,5 +90,14 @@ public interface MoodRepository extends MoodJpaRepository {
       * @param keyword
      */
     @EntityGraph(attributePaths = {"imageFiles"})
-    List<Mood> findByContentsContaining(String keyword);
+    List<Mood> findByContentsContainingOrderByMoodNumDesc(String keyword);
+
+    /**
+     * 마이페이지 : 내가 작성한 글 불러오기
+     * @param userId
+     * @return
+     */
+    @EntityGraph(attributePaths = {"imageFiles"})
+    @Query("SELECT distinct m FROM Mood  m left  join fetch m.isLike WHERE m.userId =:userId ORDER BY m.reg_date DESC")
+    List<Mood> findByUserId(@Param("userId") String userId);
 }

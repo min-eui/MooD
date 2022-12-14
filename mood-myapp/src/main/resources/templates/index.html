@@ -12,8 +12,8 @@
 
         /* 삭제버튼 */
         function deleteList(delId) {
-            var listClass = $("#"+delId).parents(".contents-section");
-            var listId = listClass.attr('id');
+            let listClass = $("#"+delId).parents(".contents-section");
+            let listId = listClass.attr('id');
 
             $.ajax({
                 url: '/mood/deleteMood.do',
@@ -22,7 +22,7 @@
                 // dataType:"json",
                 data: {"moodNum": listId},
                 // data: JSON.stringify(moodNum),
-                success: function (data) {
+                success: function () {
                     //삭제할 아이디(글번호)를 가진 div를 삭제
                     $("#"+listId).remove();
 
@@ -40,22 +40,22 @@
             });
         }
 
-        /* 수정버튼 */
+        /* 글 수정버튼 */
         function editList(editId) {
-            var listClass = $("#"+editId).parents(".contents-section");
-            var listId = listClass.attr('id');
+            let listClass = $("#"+editId).parents(".contents-section");
+            let listId = listClass.attr('id');
             location.href = '/mood/update/'+listId;
         }
 
         /* 더보기 버튼 체크 */
         function chkFold(btnId) {
 
-            var foldVal = $("#"+btnId).val();
+            let foldVal = $("#"+btnId).val();
             if(foldVal == "unfold"){
                 $("#"+btnId).attr("src","/img/list_btn/minus_btn.png");
                 $("#"+btnId).val("fold");
 
-                var parentId = $("#"+btnId).parents(".top-btnArea");
+                let parentId = $("#"+btnId).parents(".top-btnArea");
                 parentId.children(".dropdown-content").show();
 
                 /* 해당 아이디를 제외한 다른 모든 버튼 hide 하기 */
@@ -64,8 +64,8 @@
                 /* 선택한 버튼 나머지 요소들 fold 상태로 만들기 */
                 for(let i=0; i < allFoldBtn.length; i++){
                     if(allFoldBtn[i].id != btnId){
-                        var hideList = allFoldBtn[i].id;
-                        var  hidePar= $("#"+hideList).parents('.top-btnArea');
+                        let hideList = allFoldBtn[i].id;
+                        let  hidePar= $("#"+hideList).parents('.top-btnArea');
                         $("#"+hideList).val("unfold");
                         hidePar.children(".dropdown-content").hide();
                     }
@@ -75,7 +75,7 @@
                 $("#"+btnId).attr("src","/img/list_btn/plus_btn.png");
                 $("#"+btnId).val("unfold");
 
-                var parentId = $("#"+btnId).parents(".top-btnArea");
+                let parentId = $("#"+btnId).parents(".top-btnArea");
                 parentId.children(".dropdown-content").hide();
 
             }
@@ -126,7 +126,7 @@
 
 
         function sendMoodNum(moodNum){
-             var link = '/mood/detail/'+moodNum; // 해당 글 상세페이지로 이동
+             let link = '/mood/detail/'+moodNum; // 해당 글 상세페이지로 이동
             location.replace(link);
         }
 
@@ -141,12 +141,12 @@
              $(".top-btnArea > img").val("unfold");
              $(".emotionArea > img").val("unchecked");
              //color_like class가 있는지 확인하기
-             var colorLikeImg = document.querySelectorAll(".color_like");
+             let colorLikeImg = document.querySelectorAll(".color_like");
              // alert(colorLikeImg.length);
 
              if(colorLikeImg){
-                 for(var i=0; i< colorLikeImg.length; i++){
-                     var colorLikeId = colorLikeImg[i].id;
+                 for(let i=0; i< colorLikeImg.length; i++){
+                     let colorLikeId = colorLikeImg[i].id;
                      const hideDefImg = $("#"+colorLikeId).parents(".default-smallBtnArea-index").children(".def_like");
                      hideDefImg.css('display','none');
                  }
@@ -157,21 +157,21 @@
         /* 좋아요 클릭 체크 */
         function chkLike(likeBtnId) {
             //default-smallBtn 의 children class def_like color_like인지 구분
-            var contentsId = $("#"+likeBtnId).parents(".contents-section");
-            // var moodNum = contentsId.children(".sendPageNum-div").id;
-            var conClass = $("#" + likeBtnId).parents(".contents-section");
-            var moodNum = conClass[0].getAttribute('id'); // getElements- 메서드는 값을 객체로 받아오기 때문에 ele.함수(x)> ele[i].함수(o)
-            var isLike = 0;
+            let contentsId = $("#"+likeBtnId).parents(".contents-section");
+            // let moodNum = contentsId.children(".sendPageNum-div").id;
+            let conClass = $("#" + likeBtnId).parents(".contents-section");
+            let moodNum = conClass[0].getAttribute('id'); // getElements- 메서드는 값을 객체로 받아오기 때문에 ele.함수(x)> ele[i].함수(o)
+            let isLike = 0;
 
             // default-smallBtnArea-index 의 2번째 img 태그 class가 어떤건지 따라서 isLike 구분값 설정
-            var textBtnArea = $("#"+likeBtnId).parents(".text-btnArea-main");
-            var textBtnAreaId = textBtnArea[0].getAttribute('id');
-            var likeTag = $("#"+textBtnAreaId).find('img:eq(1)');
+            let textBtnArea = $("#"+likeBtnId).parents(".text-btnArea-main");
+            let textBtnAreaId = textBtnArea[0].getAttribute('id');
+            let likeTag = $("#"+textBtnAreaId).find('img:eq(1)');
             checkLike = likeTag[0].getAttribute('class');
 
 
-            var spanVar = $("#"+textBtnAreaId).find('span:eq(0)');
-            var spanId = spanVar[0].getAttribute('id');
+            let spanlet = $("#"+textBtnAreaId).find('span:eq(0)');
+            let spanId = spanlet[0].getAttribute('id');
             const spanOrigin = Number($("#"+spanId).text());    //상수로 선언, 문자열> 숫자로 파싱
             const spanLike = spanOrigin+1;
             const spanDisLike = spanOrigin-1;
@@ -245,12 +245,12 @@
             }
         }
 
-            //       /* 이미지 클릭 체크 */
+            /* 이미지 클릭 체크 */
             function checkClick(imgId) {
 
                 const allImg = document.querySelectorAll('#emotionArea > img');
-                var chkVal = $("#" + imgId).val();
-                var clickedIdx = $("#" + imgId).index();
+                let chkVal = $("#" + imgId).val();
+                let clickedIdx = $("#" + imgId).index();
 
                 if (chkVal == "unchecked") {
                     $("#" + imgId).val("checked");
@@ -259,7 +259,7 @@
 
                     for (let i = 0; i < allImg.length; i++) {
                         if (i != clickedIdx) {
-                            var unchkId = allImg[i].id
+                            let unchkId = allImg[i].id
                             $("#" + unchkId).val("unchecked");
                             $("#" + unchkId).attr("src", "/img/emotion/" + unchkId + "_def.png");
                         }
@@ -274,8 +274,8 @@
         function checkClick(imgId){
 
             const allImg = document.querySelectorAll('#emotionArea > img');
-            var chkVal = $("#"+imgId).val();
-            var clickedIdx = $("#"+imgId).index();
+            let chkVal = $("#"+imgId).val();
+            let clickedIdx = $("#"+imgId).index();
 
             if(chkVal=="unchecked") {
                 $("#"+imgId).val("checked");
@@ -284,7 +284,7 @@
 
                 for(let i=0; i < allImg.length; i++){
                     if(i != clickedIdx){
-                        var unchkId = allImg[i].id
+                        let unchkId = allImg[i].id
                         $("#"+unchkId).val("unchecked");
                         $("#"+unchkId).attr("src","/img/emotion/"+unchkId+"_def.png");
                     }
@@ -301,7 +301,7 @@
             // 인풋 태그에 파일이 있는 경우
             if(input.files && input.files[0]) {
 
-                var reader = new FileReader();
+                let reader = new FileReader();
                 reader.onload = function(e){
                     document.getElementById('showImage').src = e.target.result;
                 };
@@ -313,14 +313,14 @@
 
         }
 
-        var clickCnt = 0;
+        let clickCnt = 0;
         $(function () {
             $("#imgLabel").click(function () {
                 //클릭하는것을 개수를 세고 개수가 1개이상이면 안만들어지게
                 if (clickCnt < 1){
                     alert("아직 "+ clickCnt + "번째");
                     // if($("#imgLabel").find('input:eq(clickCnt)').val() != null){
-                    var newInput = document.createElement("input");
+                    let newInput = document.createElement("input");
                     newInput.setAttribute("type", "file");
                     // newInput.setAttribute("id", clickCnt+"_id");
                     newInput.setAttribute("id", "imageFiles");
@@ -329,11 +329,11 @@
                     newInput.setAttribute("style", "display: none");
                     newInput.setAttribute("multiple","");
                     newInput.setAttribute("onchange", "readImage(this)");
-                    var labelEl = document.getElementById("imgLabel");
+                    let labelEl = document.getElementById("imgLabel");
 
                     // //라벨 안에다가 인풋버튼 추가하기
                     labelEl.appendChild(newInput);
-                    var newInputId = newInput.id;
+                    let newInputId = newInput.id;
                     alert("newInputId" + newInputId);
                     clickCnt++;
 
@@ -348,7 +348,7 @@
     <title>메인페이지</title>
 </head>
 <body>
-<div class="page">
+<!--<div class="page">-->
     <th:block th:replace="fragments/header :: header"></th:block>
     <div class="wrapper">
         <div class="container">
@@ -401,28 +401,36 @@
                             </div>
                         </div>
                         <div class="sendPageNum-div"  th:id="${mood.moodNum}" th:onclick="sendMoodNum(this.id)">
-                            <div class="text-main-date">
-                                <span th:text="${mood.reg_date}"></span>
+                            <div class="date-userId-div">
+                                <div class="text-main-date">
+                                    <span th:text="${#temporals.format(mood.reg_date, 'yyyy/MM/dd HH:mm')}"></span>
+                                </div>
+
+                                <div class="text-main-userId">
+                                    <button th:text="${mood.userId}" class="userId-btn" id="userId" name="userId"></button>
+                                </div>
                             </div>
                             <div th:if="${not #strings.isEmpty(mood.userProfile)}" class="text-main-userProfile">
                                 <div th:text="${mood.userProfile}" id="userProfile" name="userProfile"></div>
                             </div>
-                            <div class="text-main-userId">
-                                <span th:text="${mood.userId}" id="userId" name="userId"></span>
-                            </div>
-                            <div th:if="${not #strings.isEmpty(mood.emotion)}" class="text-main-emotion">
-                                <img th:src="@{/img/emotion/{emotion}_color.png(emotion=${mood.emotion})}" alt="emotion.png" />
-                            </div>
-                            <div class="contents-spanArea-css">
-                                <span th:text="${mood.contents}" class="contents-span-css"  name="contents" ></span>
-                            </div>
-                            <div class="photo-divArea">
-                                <img class="photo-div" th:each="imageFile : ${mood.imageFiles}" th:src="@{${'/images/'+imageFile.getStoreFileName()}}" alt="photo" width="300px"/>
+<!--                            <div class="text-main-userId">-->
+<!--                                <span th:text="${mood.userId}" id="userId" name="userId"></span>-->
+<!--                            </div>-->
+                            <div class="emotion-contents-Div">
+                                <div th:if="${not #strings.isEmpty(mood.emotion)}" class="text-main-emotion">
+                                    <img th:src="@{/img/emotion/{emotion}_color.png(emotion=${mood.emotion})}" alt="emotion.png" />
+                                </div>
+                                <div class="contents-spanArea-css">
+                                    <span th:text="${mood.contents}" class="contents-span-css"  name="contents" ></span>
+                                </div>
+                                <div class="photo-divArea">
+                                    <img class="photo-div" th:each="imageFile : ${mood.imageFiles}" th:src="@{${'/images/'+imageFile.getStoreFileName()}}" alt="photo" width="300px"/>
+                                </div>
                             </div>
                         </div>
                         <div class="text-btnArea-main" th:id="${'text-btnArea-main_'+moodStat.count}">
                             <div class="default-smallBtnArea-index" th:id="${'default-smallBtnArea-index_'+moodStat.count}">
-                                <img class="default-smallBtn"  th:src="@{/img/list_btn/reply_btn.png}" alt="reply-btn" />
+                                <img class="default-smallBtn"  th:src="@{/img/list_btn/reply_btn.png}" alt="reply-btn" th:onclick="|location.href='@{/mood/detail/{moodNum}(moodNum=${mood.moodNum})}'|"/>
 
                                 <img th:each="isLike:${mood.isLike}" th:class="color_like"  th:if="${isLike.moodNum.equals(mood.moodNum)} and ${#strings.equals(isLike['likeUserId'],session.loginMember)} and ${isLike['isLike']} > 0" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_color.png}" th:onclick="chkLike(this.id)" alt="like-btn" />
                                 <img th:class="def_like" class="default-smallBtn" th:id="${mood.moodNum+'_like_btn'}"  th:src="@{/img/list_btn/like_btn_def.png}" th:onclick="chkLike(this.id)" alt="like-btn" />
@@ -437,6 +445,6 @@
         </div>
         <th:block th:replace="fragments/footer :: footer"></th:block>
     </div>
-</div>
+<!--</div>-->
 </body>
 </html>

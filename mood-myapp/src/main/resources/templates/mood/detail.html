@@ -11,9 +11,9 @@
         }
 
        window.onload = function () {
-           var listBtn = document.getElementById("listBtn");
+           let listBtn = document.getElementById("listBtn");
            listBtn.onclick = function () {
-               var link = '/';
+               let link = '/';
                location.replace(link);
            }
 
@@ -23,12 +23,12 @@
            $(".top-btnArea > img").val("unfold");
            $(".emotionArea > img").val("unchecked");
            //color_like class가 있는지 확인하기
-           var colorLikeImg = document.querySelectorAll(".color_like");
+           let colorLikeImg = document.querySelectorAll(".color_like");
            // alert(colorLikeImg.length);
 
            if(colorLikeImg){
-               for(var i=0; i< colorLikeImg.length; i++){
-                   var colorLikeId = colorLikeImg[i].id;
+               for(let i=0; i< colorLikeImg.length; i++){
+                   let colorLikeId = colorLikeImg[i].id;
                    const hideDefImg = $("#"+colorLikeId).parents(".default-smallBtnArea").children(".def_like");
                    hideDefImg.css('display','none');
                }
@@ -40,16 +40,16 @@
         function replyProc(){
 
             //하단에 createElemente 해서 append해버리
-            var replyDiv = document.createElement("div");   //contents-section div
+            let replyDiv = document.createElement("div");   //contents-section div
             replyDiv.setAttribute("class","contents-section");
             /* moodNum 가져오기 */
             const sendMoodNum = $(".sendPageNum-div").attr("id");
 
             /* userId 가져오기 */
-            var spanUserId = $("#userId").text();
+            let spanUserId = $("#userId").text();
 
             /* 댓글 폼생성 */
-            var replyHtml = "";
+            let replyHtml = "";
             cntReNum++;
             replyHtml += "<form id='replyForm_" +cntReNum+"'class ='replyForm' name='replyForm' action='/reply/addReply.do' method='post'>";
             replyHtml += "<div class='text-section-reply'>";
@@ -61,13 +61,14 @@
             replyHtml += "</div>";
             // replyHtml += "<input type='hidden' value=" +spanUserId+ " name = 'registrant'/>";
             replyHtml += "<input type='hidden' value=" +sendMoodNum+ " name = 'moodNum'/>";
+            replyHtml += "<input type='hidden' value='userId' name = 'userId'/>";
             replyHtml += "<div class='default-btnArea-idx'>";
             replyHtml += "<button type='button' id='reply-btn_"+cntReNum+"'class='default-reply-btn' onclick='submitReplyForm(this.id)'>작성하기</button>";
             replyHtml += "</div>";
             replyHtml += "</div>";
             replyHtml+="</form>";
 
-            $(".contents-section").after(replyHtml);
+            $(".contents-section-detail").after(replyHtml);
 
 
         }
@@ -82,8 +83,8 @@
 
         /* 댓글 삭제버튼 */
         function deleteReplyList(delId) {
-            var listClass = $("#"+delId).parents(".contents-section");
-            var listId = listClass.attr('id');
+            let listClass = $("#"+delId).parents(".contents-section");
+            let listId = listClass.attr('id');
 
             $.ajax({
                 url: '/reply/deleteReply.do',
@@ -112,19 +113,26 @@
 
         /* 글 삭제버튼 */
         function deleteList(delId) {
-            var listClass = $("#"+delId).parents(".contents-section");
-            var listId = listClass.attr('id');
+            let listClass = $("#"+delId).parents(".contents-section-detail");
+            let listId = listClass.attr('id');
+
+            let lastIndex = listId.length;
+            let splited_id = listId.substring(listId.indexOf('_') + 1, lastIndex);
 
             $.ajax({
                 url: '/mood/deleteMood.do',
                 type: 'post',
                 // contentType:'application/json',
                 // dataType:"json",
-                data: {"moodNum": listId},
+                data: {"moodNum": splited_id},
                 // data: JSON.stringify(moodNum),
                 success: function (data) {
                     //삭제할 아이디(글번호)를 가진 div를 삭제
-                    $("#"+listId).remove();
+                    $("#"+listId).parent('.text-section-main').remove();
+                    alert("삭제완료");
+                    
+                    // 글 삭제 후 메인으로 이동
+                    location.href = '/';
 
                 }, error: function (req, status, err) {
                     console.log(req);
@@ -142,34 +150,32 @@
 
         /* 글 수정버튼 */
         function editList(editId) {
-            var listClass = $("#"+editId).parents(".contents-section");
-            var listId = listClass.attr('id');
+            let listClass = $("#"+editId).parents(".contents-section-detail");
+            let listId = listClass.attr('id');
             location.href = '/mood/update/'+listId;
         }
 
         /* 좋아요 클릭 체크 */
         function chkLike(likeBtnId) {
             //default-smallBtn 의 children class def_like color_like인지 구분
-            var contentsId = $("#"+likeBtnId).parents(".contents-section");
-            // var moodNum = contentsId.children(".sendPageNum-div").id;
-            var conClass = $("#" + likeBtnId).parents(".contents-section");
-            var moodNum = conClass[0].getAttribute('id'); // getElements- 메서드는 값을 객체로 받아오기 때문에 ele.함수(x)> ele[i].함수(o)
-            var isLike = 0;
+            let contentsId = $("#"+likeBtnId).parents(".contents-section-detail");
+            // let moodNum = contentsId.children(".sendPageNum-div").id;
+            let conClass = $("#" + likeBtnId).parents(".contents-section-detail");
+            let moodNum = conClass[0].getAttribute('id'); // getElements- 메서드는 값을 객체로 받아오기 때문에 ele.함수(x)> ele[i].함수(o)
+            let isLike = 0;
 
             // default-smallBtnArea 의 2번째 img 태그 class가 어떤건지 따라서 isLike 구분값 설정
-            var textBtnArea = $("#"+likeBtnId).parents(".text-btnArea-main");
-            var textBtnAreaId = textBtnArea[0].getAttribute('id');
-            var likeTag = $("#"+textBtnAreaId).find('img:eq(1)');
+            let textBtnArea = $("#"+likeBtnId).parents(".text-btnArea-main");
+            let textBtnAreaId = textBtnArea[0].getAttribute('id');
+            let likeTag = $("#"+textBtnAreaId).find('img:eq(1)');
             checkLike = likeTag[0].getAttribute('class');
 
 
-            var spanVar = $("#"+textBtnAreaId).find('span:eq(0)');
-            var spanId = spanVar[0].getAttribute('id');
+            let spanlet = $("#"+textBtnAreaId).find('span:eq(0)');
+            let spanId = spanVar[0].getAttribute('id');
             const spanOrigin = Number($("#"+spanId).text());    //상수로 선언, 문자열> 숫자로 파싱
             const spanLike = spanOrigin+1;
             const spanDisLike = spanOrigin-1;
-
-            // alert("spanTxt : "+spanTxt);
 
 
             // 이미 좋아요 눌려있을때
@@ -282,8 +288,8 @@
             </div>
 
             <!-- 리스트가 있는 경우 -->
-            <div class="text-section-main">
-                <div class="contents-section" th:unless="${#lists.isEmpty(moodPage)}" th:id="${'contents-sectionId_'+mood.moodNum}" th:each="mood:${moodPage}">
+            <div class="text-section-main" th:unless="${#lists.isEmpty(moodPage)}">
+                <div class="contents-section-detail" th:id="${'contents-section-detail-Id_'+mood.moodNum}" th:each="mood:${moodPage}">
                     <!--내가 쓸 글에만 더보기 버튼 노출된다-->
                     <div class="dropdown-def" th:if="${mood.userId.toString().equals(session.loginMember)}">
                         <div class="top-btnArea">
@@ -297,23 +303,30 @@
                     </div>
 
                     <div class="sendPageNum-div"  th:id="${mood.moodNum}">
-                        <div class="text-main-date">
-                            <span th:text="${mood.reg_date}"></span>
+                        <div class="date-userId-div">
+                            <div class="text-main-date">
+                                <span th:text="${#temporals.format(mood.reg_date, 'yyyy/MM/dd HH:mm')}"></span>
+                            </div>
+                            <div th:if="${not #strings.isEmpty(mood.userProfile)}" class="text-main-userProfile">
+                                <div th:text="${mood.userProfile}" id="userProfile" name="userProfile"></div>
+                            </div>
+                            <div class="text-main-userId">
+                                <button th:text="${mood.userId}" class="userId-btn" id="userIdBtn" name="userId"></button>
+                            </div>
                         </div>
-                        <div th:if="${not #strings.isEmpty(mood.userProfile)}" class="text-main-userProfile">
-                            <div th:text="${mood.userProfile}" id="userProfile" name="userProfile"></div>
-                        </div>
-                        <div class="text-main-userId">
-                            <span th:text="${mood.userId}" id="userId" name="userId"></span>
-                        </div>
-                        <div th:if="${not #strings.isEmpty(mood.emotion)}" class="text-main-emotion">
-                            <img th:src="@{/img/emotion/{emotion}_color.png(emotion=${mood.emotion})}" alt="emotion.png" />
-                        </div>
-                        <div class="contents-spanArea-css">
-                            <span th:text="${mood.contents}" class="contents-span-css" id="contents" name="contents" ></span>
-                        </div>
-                        <div class="photo-divArea">
-                            <img class="photo-div" th:each="imageFile : ${mood.imageFiles}" th:src="@{${'/images/'+imageFile.getStoreFileName()}}" alt="photo" width="300px"/>
+<!--                        <div class="text-main-userId">-->
+<!--                            <span th:text="${mood.userId}" id="userId" name="userId"></span>-->
+<!--                        </div>-->
+                        <div class="emotion-contents-Div">
+                            <div th:if="${not #strings.isEmpty(mood.emotion)}" class="text-main-emotion">
+                                <img th:src="@{/img/emotion/{emotion}_color.png(emotion=${mood.emotion})}" alt="emotion.png" />
+                            </div>
+                            <div class="contents-spanArea-css">
+                                <span th:text="${mood.contents}" class="contents-span-css" id="contents" name="contents" ></span>
+                            </div>
+                            <div class="photo-divArea">
+                                <img class="photo-div" th:each="imageFile : ${mood.imageFiles}" th:src="@{${'/images/'+imageFile.getStoreFileName()}}" alt="photo" width="300px"/>
+                            </div>
                         </div>
                     </div>
                     <div class="text-btnArea-main" th:id="${'text-btnArea-main_'+moodStat.count}">
@@ -332,10 +345,10 @@
             </div>
 
             <!-- 댓글 리스트가 있는 경우 -->
-            <div class="text-section-main">
-                <div class="contents-section" th:unless="${#lists.isEmpty(replyList)}" th:id="${reply.replyNum}" th:each="reply:${replyList}">
+            <div class="text-section-main" th:unless="${#lists.isEmpty(replyList)}">
+                <div class="contents-section" th:id="${reply.replyNum}" th:each="reply:${replyList}">
                     <!--                        내가 쓸 글에만 더보기 버튼 노출된다-->
-                    <div class="dropdown-def" th:if="${reply.registrant.toString().equals(session.loginMember)}">
+                    <div class="dropdown-def" th:if="${reply.userId.toString().equals(session.loginMember)}">
                         <div class="top-btnArea">
                             <img class="top-btn"  th:id="${replyStat.count+'_replyBtnId'}" th:src="@{/img/list_btn/plus_btn.png}" alt="plus_btn.png" value="unfold" th:onclick="chkFold(this.id)"/>
 
@@ -347,11 +360,17 @@
                         </div>
                     </div>
                     <div class="sendPageNum-div"  th:id="${reply.replyNum}" th:onclick="sendMoodNum(this.id)">
-                        <div class="text-main-date">
-                            <span th:text="${reply.reg_date}"></span>
-                        </div>
-                        <div class="text-main-userId">
-                            <span th:text="${reply.registrant}" id="registrant" name="registrant"></span>
+                        <div class="date-userId-div">
+                            <div class="text-main-date">
+                                <span th:text="${#temporals.format(reply.reg_date, 'yyyy/MM/dd HH:mm')}"></span>
+                            </div>
+    <!--                        <div class="text-main-userId">-->
+    <!--                            <span th:text="${reply.registrant}" id="registrant" name="registrant"></span>-->
+    <!--                        </div>-->
+
+                            <div class="text-main-userId">
+                                <button th:text="${reply.userId}" class="userId-btn" id="userId" name="userId"></button>
+                            </div>
                         </div>
                         <div class="contents-spanArea-css">
                             <span th:text="${reply.reply_contents}" class="contents-span-css"  name="reply_contents" ></span>

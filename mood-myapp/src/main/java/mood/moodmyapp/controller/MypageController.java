@@ -5,7 +5,9 @@ import mood.moodmyapp.Session.SessionConstant;
 import mood.moodmyapp.common.EncryptionUtils;
 import mood.moodmyapp.domain.Friend;
 import mood.moodmyapp.domain.Member;
+import mood.moodmyapp.domain.Mood;
 import mood.moodmyapp.service.MemberService;
+import mood.moodmyapp.service.MoodService;
 import mood.moodmyapp.service.MypageService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +31,13 @@ public class MypageController {
 
     private final MypageService mypageService;
     private final MemberService memberService;
+    private final MoodService moodService;
 
     @Autowired
-    public MypageController(MypageService mypageService, MemberService memberService) {
+    public MypageController(MypageService mypageService, MemberService memberService, MoodService moodService) {
         this.memberService = memberService;
         this.mypageService = mypageService;
+        this.moodService = moodService;
     }
 
 
@@ -60,6 +64,10 @@ public class MypageController {
 
         //세션이 있다면 마이페이지 메인으로 이동
         model.addAttribute("member", isMember);
+
+        //내가 쓴 글만 조회하기
+        List<Mood> myPostList = moodService.findMyPosting(isMember);
+        model.addAttribute("myPostList",myPostList);
         return "/mypage/main";
     }
 
@@ -126,17 +134,13 @@ public class MypageController {
     /**
      * 친구 추가하기
      */
-
     @ResponseBody
     @PostMapping(value="/addFriend.do")
     public Map<String,String> makeFriend(String friendIdRaw,HttpServletRequest request, @RequestBody HashMap<String, String>friendMap){
         String friendId = friendMap.get("friendIdRaw");
-        //String friendId = request.getParameter(friendId);
-        System.out.println("this is controller!!!!!!friendId : " + friendId);
 
         HttpSession session = request.getSession(true);
         String userId = (String)session.getAttribute(SessionConstant.LOGIN_MEMBER);
-        System.out.println("this is controller!!!!!!userId : " + userId);
         mypageService.makeFriend(userId, friendId);
 
         friendMap.put("friendId",friendId);

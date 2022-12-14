@@ -20,7 +20,7 @@
 @REM ----------------------------------------------------------------------------
 @REM Maven Start Up Batch script
 @REM
-@REM Required ENV vars:
+@REM Required ENV lets:
 @REM JAVA_HOME - location of a JDK home dir
 @REM
 @REM Optional ENV vars

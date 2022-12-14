@@ -1,14 +1,11 @@
 package mood.moodmyapp.service;
 
 import mood.moodmyapp.common.FileStore;
-import mood.moodmyapp.domain.IsLike;
-import mood.moodmyapp.domain.Mood;
-import mood.moodmyapp.domain.MoodForm;
-import mood.moodmyapp.domain.UploadFile;
-import mood.moodmyapp.dto.MoodDto;
-import mood.moodmyapp.dto.MoodJoinDto;
+import mood.moodmyapp.domain.*;
 import mood.moodmyapp.repository.IsLikeRepository;
+import mood.moodmyapp.repository.MemberRepository;
 import mood.moodmyapp.repository.MoodRepository;
+import mood.moodmyapp.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,9 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -27,13 +22,17 @@ public class MoodService {
     private final MoodRepository moodRepository;
     private final FileStore fileStore;
     private final IsLikeRepository isLikeRepository;
+    private final MemberRepository memberRepository;
+    private final ReplyRepository replyRepository;
 
 
     @Autowired
-    public MoodService(MoodRepository moodRepository, FileStore fileStore, IsLikeRepository isLikeRepository) {
+    public MoodService(MoodRepository moodRepository, FileStore fileStore, IsLikeRepository isLikeRepository, MemberRepository memberRepository, ReplyRepository replyRepository) {
         this.moodRepository = moodRepository;
         this.fileStore = fileStore;
         this.isLikeRepository = isLikeRepository;
+        this.memberRepository = memberRepository;
+        this.replyRepository = replyRepository;
     }
 
     /**
@@ -46,6 +45,7 @@ public class MoodService {
     public Mood saveMood(MoodForm moodForm) throws IOException {
 
         Mood mood = new Mood();
+
         // moodForm에서 moodNum 있는지 체크
         if(moodForm.getMoodNum()!=null){
             Optional<Mood> isMoodOp = moodRepository.findById(moodForm.getMoodNum());
@@ -80,14 +80,20 @@ public class MoodService {
         return isSaved;
     }
 
+    /**
+     * 메인 페이지
+     * 모든 글 리스트 조회
+     * @return moodList
+     */
     public List<Mood> findAllMood() {
 
         List<Mood> moodList = moodRepository.findAllOrderByReg_dateDesc();
         return moodList;
     }
 
+
     /**
-     * 글 상세페이지
+     * 글 수정
      * @param moodNum
      * @return moodPage
      */
@@ -107,11 +113,19 @@ public class MoodService {
     public int deleteByMoodNum(Long moodNum) {
         // 자식이 있으면 for 문으로 다 찾기
         List<IsLike> isLikeList = isLikeRepository.findByMoodNum(moodNum);
+        List<Reply> replyList = replyRepository.findByMoodNum(moodNum);
 
         // 자식 칼럼이 있는지 찾기
+        // 이 글에 있는 좋아요 찾아 지우기
         for(IsLike i : isLikeList){
             if(!isLikeList.isEmpty()){
                 isLikeRepository.deleteAllInBatch(isLikeList);
+            }
+        }
+        // 이 글에 달린 댓글 찾아 지우기
+        for(Reply r : replyList){
+            if(!replyList.isEmpty()){
+                replyRepository.deleteAllInBatch(replyList);
             }
         }
 
@@ -186,8 +200,18 @@ public class MoodService {
 
     public List<Mood> searchKeyword(String keyword) {
 
-        List<Mood> searchList = moodRepository.findByContentsContaining(keyword);
+        List<Mood> searchList = moodRepository.findByContentsContainingOrderByMoodNumDesc(keyword);
         return searchList;
+    }
+
+    /**
+     * 마이페이지 내가 쓴 글 보여주기
+     * @param userId
+     * @return
+     */
+    public List<Mood> findMyPosting(String userId) {
+       List<Mood> myPostList =  moodRepository.findByUserId(userId);
+        return myPostList;
     }
 //    /**
 //     * 년도별 감정 통계 데이터 조회

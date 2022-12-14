@@ -6,8 +6,8 @@
     <script type="text/javascript">
 
     function check_pw() {
-        var pwVal = document.getElementById('updatePw').value;
-        var checkInput = 0;
+        let pwVal = document.getElementById('updatePw').value;
+        let checkInput = 0;
 
         if(document.getElementById('updatePw').value!=''&&document.getElementById('checkPw').value!=''){
             if(document.getElementById('updatePw').value == document.getElementById('checkPw').value){
@@ -22,7 +22,7 @@
     }
 
     $(document).ready(function() {
-            var isAuthChecked = false;    //중복체크했을 땐 true로 변경
+            let isAuthChecked = false;    //중복체크했을 땐 true로 변경
 
             $("input[name='phoneNum']").on("change", function(e){
                 isAuthChecked = false;    //phoneNum 값이 변경될 때마다 중복체크버튼값 리셋
@@ -110,8 +110,8 @@
 
 
             function check_pw() {
-                var pwVal = document.getElementById('updatePw').value;
-                var checkInput = 0;
+                let pwVal = document.getElementById('updatePw').value;
+                let checkInput = 0;
 
                 if (document.getElementById('updatePw').value != '' && document.getElementById('checkPw').value != '') {
                     if (document.getElementById('updatePw').value == document.getElementById('checkPw').value) {

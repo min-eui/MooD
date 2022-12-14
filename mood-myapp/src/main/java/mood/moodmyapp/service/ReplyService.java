@@ -1,6 +1,7 @@
 package mood.moodmyapp.service;
 
 import mood.moodmyapp.domain.Reply;
+import mood.moodmyapp.repository.MemberRepository;
 import mood.moodmyapp.repository.ReplyRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,10 @@ public class ReplyService {
 
 
     private final ReplyRepository replyRepository;
-
-    public ReplyService(ReplyRepository replyRepository) {
+    private final MemberRepository memberRepository;
+    public ReplyService(ReplyRepository replyRepository, MemberRepository memberRepository) {
         this.replyRepository = replyRepository;
+        this.memberRepository = memberRepository;
     }
 
     /**
@@ -21,6 +23,8 @@ public class ReplyService {
      * @param replyForm
      */
     public boolean saveReply(Reply replyForm) {
+        //userId로 nickName 찾아서 값 넣어주기
+        //replyForm.setNickName(memberRepository.findByUserId(replyForm.getRegistrant()));
         Reply isReply =  replyRepository.save(replyForm);
         if(isReply!=null){
             return true;

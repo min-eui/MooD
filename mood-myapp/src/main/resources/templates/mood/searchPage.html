@@ -12,8 +12,8 @@
 
         /* 삭제버튼 */
         function deleteList(delId) {
-            var listClass = $("#"+delId).parents(".contents-section");
-            var listId = listClass.attr('id');
+            let listClass = $("#"+delId).parents(".contents-section");
+            let listId = listClass.attr('id');
 
             $.ajax({
                 url: '/mood/deleteMood.do',
@@ -42,20 +42,20 @@
 
         /* 수정버튼 */
         function editList(editId) {
-            var listClass = $("#"+editId).parents(".contents-section");
-            var listId = listClass.attr('id');
+            let listClass = $("#"+editId).parents(".contents-section");
+            let listId = listClass.attr('id');
             location.href = '/mood/update/'+listId;
         }
 
         /* 더보기 버튼 체크 */
         function chkFold(btnId) {
 
-            var foldVal = $("#"+btnId).val();
+            let foldVal = $("#"+btnId).val();
             if(foldVal == "unfold"){
                 $("#"+btnId).attr("src","/img/list_btn/minus_btn.png");
                 $("#"+btnId).val("fold");
 
-                var parentId = $("#"+btnId).parents(".top-btnArea");
+                let parentId = $("#"+btnId).parents(".top-btnArea");
                 parentId.children(".dropdown-content").show();
 
                 /* 해당 아이디를 제외한 다른 모든 버튼 hide 하기 */
@@ -64,8 +64,8 @@
                 /* 선택한 버튼 나머지 요소들 fold 상태로 만들기 */
                 for(let i=0; i < allFoldBtn.length; i++){
                     if(allFoldBtn[i].id != btnId){
-                        var hideList = allFoldBtn[i].id;
-                        var  hidePar= $("#"+hideList).parents('.top-btnArea');
+                        let hideList = allFoldBtn[i].id;
+                        let  hidePar= $("#"+hideList).parents('.top-btnArea');
                         $("#"+hideList).val("unfold");
                         hidePar.children(".dropdown-content").hide();
                     }
@@ -75,7 +75,7 @@
                 $("#"+btnId).attr("src","/img/list_btn/plus_btn.png");
                 $("#"+btnId).val("unfold");
 
-                var parentId = $("#"+btnId).parents(".top-btnArea");
+                let parentId = $("#"+btnId).parents(".top-btnArea");
                 parentId.children(".dropdown-content").hide();
 
             }
@@ -88,7 +88,7 @@
 
             for(let i=0; i < emoVal.length; i++){
                 if(emoVal[i].value==="checked"){
-                    var moodVal = emoVal[i].id;
+                    let moodVal = emoVal[i].id;
                 }
             }
             //alert(moodVal);
@@ -126,7 +126,7 @@
 
 
         function sendMoodNum(moodNum){
-            var link = '/mood/detail/'+moodNum; // 해당 글 상세페이지로 이동
+            let link = '/mood/detail/'+moodNum; // 해당 글 상세페이지로 이동
             location.replace(link);
         }
 
@@ -141,11 +141,11 @@
             $(".top-btnArea > img").val("unfold");
             $(".emotionArea > img").val("unchecked");
             //color_like class가 있는지 확인하기
-            var colorLikeImg = document.querySelectorAll(".color_like");
+            let colorLikeImg = document.querySelectorAll(".color_like");
             // alert(colorLikeImg.length);
 
             if(colorLikeImg){
-                for(var i=0; i< colorLikeImg.length; i++){
+                for(let i=0; i< colorLikeImg.length; i++){
                     var colorLikeId = colorLikeImg[i].id;
                     const hideDefImg = $("#"+colorLikeId).parents(".default-smallBtnArea-index").children(".def_like");
                     hideDefImg.css('display','none');
@@ -374,14 +374,14 @@
                         </div>
                     </div>
                     <div class="sendPageNum-div"  th:id="${search.moodNum}" th:onclick="sendMoodNum(this.id)">
-                        <div class="text-main-date">
-                            <span th:text="${search.reg_date}"></span>
-                        </div>
-                        <div th:if="${not #strings.isEmpty(search.userProfile)}" class="text-main-userProfile">
-                            <div th:text="${search.userProfile}" id="userProfile" name="userProfile"></div>
-                        </div>
-                        <div class="text-main-userId">
-                            <span th:text="${search.userId}" id="userId" name="userId"></span>
+                        <div class="date-userId-div">
+                            <div class="text-main-date">
+                                <span th:text="${#temporals.format(search.reg_date, 'yyyy/MM/dd HH:mm')}"></span>
+                            </div>
+
+                            <div class="text-main-userId">
+                                <button th:text="${search.userId}" class="userId-btn" id="userId" name="userId"></button>
+                            </div>
                         </div>
                         <div th:if="${not #strings.isEmpty(search.emotion)}" class="text-main-emotion">
                             <img th:src="@{/img/emotion/{emotion}_color.png(emotion=${search.emotion})}" alt="emotion.png" />

@@ -23,7 +23,6 @@ public class IsLike{
 
 
     @Column(name="moodNum", nullable = false, unique = true)
-//    @JoinColumn(name="moodNum", nullable = false, unique = true)
     private Long moodNum;   // 글번호
 
     @Column(name="likeUserId", length = 50, nullable = false)

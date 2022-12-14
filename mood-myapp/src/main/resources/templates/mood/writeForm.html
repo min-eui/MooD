@@ -12,7 +12,7 @@
 
         /* 목록 버튼 */
         function goList() {
-            var link = '/';
+            let link = '/';
             location.replace(link);
         }
 
@@ -23,7 +23,7 @@
 
             for(let i=0; i < emoVal.length; i++){
                 if(emoVal[i].value==="checked"){
-                    var moodVal = emoVal[i].id;
+                    let moodVal = emoVal[i].id;
                 }
             }
             alert(moodVal);
@@ -70,8 +70,8 @@
         function checkClick(imgId){
 
             const allImg = document.querySelectorAll('#emotionArea > img');
-            var chkVal = $("#"+imgId).val();
-            var clickedIdx = $("#"+imgId).index();
+            let chkVal = $("#"+imgId).val();
+            let clickedIdx = $("#"+imgId).index();
 
             if(chkVal=="unchecked") {
                 $("#"+imgId).val("checked");
@@ -80,7 +80,7 @@
 
                 for(let i=0; i < allImg.length; i++){
                     if(i != clickedIdx){
-                        var unchkId = allImg[i].id
+                        let unchkId = allImg[i].id
                         $("#"+unchkId).val("unchecked");
                         $("#"+unchkId).attr("src","/img/emotion/"+unchkId+"_def.png");
                     }
@@ -97,7 +97,7 @@
             // 인풋 태그에 파일이 있는 경우
             if(input.files && input.files[0]) {
 
-                var reader = new FileReader();
+                let reader = new FileReader();
                 reader.onload = function(e){
                     document.getElementById('showImage').src = e.target.result;
                 };
@@ -109,14 +109,14 @@
 
         }
 
-        var clickCnt = 0;
+        let clickCnt = 0;
         $(function () {
             $("#imgLabel").click(function () {
                 //클릭하는것을 개수를 세고 개수가 1개이상이면 안만들어지게
                  if (clickCnt < 1){
                      alert("아직 "+ clickCnt + "번째");
                      // if($("#imgLabel").find('input:eq(clickCnt)').val() != null){
-                     var newInput = document.createElement("input");
+                     let newInput = document.createElement("input");
                      newInput.setAttribute("type", "file");
                      // newInput.setAttribute("id", clickCnt+"_id");
                      newInput.setAttribute("id", "imageFiles");
@@ -125,11 +125,11 @@
                      newInput.setAttribute("style", "display: none");
                      newInput.setAttribute("multiple","");
                      newInput.setAttribute("onchange", "readImage(this)");
-                     var labelEl = document.getElementById("imgLabel");
+                     let labelEl = document.getElementById("imgLabel");
 
                      // //라벨 안에다가 인풋버튼 추가하기
                      labelEl.appendChild(newInput);
-                     var newInputId = newInput.id;
+                     let newInputId = newInput.id;
                      alert("newInputId" + newInputId);
                      clickCnt++;
 
@@ -154,6 +154,7 @@
             <div class="list-btnArea">
                 <input type="button" id="listBtn" class="btn-greenBlack" th:onclick="goList()" value="목록">
             </div>
+
                 <form role = "form" th:id="moodForm" th:name="moodForm" th:action="@{/mood/write.do}" th:object="${mood}"  method="post" enctype="multipart/form-data">
                     <div class="emotionArea" id="emotionArea">
                         <img th:src="@{/img/emotion/happy_def.png}" th:id="happy" class="emotion-img" alt="happy_def.png" th:value="unchecked" onclick="checkClick(this.id)"/>
